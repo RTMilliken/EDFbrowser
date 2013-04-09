@@ -456,7 +456,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   spinbox4_3->setGeometry(QRect(200, 100, 140, 20));
   spinbox4_3->setSuffix(" MB");
   spinbox4_3->setMinimum(100);
-  spinbox4_3->setMaximum(10000);
+  spinbox4_3->setMaximum(100000);
   spinbox4_3->setSingleStep(1);
   spinbox4_3->setValue((int)(mainwindow->maxfilesize_to_readin_annotations / 1048576LL));
 
