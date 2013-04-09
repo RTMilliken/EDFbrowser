@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/edf.png</file>
+    <file>images/splash.png</file>
+    <file>images/ok.png</file>
+</qresource>
+</RCC>
