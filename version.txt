@@ -1,5 +1,5 @@
 
- version 1.50      April 7, 2013
+ version 1.50      April 20, 2013
  ------------
 
  - Fixed a bug in the ECG heartrate detection algorithm when a high samplerate was used.

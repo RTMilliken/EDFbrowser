@@ -253,7 +253,7 @@ void edfplus_annotation_sort(struct annotationblock **list)  // sort the annotat
       }
 // take out done
 
-      while(1)  // search back till we find the right place to put it
+      while(1)  // search backwards till we find the right place to put it
       {
         p5 = pm->former_annotation;
 
@@ -287,7 +287,7 @@ void edfplus_annotation_sort(struct annotationblock **list)  // sort the annotat
       }
     }
 
-    p1 = p1->next_annotation;  // continue seraching the list
+    p1 = p1->next_annotation;  // continue searching the list from where we stopped before
   }
 }
 
