@@ -146,6 +146,7 @@
 #include "z_ratio_filter.h"
 #include "raw2edf.h"
 #include "check_for_updates.h"
+#include "manscan2edf.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -496,6 +497,7 @@ private slots:
   void Escape_fun();
   void export_ecg_rr_interval_to_ascii();
   void convert_binary_to_edf();
+  void convert_manscan_to_edf();
 //  void search_pattern();
 
 #ifdef BK_MRS_project

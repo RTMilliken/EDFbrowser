@@ -47,6 +47,7 @@ extern "C" {
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
 
 void remove_trailing_spaces(char *);
@@ -64,6 +65,7 @@ int atoi_nonlocalized(const char *);
 double atof_nonlocalized(const char *);
 int sprint_number_nonlocalized(char *, double);
 long long atoll_x(const char *, int);
+void strntolower(char *, int);
 
 /* 3th argument is the minimum digits that will be printed (minus sign not included), leading zero's will be added if necessary */
 /* if 4th argument is zero, only negative numbers will have the sign '-' character */

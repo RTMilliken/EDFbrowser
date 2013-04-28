@@ -607,6 +607,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addSeparator();
   toolsmenu->addAction("Convert Nihon Kohden to EDF+", this, SLOT(nk2edf_converter()));
   toolsmenu->addAction("Convert ASCII to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
+  toolsmenu->addAction("Convert Manscan to EDF+", this, SLOT(convert_manscan_to_edf()));
   toolsmenu->addAction("Convert Finometer to EDF", this, SLOT(convert_fino_to_edf()));
   toolsmenu->addAction("Convert Nexfin to EDF", this, SLOT(convert_nexfin_to_edf()));
   toolsmenu->addAction("Convert Emsa to EDF+", this, SLOT(convert_emsa_to_edf()));
@@ -1704,6 +1705,12 @@ void UI_Mainwindow::convert_nexfin_to_edf()
 void UI_Mainwindow::convert_emsa_to_edf()
 {
   UI_EMSA2EDFwindow emsa2edf(recent_opendir, recent_savedir);
+}
+
+
+void UI_Mainwindow::convert_manscan_to_edf()
+{
+  UI_MANSCAN2EDFwindow manscan2edf(recent_opendir, recent_savedir);
 }
 
 

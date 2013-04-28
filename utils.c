@@ -1404,6 +1404,15 @@ int is_number(char *str)
 }
 
 
+void strntolower(char *s, int n)
+{
+  int i;
+
+  for(i=0; i<n; i++)
+  {
+    s[i] = tolower(s[i]);
+  }
+}
 
 
 

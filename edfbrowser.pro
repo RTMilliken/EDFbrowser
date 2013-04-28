@@ -94,6 +94,7 @@ HEADERS += z_score_dialog.h
 HEADERS += z_ratio_filter.h
 HEADERS += raw2edf.h
 HEADERS += check_for_updates.h
+HEADERS += manscan2edf.h
 
 HEADERS += third_party/fidlib/fidlib.h
 HEADERS += third_party/fidlib/fidmkf.h
@@ -173,6 +174,7 @@ SOURCES += z_score_dialog.cpp
 SOURCES += z_ratio_filter.cpp
 SOURCES += raw2edf.cpp
 SOURCES += check_for_updates.cpp
+SOURCES += manscan2edf.cpp
 
 SOURCES += third_party/fidlib/fidlib.c
 
