@@ -48,6 +48,8 @@
 #endif
 
 #define MBILINEBUFSZ 4096
+#define MBIMAXEVENTS 10000
+#define MBIMAXEVLEN 40
 
 
   struct segment_prop_struct{
@@ -70,8 +72,11 @@
          char recorder_brand[128];
          char datafilename[MAX_PATH_LENGTH];
          long long starttime_offset;
+         int ev_cnt;
+         long long ev_onset[MBIMAXEVENTS];
+         long long ev_duration[MBIMAXEVENTS];
+         char ev_description[MBIMAXEVENTS][MBIMAXEVLEN + 1];
          };
-
 
 
 int get_worddatafile(struct segment_prop_struct *, int, FILE *);
@@ -81,6 +86,7 @@ int get_sample_rate(struct segment_prop_struct *, int, FILE *);
 int get_filter_settings(struct segment_prop_struct *, int, FILE *);
 int get_recorder_version(struct segment_prop_struct *, int, FILE *);
 int get_starttime_offset(struct segment_prop_struct *, int, FILE *);
+int get_events(struct segment_prop_struct *, int, FILE *);
 int get_number_of_segments(FILE *);
 char * fgetline(char *, int, FILE *);
 long long get_long_time(const char *);
@@ -142,7 +148,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
   double d_tmp;
 
-  struct segment_prop_struct segment_properties;
+  struct segment_prop_struct *segment_properties;
 
   union{
          int one;
@@ -152,6 +158,14 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   struct date_time_struct dtm_struct;
 
   pushButton1->setEnabled(FALSE);
+
+  segment_properties = (struct segment_prop_struct *)malloc(sizeof(struct segment_prop_struct));
+  if(segment_properties == NULL)
+  {
+    textEdit1->append("Malloc error (struct segment_prop_struct)");
+    pushButton1->setEnabled(TRUE);
+    return;
+  }
 
   strcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MBI files (*.mbi *.MBI)").toLocal8Bit().data());
 
@@ -187,103 +201,131 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
     return;
   }
 
+  segment_properties = (struct segment_prop_struct *)malloc(sizeof(struct segment_prop_struct));
+  if(segment_properties == NULL)
+  {
+    textEdit1->append("Malloc error (struct segment_prop_struct)");
+    fclose(header_inputfile);
+    pushButton1->setEnabled(TRUE);
+    return;
+  }
+
   n_segments = get_number_of_segments(header_inputfile);
 
 ////////////////// start segment processing ///////////////////////////////////////////
 
   for(segment_cnt=0; segment_cnt < n_segments; segment_cnt++)
   {
-    memset(&segment_properties, 0, sizeof(struct segment_prop_struct));
+    memset(segment_properties, 0, sizeof(struct segment_prop_struct));
 
     for(i=0; i<MAXSIGNALS; i++)
     {
-      sprintf(segment_properties.label[i], "ch.%i", i + 1);
-      segment_properties.gain[i] = 1.0;
+      sprintf(segment_properties->label[i], "ch.%i", i + 1);
+      segment_properties->gain[i] = 1.0;
     }
 
-    segment_properties.samplefrequency = 256;
+    segment_properties->samplefrequency = 256;
 
-    if(get_worddatafile(&segment_properties, segment_cnt, header_inputfile))
+    if(get_worddatafile(segment_properties, segment_cnt, header_inputfile))
     {
       textEdit1->append("Error, can not find or process item \"WordDataFile\".\n");
       fclose(header_inputfile);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    if(get_channel_gain(&segment_properties, segment_cnt, header_inputfile))
+    if(get_channel_gain(segment_properties, segment_cnt, header_inputfile))
     {
       textEdit1->append("Error, can not find or process item \"Channel gain\".\n");
       fclose(header_inputfile);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    if(get_start_date(&segment_properties, segment_cnt, header_inputfile))
+    if(get_start_date(segment_properties, segment_cnt, header_inputfile))
     {
       textEdit1->append("Error, can not find or process item \"Startdate\".\n");
       fclose(header_inputfile);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    if(get_sample_rate(&segment_properties, segment_cnt, header_inputfile))
+    if(get_sample_rate(segment_properties, segment_cnt, header_inputfile))
     {
       textEdit1->append("Error, can not find or process item \"SampleRate\".\n");
       fclose(header_inputfile);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    if(get_filter_settings(&segment_properties, segment_cnt, header_inputfile))
+    if(get_filter_settings(segment_properties, segment_cnt, header_inputfile))
     {
       textEdit1->append("Error, can not find or process item \"Filtersettings\".\n");
       fclose(header_inputfile);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    if(get_recorder_version(&segment_properties, segment_cnt, header_inputfile))
+    if(get_recorder_version(segment_properties, segment_cnt, header_inputfile))
     {
       textEdit1->append("Error, can not find or process item \"Filtersettings\".\n");
       fclose(header_inputfile);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    if(get_starttime_offset(&segment_properties, segment_cnt, header_inputfile))
+    if(get_starttime_offset(segment_properties, segment_cnt, header_inputfile))
     {
       textEdit1->append("Error, can not find or process item \"Starttime offset\".\n");
       fclose(header_inputfile);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    segment_properties.sec_duration = segment_properties.sweeps / segment_properties.samplefrequency;
+    if(get_events(segment_properties, segment_cnt, header_inputfile))
+    {
+      textEdit1->append("Error, can not find or process item \"Events\".\n");
+      fclose(header_inputfile);
+      free(segment_properties);
+      pushButton1->setEnabled(TRUE);
+      return;
+    }
 
-  // for(i=0; i<segment_properties.channels; i++)
+    segment_properties->sec_duration = segment_properties->sweeps / segment_properties->samplefrequency;
+
+  // for(i=0; i<segment_properties->ev_cnt; i++)
   // {
-  //   printf("%s    %.10f\n", segment_properties.label[i], segment_properties.gain[i]);
+  //   printf("%s  %lli  %lli\n", segment_properties->ev_description[i], segment_properties->ev_onset[i], segment_properties->ev_duration[i]);
   // }
-  // printf("data_offset is %lli   sweeps is %i datafileheader_filename is %s\n", segment_properties.data_offset, segment_properties.sweeps, segment_properties.datafilename);
   //
-  // printf("startdate_day is %i   startdate_month is %i   startdate_year is %i\n", segment_properties.startdate_day, segment_properties.startdate_month, segment_properties.startdate_year);
+  // for(i=0; i<segment_properties->channels; i++)
+  // {
+  //   printf("%s    %.10f\n", segment_properties->label[i], segment_properties->gain[i]);
+  // }
+  // printf("data_offset is %lli   sweeps is %i datafileheader_filename is %s\n", segment_properties->data_offset, segment_properties->sweeps, segment_properties->datafilename);
   //
-  // printf("starttime is:  %02i:%02i:%02i    starttime offset is: %lli\n", segment_properties.starttime_hour, segment_properties.starttime_minute, segment_properties.starttime_second, segment_properties.starttime_offset);
+  // printf("startdate_day is %i   startdate_month is %i   startdate_year is %i\n", segment_properties->startdate_day, segment_properties->startdate_month, segment_properties->startdate_year);
   //
-  // printf("samplerate is: %i   hpf is %f   lpf is %f\n", segment_properties.samplefrequency, segment_properties.hpf, segment_properties.lpf);
+  // printf("starttime is:  %02i:%02i:%02i    starttime offset is: %lli\n", segment_properties->starttime_hour, segment_properties->starttime_minute, segment_properties->starttime_second, segment_properties->starttime_offset);
   //
-  // printf("recorder version: %s   recorder brand: %s\n", segment_properties.recorder_version, segment_properties.recorder_brand);
+  // printf("samplerate is: %i   hpf is %f   lpf is %f\n", segment_properties->samplefrequency, segment_properties->hpf, segment_properties->lpf);
   //
-  // printf("recording duration: %i seconds\n", segment_properties.sec_duration);
+  // printf("recorder version: %s   recorder brand: %s\n", segment_properties->recorder_version, segment_properties->recorder_brand);
+  //
+  // printf("recording duration: %i seconds\n", segment_properties->sec_duration);
 
-    if(segment_properties.sec_duration < 1)
+    chns = segment_properties->channels;
 
-    chns = segment_properties.channels;
+    sf = segment_properties->samplefrequency;
 
-    sf = segment_properties.samplefrequency;
-
-    blocks = segment_properties.sec_duration;
+    blocks = segment_properties->sec_duration;
 
     if(blocks < 1)
     {
@@ -298,6 +340,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
     {
       textEdit1->append("Malloc() error (buf)\n");
       fclose(header_inputfile);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
@@ -317,7 +360,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     strcat(data_filename, "/");
 
-    strcat(data_filename, segment_properties.datafilename);
+    strcat(data_filename, segment_properties->datafilename);
 
     data_inputfile = fopeno(data_filename, "rb");
     if(data_inputfile==NULL)
@@ -326,26 +369,28 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append(txt_string);
       fclose(header_inputfile);
       free(buf);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
     fseeko(data_inputfile, 0LL, SEEK_END);
     filesize = ftello(data_inputfile);
-    if(filesize < (segment_properties.data_offset + (chns * 2)))
+    if(filesize < (segment_properties->data_offset + (chns * 2)))
     {
       textEdit1->append("Error, filesize is too small.\n");
       fclose(header_inputfile);
       fclose(data_inputfile);
       free(buf);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    n = (filesize - segment_properties.data_offset) / (chns * 2);
-    if(n < segment_properties.sweeps)
+    n = (filesize - segment_properties->data_offset) / (chns * 2);
+    if(n < segment_properties->sweeps)
     {
-      segment_properties.sweeps = n;
+      segment_properties->sweeps = n;
 
       snprintf(txt_string, 2048, "Warning: samples in datafile are less than in headerfile.");
       textEdit1->append(txt_string);
@@ -365,6 +410,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       fclose(header_inputfile);
       fclose(data_inputfile);
       free(buf);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
@@ -378,6 +424,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
@@ -392,6 +439,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
@@ -406,6 +454,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
@@ -413,13 +462,14 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     for(i=0; i<chns; i++)
     {
-      if(edf_set_label(hdl, i, segment_properties.label[i]))
+      if(edf_set_label(hdl, i, segment_properties->label[i]))
       {
         textEdit1->append("Error: edf_set_label()\n");
         fclose(header_inputfile);
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
@@ -427,15 +477,15 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
     for(i=0; i<chns; i++)
     {
-      if(segment_properties.gain[i] > 0.999)
+      if(segment_properties->gain[i] > 0.999)
       {
-        d_tmp = 32767.0 / segment_properties.gain[i];
+        d_tmp = 32767.0 / segment_properties->gain[i];
 
         strcpy(scratchpad, "uV");
       }
       else
       {
-        d_tmp = 32.767 / segment_properties.gain[i];
+        d_tmp = 32.767 / segment_properties->gain[i];
 
         strcpy(scratchpad, "mV");
       }
@@ -447,6 +497,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
@@ -458,6 +509,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
@@ -469,21 +521,22 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
     }
 
-    dtm_struct.year = segment_properties.startdate_year;
-    dtm_struct.month = segment_properties.startdate_month;
-    dtm_struct.day = segment_properties.startdate_day;
-    dtm_struct.hour = segment_properties.starttime_hour;
-    dtm_struct.minute = segment_properties.starttime_minute;
-    dtm_struct.second = segment_properties.starttime_second;
+    dtm_struct.year = segment_properties->startdate_year;
+    dtm_struct.month = segment_properties->startdate_month;
+    dtm_struct.day = segment_properties->startdate_day;
+    dtm_struct.hour = segment_properties->starttime_hour;
+    dtm_struct.minute = segment_properties->starttime_minute;
+    dtm_struct.second = segment_properties->starttime_second;
 
     date_time_to_utc(&ll_tmp, dtm_struct);
 
-    ll_tmp += segment_properties.starttime_offset / TIME_DIMENSION;
+    ll_tmp += segment_properties->starttime_offset / TIME_DIMENSION;
 
     utc_to_date_time(ll_tmp, &dtm_struct);
 
@@ -494,46 +547,49 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       fclose(data_inputfile);
       edfclose_file(hdl);
       free(buf);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    if(edf_set_equipment(hdl, segment_properties.recorder_brand))
+    if(edf_set_equipment(hdl, segment_properties->recorder_brand))
     {
       textEdit1->append("Error: edf_set_equipment()\n");
       fclose(header_inputfile);
       fclose(data_inputfile);
       edfclose_file(hdl);
       free(buf);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
-    if(edf_set_recording_additional(hdl, segment_properties.recorder_version))
+    if(edf_set_recording_additional(hdl, segment_properties->recorder_version))
     {
       textEdit1->append("Error: edf_set_recording_additional()\n");
       fclose(header_inputfile);
       fclose(data_inputfile);
       edfclose_file(hdl);
       free(buf);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
 
     scratchpad[0] = 0;
 
-    if(segment_properties.hpf > 0.0001)
+    if(segment_properties->hpf > 0.0001)
     {
-      sprintf(scratchpad + strlen(scratchpad), "HP:%f", segment_properties.hpf);
+      sprintf(scratchpad + strlen(scratchpad), "HP:%f", segment_properties->hpf);
 
       remove_trailing_zeros(scratchpad);
 
       strcat(scratchpad, "Hz ");
     }
 
-    if(segment_properties.lpf > 0.0001)
+    if(segment_properties->lpf > 0.0001)
     {
-      sprintf(scratchpad + strlen(scratchpad), "LP:%f", segment_properties.lpf);
+      sprintf(scratchpad + strlen(scratchpad), "LP:%f", segment_properties->lpf);
 
       remove_trailing_zeros(scratchpad);
 
@@ -549,6 +605,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
@@ -566,7 +623,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       progress_steps = 1;
     }
 
-    fseeko(data_inputfile, segment_properties.data_offset, SEEK_SET);
+    fseeko(data_inputfile, segment_properties->data_offset, SEEK_SET);
 
     for(i=0; i<blocks; i++)
     {
@@ -583,6 +640,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
           fclose(data_inputfile);
           edfclose_file(hdl);
           free(buf);
+          free(segment_properties);
           pushButton1->setEnabled(TRUE);
           return;
         }
@@ -602,6 +660,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
             fclose(data_inputfile);
             edfclose_file(hdl);
             free(buf);
+            free(segment_properties);
             pushButton1->setEnabled(TRUE);
             return;
           }
@@ -619,6 +678,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         fclose(data_inputfile);
         edfclose_file(hdl);
         free(buf);
+        free(segment_properties);
         pushButton1->setEnabled(TRUE);
         return;
       }
@@ -633,8 +693,24 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       fclose(data_inputfile);
       edfclose_file(hdl);
       free(buf);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
+    }
+
+    for(i=0; i<segment_properties->ev_cnt; i++)
+    {
+      if(edfwrite_annotation_latin1(hdl, segment_properties->ev_onset[i], segment_properties->ev_duration[i], segment_properties->ev_description[i]))
+      {
+        textEdit1->append("Error: edfwrite_annotation_latin1()\n");
+        fclose(header_inputfile);
+        fclose(data_inputfile);
+        edfclose_file(hdl);
+        free(buf);
+        free(segment_properties);
+        pushButton1->setEnabled(TRUE);
+        return;
+      }
     }
 
     if(edfwrite_annotation_latin1(hdl, (long long)blocks * 10000LL, -1LL, "Recording ends"))
@@ -644,6 +720,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       fclose(data_inputfile);
       edfclose_file(hdl);
       free(buf);
+      free(segment_properties);
       pushButton1->setEnabled(TRUE);
       return;
     }
@@ -661,9 +738,157 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
   fclose(header_inputfile);
 
+  free(segment_properties);
+
   textEdit1->append("Ready.\n");
 
   pushButton1->setEnabled(TRUE);
+}
+
+
+int get_events(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+{
+  int i,
+      order=0,
+      startsmpl,
+      durationsmpl,
+      ev_cnt=0,
+      segment_cnt=0;
+
+  char linebuf[MBILINEBUFSZ],
+       annot_descr[MBIMAXEVLEN + 1];
+
+  long long onset,
+            duration,
+            sf;
+
+
+  sf = segprop->samplefrequency;
+
+  rewind(inputfile);
+
+  while(segment_cnt != segment)
+  {
+    if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
+    {
+      return(0);
+    }
+
+    strntolower(linebuf, 11);
+
+    if(!(strncmp(linebuf, "datatypeid ", 11)))
+    {
+      segment_cnt++;
+    }
+  }
+
+  while(1)
+  {
+    if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
+    {
+      return(0);
+    }
+
+    strntolower(linebuf, 11);
+
+    if(!(strncmp(linebuf, "datatypeid ", 11)))
+    {
+      return(0);
+    }
+
+    strntolower(linebuf, 33);
+
+    if((!(strncmp(linebuf, "event beginsample durationsamples", 33))) ||
+      (!(strncmp(linebuf, "event durationsamples beginsample", 33))))
+    {
+      if(!(strncmp(linebuf, "event beginsample durationsamples", 33)))
+      {
+        order = 1;
+      }
+      else
+      {
+        order = 0;
+      }
+
+      if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
+      {
+        return(0);
+      }
+
+      strntolower(linebuf, 22);
+
+      if(!(strncmp(linebuf, "string integer integer", 22)))
+      {
+        for(i=0; ; i++)
+        {
+          if(fgetline(linebuf, MBILINEBUFSZ, inputfile) == NULL)
+          {
+            return(-1);
+          }
+
+          if(strlen(linebuf) == 0)
+          {
+            break;
+          }
+
+          if(strlen(linebuf) < 5)
+          {
+            return(-1);
+          }
+
+          if(order)
+          {
+            if(sscanf(linebuf, "%40s %i %i", annot_descr, &startsmpl, &durationsmpl) != 3)
+            {
+              return(-1);
+            }
+          }
+          else
+          {
+            if(sscanf(linebuf, "%40s %i %i", annot_descr, &durationsmpl, &startsmpl) != 3)
+            {
+              return(-1);
+            }
+          }
+
+          if(startsmpl < 0)
+          {
+            continue;
+          }
+
+          onset = ((long long)startsmpl * 10000LL) / sf;
+
+          if(durationsmpl < 2)
+          {
+            duration = -1LL;
+          }
+          else
+          {
+            duration = ((long long)durationsmpl * 10000LL) / sf;
+          }
+
+          strcpy(segprop->ev_description[ev_cnt], annot_descr);
+
+          segprop->ev_onset[ev_cnt] = onset;
+
+          segprop->ev_duration[ev_cnt] = duration;
+
+          segprop->ev_cnt = ++ev_cnt;
+
+          if(ev_cnt >= MBIMAXEVENTS)
+          {
+            return(0);
+          }
+        }
+      }
+      else
+      {
+        continue;
+      }
+    }
+  }
+
+  return(0);
 }
 
 

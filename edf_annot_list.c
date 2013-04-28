@@ -286,8 +286,10 @@ void edfplus_annotation_sort(struct annotationblock **list)  // sort the annotat
         pm = p5;
       }
     }
-
-    p1 = p1->next_annotation;  // continue searching the list from where we stopped before
+    else
+    {
+      p1 = p1->next_annotation;  // continue searching the list from where we stopped before
+    }
   }
 }
 
