@@ -1,4 +1,12 @@
 
+ version 1.51      May 11, 2013
+ ------------
+
+ - Added a Manscan MICROAMPS binary file to EDF+ converter.
+
+ - Solved another bug in the sorting algorithm used for the annotationlist.
+
+
  version 1.50      April 20, 2013
  ------------
 
@@ -9,7 +17,6 @@
  - Added the possibility to adjust the samplerate divider for all signals at once in the reducer/decimator tool.
 
  - EDFbrowser now checks online for a newer version during startup. This can be switched off in the settings menu.
-
 
 
  version 1.49      February 5, 2013
