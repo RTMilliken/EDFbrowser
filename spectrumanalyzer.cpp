@@ -70,12 +70,24 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   if((signalcomp->edfhdr->viewtime + signalcomp->edfhdr->starttime_offset)>=0LL)
   {
-    snprintf(signallabel, 512, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->signallabel,
-              (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
-              (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
-              (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
-              (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
-               signalcomp->edfhdr->filename + i);
+    if(signalcomp->alias[0] != 0)
+    {
+      snprintf(signallabel, 512, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->alias,
+                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
+                (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
+                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
+                (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
+                signalcomp->edfhdr->filename + i);
+    }
+    else
+    {
+      snprintf(signallabel, 512, "   %s   %i:%02i:%02i.%04i   %s", signalcomp->signallabel,
+                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION)/ 3600LL),
+                (int)(((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
+                (int)((signalcomp->edfhdr->viewtime / TIME_DIMENSION) % 60LL),
+                (int)((signalcomp->edfhdr->viewtime % TIME_DIMENSION) / 1000LL),
+                signalcomp->edfhdr->filename + i);
+    }
   }
   else
   {
@@ -87,12 +99,24 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
     l_temp = -signalcomp->edfhdr->viewtime;
 
-    snprintf(signallabel, 512, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->signallabel,
-            (int)((l_temp / TIME_DIMENSION)/ 3600LL),
-            (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
-            (int)((l_temp / TIME_DIMENSION) % 60LL),
-            (int)((l_temp % TIME_DIMENSION) / 1000LL),
-             signalcomp->edfhdr->filename + i);
+    if(signalcomp->alias[0] != 0)
+    {
+      snprintf(signallabel, 512, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->alias,
+              (int)((l_temp / TIME_DIMENSION)/ 3600LL),
+              (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
+              (int)((l_temp / TIME_DIMENSION) % 60LL),
+              (int)((l_temp % TIME_DIMENSION) / 1000LL),
+              signalcomp->edfhdr->filename + i);
+    }
+    else
+    {
+      snprintf(signallabel, 512, "   %s   -%i:%02i:%02i.%04i   %s", signalcomp->signallabel,
+              (int)((l_temp / TIME_DIMENSION)/ 3600LL),
+              (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
+              (int)((l_temp / TIME_DIMENSION) % 60LL),
+              (int)((l_temp % TIME_DIMENSION) / 1000LL),
+              signalcomp->edfhdr->filename + i);
+    }
   }
 
   remove_trailing_zeros(signallabel);
@@ -318,7 +342,14 @@ void UI_FreqSpectrumWindow::print_to_txt()
   sprintf(str, "FFT Power Spectral Density (Power/%fHz)\n", freqstep);
   remove_trailing_zeros(str);
   fprintf(outputfile, "%s", str);
-  fprintf(outputfile, "Signal: %s\n", signalcomp->signallabel);
+  if(signalcomp->alias[0] != 0)
+  {
+    fprintf(outputfile, "Signal: %s\n", signalcomp->alias);
+  }
+  else
+  {
+    fprintf(outputfile, "Signal: %s\n", signalcomp->signallabel);
+  }
   sprintf(str, "FFT blocksize: %i\n", mainwindow->maxdftblocksize);
   sprintf(str + strlen(str), "FFT resolution: %f Hz\n", freqstep);
   sprintf(str + strlen(str), "Data Samples: %i\n", samples);

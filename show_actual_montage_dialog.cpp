@@ -90,6 +90,13 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
   {
     txtbuf[0] = 0;
 
+    if(mainwindow->signalcomp[i]->alias[0] != 0)
+    {
+      strcpy(txtbuf, "alias: ");
+      strcat(txtbuf, mainwindow->signalcomp[i]->alias);
+      strcat(txtbuf, "   ");
+    }
+
     for(j=0; j<mainwindow->signalcomp[i]->num_of_signals; j++)
     {
       sprintf(txtbuf + strlen(txtbuf), "%+ix %s",

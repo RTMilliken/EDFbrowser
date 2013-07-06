@@ -103,6 +103,15 @@ Colortable:
 
 
 
+Inside every element "signalcomposition", there can be one element with the name "alias", like:
+
+<alias>average</alias>
+
+An alias, if used, replaces the signalcomposition label on the screen. It does not influence the montages.
+Only 7-bit ASCII characters are allowed. Max 16 characters.
+
+
+
 Inside every element "signalcomposition", there can be one element with the name "fidfilter_cnt", like:
 
 <fidfilter_cnt>0</fidfilter_cnt>

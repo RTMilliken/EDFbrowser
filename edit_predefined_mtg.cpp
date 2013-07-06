@@ -45,14 +45,14 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
 
   edit_predefined_mtg_Dialog = new QDialog;
 
-  edit_predefined_mtg_Dialog->setMinimumSize(QSize(800, 205));
-  edit_predefined_mtg_Dialog->setMaximumSize(QSize(800, 205));
+  edit_predefined_mtg_Dialog->setMinimumSize(800, 265);
+  edit_predefined_mtg_Dialog->setMaximumSize(800, 265);
   edit_predefined_mtg_Dialog->setWindowTitle("Edit key-bindings for montages");
   edit_predefined_mtg_Dialog->setModal(TRUE);
   edit_predefined_mtg_Dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
 
   mtg_path_list = new QListWidget(edit_predefined_mtg_Dialog);
-  mtg_path_list->setGeometry(QRect(10, 10, 780, 150));
+  mtg_path_list->setGeometry(10, 10, 780, 210);
   mtg_path_list->setSelectionBehavior(QAbstractItemView::SelectRows);
   mtg_path_list->setSelectionMode(QAbstractItemView::SingleSelection);
   mtg_path_list->setSpacing(1);
@@ -69,7 +69,7 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
   }
 
   CloseButton = new QPushButton(edit_predefined_mtg_Dialog);
-  CloseButton->setGeometry(QRect(690, 170, 100, 25));
+  CloseButton->setGeometry(QRect(690, 230, 100, 25));
   CloseButton->setText("Close");
 
   QObject::connect(CloseButton,   SIGNAL(clicked()),                      edit_predefined_mtg_Dialog,    SLOT(close()));

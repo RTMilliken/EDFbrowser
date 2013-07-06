@@ -148,6 +148,12 @@ void UI_SaveMontagewindow::SaveButtonClicked()
     {
       fprintf(mtgfile, "  <signalcomposition>\n");
 
+      fprintf(mtgfile, "    <alias>");
+
+      xml_fwrite_encode_entity(mtgfile, mainwindow->signalcomp[i]->alias);
+
+      fprintf(mtgfile, "</alias>\n");
+
       fprintf(mtgfile, "    <num_of_signals>%i</num_of_signals>\n", mainwindow->signalcomp[i]->num_of_signals);
 
       fprintf(mtgfile, "    <voltpercm>%f</voltpercm>\n", mainwindow->signalcomp[i]->voltpercm);

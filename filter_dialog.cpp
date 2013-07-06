@@ -187,7 +187,14 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   for(i=0; i<mainwindow->signalcomps; i++)
   {
     item = new QListWidgetItem;
-    item->setText(mainwindow->signalcomp[i]->signallabel);
+    if(mainwindow->signalcomp[i]->alias[0] != 0)
+    {
+      item->setText(mainwindow->signalcomp[i]->alias);
+    }
+    else
+    {
+      item->setText(mainwindow->signalcomp[i]->signallabel);
+    }
     item->setData(Qt::UserRole, QVariant(i));
     list->addItem(item);
   }

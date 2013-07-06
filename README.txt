@@ -1,7 +1,7 @@
 
 Requirements
 ============
-Qt (minimum version 4.7.1 or later, preferable 4.8.4) http://qt-project.org/
+Qt (minimum version 4.7.1 or later, preferable 4.8.5, Do not use Qt 5.x.x to compile EDFbrowser!!) http://qt-project.org/
 
 The GCC compiler or MinGW on windows. <http://mingw.org/>
 

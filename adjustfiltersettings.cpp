@@ -75,7 +75,14 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   filtersettings_dialog->setMinimumSize(360, 255);
   filtersettings_dialog->setMaximumSize(360, 255);
   strcpy(txtbuf, "Filter settings ");
-  strcat(txtbuf, signalcomp->signallabel);
+  if(signalcomp->alias[0] != 0)
+  {
+    strcat(txtbuf, signalcomp->alias);
+  }
+  else
+  {
+    strcat(txtbuf, signalcomp->signallabel);
+  }
   filtersettings_dialog->setWindowTitle(txtbuf);
   filtersettings_dialog->setModal(TRUE);
   filtersettings_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);

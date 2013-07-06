@@ -39,6 +39,7 @@
 #include <QMouseEvent>
 #include <QDialog>
 #include <QPushButton>
+#include <QLineEdit>
 #include <QDoubleSpinBox>
 #include <QComboBox>
 #include <QLabel>
@@ -218,7 +219,10 @@ private:
 
   QLabel      *SidemenuLabel,
               *AmpLabel,
+              *AliasLabel,
               *OffsetLabel;
+
+  QLineEdit   *AliasLineEdit;
 
   QPrinter    *printer;
 
@@ -261,6 +265,7 @@ protected slots:
   void ECGdetectButton();
   void signalInvert();
   void strip_types_from_label(char *);
+  void sidemenu_close();
 
 protected:
   void paintEvent(QPaintEvent *);

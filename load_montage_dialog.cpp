@@ -331,6 +331,21 @@ void UI_LoadMontagewindow::LoadButtonClicked()
     newsignalcomp->polarity = 1;
 
     xml_go_up(xml_hdl);
+    if(!(xml_goto_nth_element_inside(xml_hdl, "alias", 0)))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+      if(result[0] != 0)
+      {
+        strncpy(newsignalcomp->alias, result, 16);
+        newsignalcomp->alias[16] = 0;
+        latin1_to_ascii(newsignalcomp->alias, 16);
+        remove_trailing_spaces(newsignalcomp->alias);
+        remove_leading_spaces(newsignalcomp->alias);
+      }
+      free(result);
+      xml_go_up(xml_hdl);
+    }
+
     if(xml_goto_nth_element_inside(xml_hdl, "voltpercm", 0))
     {
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");

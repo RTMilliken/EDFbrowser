@@ -115,7 +115,8 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
   char *result,
        composition_txt[2048],
-       label[256];
+       label[256],
+       alias[256];
 
   double frequency,
          frequency2,
@@ -269,6 +270,19 @@ void UI_ViewMontagewindow::SelectButtonClicked()
     }
 
     composition_txt[0] = 0;
+
+    if(!(xml_goto_nth_element_inside(xml_hdl, "alias", 0)))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+      if(result[0] != 0)
+      {
+        strcpy(composition_txt, "alias: ");
+        strcat(composition_txt, result);
+        strcat(composition_txt, "   ");
+      }
+      free(result);
+      xml_go_up(xml_hdl);
+    }
 
     for(signals_read=0; signals_read<signal_cnt; signals_read++)
     {

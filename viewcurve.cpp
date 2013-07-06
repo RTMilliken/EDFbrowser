@@ -1822,7 +1822,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         (int)((crosshair_1.time / TIME_DIMENSION) % 60LL),
                         (int)((crosshair_1.time % TIME_DIMENSION) / 1000LL));
         painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 25.0) * printsize_y_factor), string);
-        painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 10.0) * printsize_y_factor), signalcomp[i]->signallabel);
+        if(signalcomp[i]->alias[0] != 0)
+        {
+          painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 10.0) * printsize_y_factor), signalcomp[i]->alias);
+        }
+        else
+        {
+          painter->drawText((int)(((double)crosshair_1.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_1.y_position - 10.0) * printsize_y_factor), signalcomp[i]->signallabel);
+        }
         painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
       }
       else
@@ -1846,7 +1853,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                 (int)((crosshair_1.time_relative % TIME_DIMENSION) / 1000LL));
 
         painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 25, string);
-        painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 10, signalcomp[i]->signallabel);
+        if(signalcomp[i]->alias[0] != 0)
+        {
+          painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 10, signalcomp[i]->alias);
+        }
+        else
+        {
+          painter->drawText(crosshair_1.x_position + 5, crosshair_1.y_position - 10, signalcomp[i]->signallabel);
+        }
         painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
         mainwindow->annotationEditDock->annotEditSetOnset(crosshair_1.time_relative);
@@ -1882,7 +1896,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         (int)((l_time / TIME_DIMENSION) % 60LL),
                         (int)((l_time % TIME_DIMENSION) / 1000LL));
         painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 25.0) * printsize_y_factor), string);
-        painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 10.0) * printsize_y_factor), signalcomp[i]->signallabel);
+        if(signalcomp[i]->alias[0] != 0)
+        {
+          painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 10.0) * printsize_y_factor), signalcomp[i]->alias);
+        }
+        else
+        {
+          painter->drawText((int)(((double)crosshair_2.x_position + 5.0) * printsize_x_factor), (int)(((double)crosshair_2.y_position - 10.0) * printsize_y_factor), signalcomp[i]->signallabel);
+        }
         painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
       }
       else
@@ -1918,7 +1939,14 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
                         (int)((l_time / TIME_DIMENSION) % 60LL),
                         (int)((l_time % TIME_DIMENSION) / 1000LL));
         painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 25, string);
-        painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 10, signalcomp[i]->signallabel);
+        if(signalcomp[i]->alias[0] != 0)
+        {
+          painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 10, signalcomp[i]->alias);
+        }
+        else
+        {
+          painter->drawText(crosshair_2.x_position + 5, crosshair_2.y_position - 10, signalcomp[i]->signallabel);
+        }
         painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
       }
     }
@@ -1950,11 +1978,25 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
   {
     baseline = vertical_distance * (i + 1);
 
-    painter->fillRect(2, baseline - 20, strlen(signalcomp[i]->signallabel) * 7 + 6, 12, backgroundcolor);
+    if(signalcomp[i]->alias[0] != 0)
+    {
+      painter->fillRect(2, baseline - 20, strlen(signalcomp[i]->alias) * 7 + 6, 12, backgroundcolor);
+    }
+    else
+    {
+      painter->fillRect(2, baseline - 20, strlen(signalcomp[i]->signallabel) * 7 + 6, 12, backgroundcolor);
+    }
 
     painter->setPen((Qt::GlobalColor)signalcomp[i]->color);
 
-    painter->drawText(5, baseline - 10, signalcomp[i]->signallabel);
+    if(signalcomp[i]->alias[0] != 0)
+    {
+      painter->drawText(5, baseline - 10, signalcomp[i]->alias);
+    }
+    else
+    {
+      painter->drawText(5, baseline - 10, signalcomp[i]->signallabel);
+    }
 
     if(signalcomp[i]->hasruler)
     {
@@ -2948,8 +2990,8 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
 
   sidemenu = new QDialog(this);
 
-  sidemenu->setMinimumSize(QSize(190, 435));
-  sidemenu->setMaximumSize(QSize(190, 435));
+  sidemenu->setMinimumSize(QSize(190, 460));
+  sidemenu->setMaximumSize(QSize(190, 460));
   sidemenu->setWindowTitle("Signal");
   sidemenu->setModal(TRUE);
   sidemenu->setAttribute(Qt::WA_DeleteOnClose, TRUE);
@@ -2958,16 +3000,25 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   SidemenuLabel->setGeometry(QRect(45, 5, 100, 20));
   SidemenuLabel->setText(mainwindow->signalcomp[signal_nr]->signallabel);
 
+  AliasLabel = new QLabel(sidemenu);
+  AliasLabel->setGeometry(5, 30, 35, 20);
+  AliasLabel->setText("Alias");
+
+  AliasLineEdit = new QLineEdit(sidemenu);
+  AliasLineEdit->setGeometry(45, 30, 140, 20);
+  AliasLineEdit->setText(mainwindow->signalcomp[signal_nr]->alias);
+  AliasLineEdit->setMaxLength(16);
+
   AmpLabel = new QLabel(sidemenu);
-  AmpLabel->setGeometry(QRect(5, 30, 35, 20));
+  AmpLabel->setGeometry(QRect(5, 55, 35, 20));
   AmpLabel->setText("Ampl.");
 
   OffsetLabel = new QLabel(sidemenu);
-  OffsetLabel->setGeometry(QRect(5, 55, 35, 20));
+  OffsetLabel->setGeometry(QRect(5, 80, 35, 20));
   OffsetLabel->setText("Offset");
 
   ScaleBox = new QDoubleSpinBox(sidemenu);
-  ScaleBox->setGeometry(QRect(45, 30, 140, 20));
+  ScaleBox->setGeometry(QRect(45, 55, 140, 20));
   ScaleBox->setDecimals(8);
   ScaleBox->setMaximum(1000000.0);
   ScaleBox->setMinimum(0.0000001);
@@ -2988,7 +3039,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   ScaleBox->setSuffix(str);
 
   ScaleBox2 = new QDoubleSpinBox(sidemenu);
-  ScaleBox2->setGeometry(QRect(45, 55, 140, 20));
+  ScaleBox2->setGeometry(QRect(45, 80, 140, 20));
   ScaleBox2->setDecimals(8);
   ScaleBox2->setMaximum(1000000.0);
   ScaleBox2->setMinimum(-1000000.0);
@@ -2996,55 +3047,55 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   ScaleBox2->setSuffix(mainwindow->signalcomp[signal_nr]->physdimension);
 
   sidemenuButton1 = new QPushButton(sidemenu);
-  sidemenuButton1->setGeometry(QRect(45, 80, 100, 20));
+  sidemenuButton1->setGeometry(QRect(45, 105, 100, 20));
   sidemenuButton1->setText("Ruler");
 
   sidemenuButton2 = new QPushButton(sidemenu);
-  sidemenuButton2->setGeometry(QRect(45, 105, 100, 20));
+  sidemenuButton2->setGeometry(QRect(45, 130, 100, 20));
   sidemenuButton2->setText("Crosshair");
 
   sidemenuButton3 = new QPushButton(sidemenu);
-  sidemenuButton3->setGeometry(QRect(45, 130, 100, 20));
+  sidemenuButton3->setGeometry(QRect(45, 155, 100, 20));
   sidemenuButton3->setText("Fit to pane");
 
   sidemenuButton4 = new QPushButton(sidemenu);
-  sidemenuButton4->setGeometry(QRect(45, 155, 100, 20));
+  sidemenuButton4->setGeometry(QRect(45, 180, 100, 20));
   sidemenuButton4->setText("Color");
 
   sidemenuButton5 = new QPushButton(sidemenu);
-  sidemenuButton5->setGeometry(QRect(45, 180, 100, 20));
+  sidemenuButton5->setGeometry(QRect(45, 205, 100, 20));
   sidemenuButton5->setText("Invert");
 
   sidemenuButton6 = new QPushButton(sidemenu);
-  sidemenuButton6->setGeometry(QRect(45, 205, 100, 20));
+  sidemenuButton6->setGeometry(QRect(45, 230, 100, 20));
   sidemenuButton6->setText("Spectrum");
 
   sidemenuButton7 = new QPushButton(sidemenu);
-  sidemenuButton7->setGeometry(QRect(45, 230, 100, 20));
+  sidemenuButton7->setGeometry(QRect(45, 255, 100, 20));
   sidemenuButton7->setText("Z-EEG");
 
   sidemenuButton8 = new QPushButton(sidemenu);
-  sidemenuButton8->setGeometry(QRect(45, 255, 100, 20));
+  sidemenuButton8->setGeometry(QRect(45, 280, 100, 20));
   sidemenuButton8->setText("Remove filter");
 
   sidemenuButton9 = new QPushButton(sidemenu);
-  sidemenuButton9->setGeometry(QRect(45, 280, 100, 20));
+  sidemenuButton9->setGeometry(QRect(45, 305, 100, 20));
   sidemenuButton9->setText("Remove signal");
 
   sidemenuButton10 = new QPushButton(sidemenu);
-  sidemenuButton10->setGeometry(QRect(45, 305, 100, 20));
+  sidemenuButton10->setGeometry(QRect(45, 330, 100, 20));
   sidemenuButton10->setText("Adjust filter");
 
   sidemenuButton11 = new QPushButton(sidemenu);
-  sidemenuButton11->setGeometry(QRect(45, 330, 100, 20));
+  sidemenuButton11->setGeometry(QRect(45, 355, 100, 20));
   sidemenuButton11->setText("Statistics");
 
   sidemenuButton12 = new QPushButton(sidemenu);
-  sidemenuButton12->setGeometry(QRect(45, 355, 100, 20));
+  sidemenuButton12->setGeometry(QRect(45, 380, 100, 20));
   sidemenuButton12->setText("Heart Rate");
 
   sidemenuButton13 = new QPushButton(sidemenu);
-  sidemenuButton13->setGeometry(QRect(45, 380, 100, 20));
+  sidemenuButton13->setGeometry(QRect(45, 405, 100, 20));
   sidemenuButton13->setText("Close");
 
   QObject::connect(ScaleBox,          SIGNAL(valueChanged(double)),     this,     SLOT(ScaleBoxChanged(double)));
@@ -3061,9 +3112,28 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   QObject::connect(sidemenuButton10,  SIGNAL(clicked()),                this,     SLOT(AdjustFilterButton()));
   QObject::connect(sidemenuButton11,  SIGNAL(clicked()),                this,     SLOT(StatisticsButton()));
   QObject::connect(sidemenuButton12,  SIGNAL(clicked()),                this,     SLOT(ECGdetectButton()));
-  QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                sidemenu, SLOT(close()));
+  QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                this,     SLOT(sidemenu_close()));
 
   sidemenu->exec();
+}
+
+
+void ViewCurve::sidemenu_close()
+{
+  if(AliasLineEdit->isModified() == true)
+  {
+    strncpy(mainwindow->signalcomp[signal_nr]->alias, AliasLineEdit->text().toLatin1().data(), 16);
+
+    mainwindow->signalcomp[signal_nr]->alias[16] = 0;
+
+    latin1_to_ascii(mainwindow->signalcomp[signal_nr]->alias, 16);
+
+    remove_trailing_spaces(mainwindow->signalcomp[signal_nr]->alias);
+
+    remove_leading_spaces(mainwindow->signalcomp[signal_nr]->alias);
+  }
+
+  sidemenu->close();
 }
 
 
@@ -3146,6 +3216,7 @@ void ViewCurve::ECGdetectButton()
   newsignalcomp->signallabellen = strlen(newsignalcomp->signallabel);
   strcpy(newsignalcomp->physdimension_bu, newsignalcomp->physdimension);
   strcpy(newsignalcomp->physdimension, "bpm");
+  newsignalcomp->alias[0] = 0;
 
   if(newsignalcomp->edfhdr->edfparam[newsignalcomp->edfsignal[0]].bitvalue < 0.0)
   {
