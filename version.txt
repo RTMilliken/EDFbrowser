@@ -1,4 +1,23 @@
 
+ version 1.52      July 6, 2013
+ ------------
+
+ - Added an SCP-ECG file to EDF+ converter. Bimodal compression or customized Hufmanntables
+   are not supported. Lossless compression using default Hufmanntable and/or 1tyh/2th differences
+   is supported.
+   Character-encoding other than ASCII is not supported.
+
+ - Added two shortcuts (Plus and Minus keys) to increase or decrease the amplitude
+   of the signals (sensitivity).
+
+ - Added the possibility to choose between little endian or big endian encoding in the
+   binary/raw to EDF converter tool.
+
+ - Increased the number of pre-defined montage shortcuts from 8 to 12 (keys F1 to F12).
+
+ - Qt has been updated to 4.8.5.
+
+
  version 1.51      May 11, 2013
  ------------
 

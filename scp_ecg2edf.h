@@ -30,8 +30,8 @@
 */
 
 
-#ifndef UI_MANSCAN2EDFFORM_H
-#define UI_MANSCAN2EDFFORM_H
+#ifndef UI_SCPECG2EDFFORM_H
+#define UI_SCPECG2EDFFORM_H
 
 
 #include <QApplication>
@@ -59,12 +59,12 @@
 
 
 
-class UI_MANSCAN2EDFwindow : public QObject
+class UI_SCPECG2EDFwindow : public QObject
 {
   Q_OBJECT
 
 public:
-  UI_MANSCAN2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
+  UI_SCPECG2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
 
 private:
 
@@ -79,20 +79,71 @@ QDialog      *myobjectDialog;
 char  *recent_opendir,
       *recent_savedir;
 
+unsigned short crc_ccitt_table[256];
 
-int get_worddatafile(struct segment_prop_struct *, int, FILE *);
-int get_channel_gain(struct segment_prop_struct *, int, FILE *);
-int get_start_date(struct segment_prop_struct *, int, FILE *);
-int get_sample_rate(struct segment_prop_struct *, int, FILE *);
-int get_filter_settings(struct segment_prop_struct *, int, FILE *);
-int get_recorder_version(struct segment_prop_struct *, int, FILE *);
-int get_starttime_offset(struct segment_prop_struct *, int, FILE *);
-int get_events(struct segment_prop_struct *, int, FILE *);
-int get_number_of_segments(FILE *);
-char * fgetline(char *, int, FILE *);
-long long get_long_time(const char *);
+struct section_prop_struct{
+        int present;
+        long long file_offset;
+        unsigned short crc;
+        int section_id;
+        int section_length;
+        int section_version;
+        int section_protocol_version;
+        char reserved[6];
+        } sp[12];
 
+struct lead_prop_struct{
+        int start;
+        int end;
+        int samples;
+        int bytes;
+        unsigned char label;
+        } lp[256];
 
+struct huffmantable_struct{
+        int h_tables_cnt;
+        int code_structs_cnt;
+        int prefix_bits;
+        int total_bits;
+        int table_mode_switch;
+        int base_value;
+        int base_code;
+        } ht;
+
+struct patient_data_struct{
+        char pat_id[21];
+        int startdate_year;
+        int startdate_month;
+        int startdate_day;
+        int starttime_hour;
+        int starttime_minute;
+        int starttime_second;
+        char last_name[21];
+        char first_name[21];
+        int birthdate_year;
+        int birthdate_month;
+        int birthdate_day;
+        int sex;
+        char device_model[6];
+        char manufacturer[21];
+        unsigned char lang_code;
+        } pat_dat;
+
+int read_data_section_zero(FILE *, char *, long long);
+
+int read_section_header(int, FILE *, long long, char *);
+
+int check_crc(FILE *, long long, long long, unsigned short, char *);
+
+void crc_ccitt_init(void);
+
+unsigned short crc_ccitt(unsigned char const *, int, unsigned short);
+
+inline unsigned char reverse_bitorder(unsigned char);
+
+void lead_label_lookup(unsigned char, char *);
+
+int get_patient_data(FILE *);
 
 private slots:
 

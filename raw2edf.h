@@ -69,6 +69,7 @@
           int chns;
           int phys_max;
           int straightbinary;
+          int endianness;
           int samplesize;
           int offset;
           int skipblocksize;
@@ -102,7 +103,8 @@ QLabel        *SignalsLabel,
               *PhysicalMaximumLabel,
               *PhysicalDimensionLabel,
               *EncodingLabel,
-              *variableTypeLabel;
+              *variableTypeLabel,
+              *EndiannessLabel;
 
 QLineEdit     *PatientnameLineEdit,
               *RecordingLineEdit,
@@ -116,7 +118,8 @@ QSpinBox      *SignalsSpinbox,
               *skipbytesSpinbox,
               *PhysicalMaximumSpinbox;
 
-QComboBox     *EncodingCombobox;
+QComboBox     *EncodingCombobox,
+              *EndiannessCombobox;
 
 QDateTimeEdit *StartDatetimeedit;
 

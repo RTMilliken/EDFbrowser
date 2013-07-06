@@ -324,9 +324,9 @@ void UI_ASCII2EDFapp::gobuttonpressed()
       len;
 
   char path[MAX_PATH_LENGTH],
-       txt_string[2048],
+       txt_string[ASCII_MAX_LINE_LEN],
        str[256],
-       line[2048],
+       line[ASCII_MAX_LINE_LEN],
        *buf,
        scratchpad[128],
        outputfilename[MAX_PATH_LENGTH];
@@ -421,7 +421,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
   column = 0;
 
-  for(i=0; i<2046; i++)
+  for(i=0; i<(ASCII_MAX_LINE_LEN - 2); i++)
   {
     temp = fgetc(inputfile);
 
@@ -473,7 +473,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     }
   }
 
-  if(i>2045)
+  if(i>ASCII_MAX_LINE_LEN)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many characters in a line.");
     messagewindow.exec();
@@ -490,7 +490,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
     for(j=0; j<10; j++)  qApp->processEvents();
 
-    for(i=0; i<MAX_EDF_SIGNALS; i++)
+    for(i=0; i<ASCII_MAX_EDF_SIGNALS; i++)
     {
       physmax[i] = 0.00001;
     }
@@ -580,7 +580,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
         if(column!=columns)
         {
-          for(j=0; j<10; j++)
+          for(j=0; j<ASCII_MAX_LINE_LEN; j++)
           {
             if(fgetc(inputfile) == EOF)
             {
@@ -588,13 +588,13 @@ void UI_ASCII2EDFapp::gobuttonpressed()
             }         /* added this code because some ascii-files stop abruptly in */
           }           /* the middle of a row but they do put a newline-character at the end */
 
-          if(j < 10)
+          if(j < ASCII_MAX_LINE_LEN)
           {
             break;
           }
 
           QApplication::restoreOverrideCursor();
-          snprintf(txt_string, 2048, "Error, number of columns in line %i is wrong.\n", line_nr);
+          snprintf(txt_string, ASCII_MAX_LINE_LEN, "Error, number of columns in line %i is wrong.\n", line_nr);
           QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
           messagewindow.exec();
           fclose(inputfile);
@@ -634,10 +634,10 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
       i++;
 
-      if(i>2046)
+      if(i>(ASCII_MAX_LINE_LEN - 2))
       {
         QApplication::restoreOverrideCursor();
-        snprintf(txt_string, 2048, "Error, line %i is too long.\n", line_nr);
+        snprintf(txt_string, ASCII_MAX_LINE_LEN, "Error, line %i is too long.\n", line_nr);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
         messagewindow.exec();
         fclose(inputfile);
@@ -713,7 +713,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   outputfile = fopeno(outputfilename, "wb");
   if(outputfile==NULL)
   {
-    snprintf(txt_string, 2048, "Can not open file %s for writing.", outputfilename);
+    snprintf(txt_string, ASCII_MAX_LINE_LEN, "Can not open file %s for writing.", outputfilename);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
     messagewindow.exec();
     fclose(inputfile);
@@ -1056,7 +1056,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
       if(column!=columns)
       {
-        for(j=0; j<10; j++)
+        for(j=0; j<ASCII_MAX_LINE_LEN; j++)
         {
           if(fgetc(inputfile) == EOF)
           {
@@ -1064,13 +1064,13 @@ void UI_ASCII2EDFapp::gobuttonpressed()
           }         /* added this code because some ascii-files stop abruptly in */
         }           /* the middle of a row but they do put a newline-character at the end */
 
-        if(j < 10)
+        if(j < ASCII_MAX_LINE_LEN)
         {
           break;
         }
 
         QApplication::restoreOverrideCursor();
-        snprintf(txt_string, 2048, "Error, number of columns in line %i is wrong.\n", line_nr);
+        snprintf(txt_string, ASCII_MAX_LINE_LEN, "Error, number of columns in line %i is wrong.\n", line_nr);
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
         messagewindow.exec();
         fclose(inputfile);
@@ -1146,10 +1146,10 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
     i++;
 
-    if(i>2046)
+    if(i>(ASCII_MAX_LINE_LEN - 2))
     {
       QApplication::restoreOverrideCursor();
-      snprintf(txt_string, 2048, "Error, line %i is too long.\n", line_nr);
+      snprintf(txt_string, ASCII_MAX_LINE_LEN, "Error, line %i is too long.\n", line_nr);
       QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
       messagewindow.exec();
       fclose(inputfile);
@@ -1185,7 +1185,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     return;
   }
 
-  snprintf(txt_string, 2048, "Done. EDF file is located at %s\n", outputfilename);
+  snprintf(txt_string, ASCII_MAX_LINE_LEN, "Done. EDF file is located at %s\n", outputfilename);
   QMessageBox messagewindow(QMessageBox::Information, "Ready", txt_string);
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
@@ -1593,7 +1593,7 @@ int UI_ASCII2EDFapp::check_input(void)
       dot;
 
   char str[128],
-       big_str[2048];
+       big_str[ASCII_MAX_LINE_LEN];
 
   const char *columnname[]={"", "Label", "Physical maximum", "Physical dimension"};
 
@@ -1677,7 +1677,7 @@ int UI_ASCII2EDFapp::check_input(void)
 
         if(!len)
         {
-          snprintf(big_str, 2048, "%s field of row %i is empty.", columnname[j], i + 1);
+          snprintf(big_str, ASCII_MAX_LINE_LEN, "%s field of row %i is empty.", columnname[j], i + 1);
 
           QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", big_str);
           messagewindow.exec();
@@ -1689,7 +1689,7 @@ int UI_ASCII2EDFapp::check_input(void)
         {
           if((str[k]<32)||(str[k]>126))
           {
-            snprintf(big_str, 2048,
+            snprintf(big_str, ASCII_MAX_LINE_LEN,
             "Character %i in %s field of row %i is not a valid ASCII character.",
             k + 1, columnname[j], i + 1);
 
@@ -1703,7 +1703,7 @@ int UI_ASCII2EDFapp::check_input(void)
           {
             if(k==0)
             {
-              snprintf(big_str, 2048,
+              snprintf(big_str, ASCII_MAX_LINE_LEN,
               "Text in %s field of row %i is not valid.\nField must not be empty and left-aligned (no spaces in front of the text).",
               columnname[j], i + 1);
 
@@ -1718,7 +1718,7 @@ int UI_ASCII2EDFapp::check_input(void)
           {
             if(str[len-1]=='.')
             {
-              snprintf(big_str, 2048,
+              snprintf(big_str, ASCII_MAX_LINE_LEN,
               "Text in %s field of row %i is not valid.\n"
               "Last character can not be a dot.",
               columnname[j], i + 1);
@@ -1735,7 +1735,7 @@ int UI_ASCII2EDFapp::check_input(void)
               {
                 if(dot)
                 {
-                  snprintf(big_str, 2048,
+                  snprintf(big_str, ASCII_MAX_LINE_LEN,
                   "Text in %s field of row %i is not valid.\n"
                   "Only one dot is allowed as a decimal separator.",
                   columnname[j], i + 1);
@@ -1749,7 +1749,7 @@ int UI_ASCII2EDFapp::check_input(void)
                 {
                   if(k==0)
                   {
-                    snprintf(big_str, 2048,
+                    snprintf(big_str, ASCII_MAX_LINE_LEN,
                     "Text in %s field of row %i is not valid.\n"
                     "First character can not be a dot.",
                     columnname[j], i + 1);
@@ -1765,7 +1765,7 @@ int UI_ASCII2EDFapp::check_input(void)
               }
               else
               {
-                snprintf(big_str, 2048,
+                snprintf(big_str, ASCII_MAX_LINE_LEN,
                 "Text in %s field of row %i is not valid.\n"
                 "Field must contain a number and no spaces.",
                 columnname[j], i + 1);
@@ -1783,7 +1783,7 @@ int UI_ASCII2EDFapp::check_input(void)
         {
           if(atof(str)<1.0)
           {
-            snprintf(big_str, 2048,
+            snprintf(big_str, ASCII_MAX_LINE_LEN,
             "Value in %s field of row %i is not valid.\n"
             "Value must be 1 or more.",
             columnname[j], i + 1);

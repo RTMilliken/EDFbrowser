@@ -215,6 +215,7 @@ UI_Mainwindow::UI_Mainwindow()
   raw2edf_var.chns = 1;
   raw2edf_var.phys_max = 3000;
   raw2edf_var.straightbinary = 0;
+  raw2edf_var.endianness = 0;
   raw2edf_var.samplesize = 2;
   raw2edf_var.offset = 0;
   raw2edf_var.skipblocksize = 0;
@@ -504,6 +505,18 @@ UI_Mainwindow::UI_Mainwindow()
   amp_00001 = new QAction("0.0001", this);
   amplitudemenu->addAction(amp_00001);
 
+  amplitudemenu->addSeparator();
+
+  amp_plus = new QAction("Amplitude x 2", this);
+  amp_plus->setShortcut(Qt::Key_Minus);
+  connect(amp_plus, SIGNAL(triggered()), this, SLOT(set_amplitude_mult2()));
+  amplitudemenu->addAction(amp_plus);
+
+  amp_minus = new QAction("Amplitude / 2", this);
+  amp_minus->setShortcut(Qt::Key_Plus);
+  connect(amp_minus, SIGNAL(triggered()), this, SLOT(set_amplitude_div2()));
+  amplitudemenu->addAction(amp_minus);
+
   menubar->addMenu(amplitudemenu);
 
   AmplitudeGroup = new QActionGroup(this);
@@ -565,6 +578,14 @@ UI_Mainwindow::UI_Mainwindow()
   load_predefined_mtg_act[6]->setShortcut(Qt::Key_F7);
   load_predefined_mtg_act[7] = new QAction("Empty", this);
   load_predefined_mtg_act[7]->setShortcut(Qt::Key_F8);
+  load_predefined_mtg_act[8] = new QAction("Empty", this);
+  load_predefined_mtg_act[8]->setShortcut(Qt::Key_F9);
+  load_predefined_mtg_act[9] = new QAction("Empty", this);
+  load_predefined_mtg_act[9]->setShortcut(Qt::Key_F10);
+  load_predefined_mtg_act[10] = new QAction("Empty", this);
+  load_predefined_mtg_act[10]->setShortcut(Qt::Key_F11);
+  load_predefined_mtg_act[11] = new QAction("Empty", this);
+  load_predefined_mtg_act[11]->setShortcut(Qt::Key_F12);
   load_predefined_mtg_group = new QActionGroup(this);
   for(i=0; i < MAXPREDEFINEDMONTAGES; i++)
   {
@@ -608,6 +629,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert Nihon Kohden to EDF+", this, SLOT(nk2edf_converter()));
   toolsmenu->addAction("Convert ASCII to EDF/BDF", this, SLOT(convert_ascii_to_edf()));
   toolsmenu->addAction("Convert Manscan to EDF+", this, SLOT(convert_manscan_to_edf()));
+  toolsmenu->addAction("Convert SCP ECG to EDF+", this, SLOT(convert_scpecg_to_edf()));
   toolsmenu->addAction("Convert Finometer to EDF", this, SLOT(convert_fino_to_edf()));
   toolsmenu->addAction("Convert Nexfin to EDF", this, SLOT(convert_nexfin_to_edf()));
   toolsmenu->addAction("Convert Emsa to EDF+", this, SLOT(convert_emsa_to_edf()));
@@ -1711,6 +1733,12 @@ void UI_Mainwindow::convert_emsa_to_edf()
 void UI_Mainwindow::convert_manscan_to_edf()
 {
   UI_MANSCAN2EDFwindow manscan2edf(recent_opendir, recent_savedir);
+}
+
+
+void UI_Mainwindow::convert_scpecg_to_edf()
+{
+  UI_SCPECG2EDFwindow scpecg2edf(recent_opendir, recent_savedir);
 }
 
 
@@ -3154,7 +3182,63 @@ void UI_Mainwindow::set_amplitude(QAction *action)
 
     signalcomp[i]->voltpercm = value2;
 
-    signalcomp[i]->screen_offset = signalcomp[i]->screen_offset * (original_value / value2);
+    signalcomp[i]->screen_offset *= (original_value / value2);
+  }
+
+  maincurve->drawCurve_stage_1();
+}
+
+
+void UI_Mainwindow::set_amplitude_mult2()
+{
+  int i, j;
+
+  for(i=0; i<signalcomps; i++)
+  {
+    if(signalcomp[i]->voltpercm > 5000000.0)
+    {
+      return;
+    }
+  }
+
+  for(i=0; i<signalcomps; i++)
+  {
+    signalcomp[i]->voltpercm *= 2;
+
+    signalcomp[i]->screen_offset /= 2;
+
+    for(j=0; j<signalcomp[i]->num_of_signals; j++)
+    {
+      signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / signalcomp[i]->voltpercm) / pixelsizefactor;
+    }
+  }
+
+  maincurve->drawCurve_stage_1();
+}
+
+
+void UI_Mainwindow::set_amplitude_div2()
+{
+  int i, j;
+
+  for(i=0; i<signalcomps; i++)
+  {
+    if(signalcomp[i]->voltpercm < 0.000001)
+    {
+      return;
+    }
+  }
+
+  for(i=0; i<signalcomps; i++)
+  {
+    signalcomp[i]->voltpercm /= 2;
+
+    signalcomp[i]->screen_offset *= 2;
+
+    for(j=0; j<signalcomp[i]->num_of_signals; j++)
+    {
+      signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / signalcomp[i]->voltpercm) / pixelsizefactor;
+    }
   }
 
   maincurve->drawCurve_stage_1();
@@ -4517,8 +4601,7 @@ void UI_Mainwindow::read_recent_file_settings()
       result = xml_get_content_of_element(xml_hdl);
       if(result==NULL)
       {
-        xml_close(xml_hdl);
-        return;
+        break;
       }
       strncpy(&predefined_mtg_path[i][0], result, MAX_PATH_LENGTH);
       predefined_mtg_path[i][MAX_PATH_LENGTH - 1] = 0;
@@ -5652,6 +5735,24 @@ void UI_Mainwindow::read_general_settings()
       xml_go_up(xml_hdl);
     }
 
+    if(!(xml_goto_nth_element_inside(xml_hdl, "endianness", 0)))
+    {
+      result = xml_get_content_of_element(xml_hdl);
+      if(result==NULL)
+      {
+        xml_close(xml_hdl);
+        return;
+      }
+
+      raw2edf_var.endianness = atoi(result);
+      if(raw2edf_var.endianness < 0)  raw2edf_var.endianness = 0;
+      if(raw2edf_var.endianness > 1)  raw2edf_var.endianness = 1;
+
+      free(result);
+
+      xml_go_up(xml_hdl);
+    }
+
     if(!(xml_goto_nth_element_inside(xml_hdl, "samplesize", 0)))
     {
       result = xml_get_content_of_element(xml_hdl);
@@ -6102,6 +6203,8 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "      <straightbinary>%i</straightbinary>\n", raw2edf_var.straightbinary);
 
+    fprintf(cfgfile, "      <endianness>%i</endianness>\n", raw2edf_var.endianness);
+
     fprintf(cfgfile, "      <samplesize>%i</samplesize>\n", raw2edf_var.samplesize);
 
     fprintf(cfgfile, "      <offset>%i</offset>\n", raw2edf_var.offset);
@@ -6216,6 +6319,8 @@ void UI_Mainwindow::show_kb_shortcuts()
    "PgUp\tformer page\n"
    "Right Arrow\tshift right one tenth of pagetime\n"
    "Left Arrow\tshift left one tenth of pagetime\n"
+   "Plus\tincrease sensitivity\n"
+   "Minus\tdecrease sensitivity\n"
    "Up Arrow\tshift up\n"
    "Down Arrow\tshift down\n"
    "Ctrl-Home\tgo to start of file\n"

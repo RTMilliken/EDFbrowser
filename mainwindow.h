@@ -147,6 +147,7 @@
 #include "raw2edf.h"
 #include "check_for_updates.h"
 #include "manscan2edf.h"
+#include "scp_ecg2edf.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -371,6 +372,8 @@ private:
            *amp_10000,
            *amp_20000,
            *amp_50000,
+           *amp_plus,
+           *amp_minus,
            *zoomback_Act,
            *zoomforward_Act,
            *recent_file[MAX_RECENTFILES],
@@ -428,6 +431,8 @@ private slots:
   void set_page_mult2();
   void set_display_time_whole_rec();
   void set_amplitude(QAction *);
+  void set_amplitude_div2();
+  void set_amplitude_mult2();
   void fit_signals_to_pane();
   void fit_signals_dc_offset();
   void former_page();
@@ -498,6 +503,7 @@ private slots:
   void export_ecg_rr_interval_to_ascii();
   void convert_binary_to_edf();
   void convert_manscan_to_edf();
+  void convert_scpecg_to_edf();
 //  void search_pattern();
 
 #ifdef BK_MRS_project

@@ -117,18 +117,32 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(struct raw2edf_var_struct *raw2edf_var_p, char *rec
   EncodingCombobox = new QComboBox(raw2edfDialog);
   EncodingCombobox->setGeometry(160, 180, 120, 20);
   EncodingCombobox->addItem("2's complement");
-  EncodingCombobox->addItem("straight binary");
+  EncodingCombobox->addItem("bipolar offset binary");
   EncodingCombobox->setCurrentIndex(raw2edf_var->straightbinary);
+  EncodingCombobox->setToolTip("bipolar offset binary or\n"
+                               "2's complement");
+
+  EndiannessLabel = new QLabel(raw2edfDialog);
+  EndiannessLabel->setGeometry(20, 220, 140, 20);
+  EndiannessLabel->setText("Endianness");
+
+  EndiannessCombobox = new QComboBox(raw2edfDialog);
+  EndiannessCombobox->setGeometry(160, 220, 120, 20);
+  EndiannessCombobox->addItem("little endian");
+  EndiannessCombobox->addItem("big endian");
+  EndiannessCombobox->setCurrentIndex(raw2edf_var->endianness);
+  EndiannessCombobox->setToolTip("little endian: least significant byte comes first\n"
+                                 "big endian: most significant byte comes first");
 
   skipblocksizeLabel = new QLabel(raw2edfDialog);
   skipblocksizeLabel->setGeometry(320, 20, 140, 20);
-  skipblocksizeLabel->setText("Skip blocksize");
+  skipblocksizeLabel->setText("Data blocksize");
 
   skipblocksizeSpinbox = new QSpinBox(raw2edfDialog);
   skipblocksizeSpinbox->setGeometry(460, 20, 120, 20);
   skipblocksizeSpinbox->setRange(0, 1000000);
   skipblocksizeSpinbox->setValue(raw2edf_var->skipblocksize);
-  skipblocksizeSpinbox->setToolTip("Skip after every n bytes");
+  skipblocksizeSpinbox->setToolTip("Skip after every n databytes");
 
   skipbytesLabel = new QLabel(raw2edfDialog);
   skipbytesLabel->setGeometry(320, 60, 140, 20);
@@ -148,6 +162,8 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(struct raw2edf_var_struct *raw2edf_var_p, char *rec
   PhysicalMaximumSpinbox->setGeometry(460, 100, 120, 20);
   PhysicalMaximumSpinbox->setRange(1, 10000000);
   PhysicalMaximumSpinbox->setValue(raw2edf_var->phys_max);
+  PhysicalMaximumSpinbox->setToolTip("The maximum physical value that can be measured\n"
+                                     "e.g. the maximum value of an inputchannel.");
 
   PhysicalDimensionLabel = new QLabel(raw2edfDialog);
   PhysicalDimensionLabel->setGeometry(320, 140, 140, 20);
@@ -157,6 +173,7 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(struct raw2edf_var_struct *raw2edf_var_p, char *rec
   PhysicalDimensionLineEdit->setGeometry(460, 140, 120, 20);
   PhysicalDimensionLineEdit->setMaxLength(8);
   PhysicalDimensionLineEdit->setText(raw2edf_var->phys_dim);
+  PhysicalDimensionLineEdit->setToolTip("uV, bpm, mL, Ltr, etc.");
   PhysicalDimensionLineEdited(PhysicalDimensionLineEdit->text());
 
   variableTypeLabel = new QLabel(raw2edfDialog);
@@ -164,27 +181,27 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(struct raw2edf_var_struct *raw2edf_var_p, char *rec
   variableTypeLabel->setText("sampletype:     i16");
 
   PatientnameLabel = new QLabel(raw2edfDialog);
-  PatientnameLabel->setGeometry(20, 220, 140, 20);
+  PatientnameLabel->setGeometry(20, 260, 140, 20);
   PatientnameLabel->setText("Subject name");
 
   PatientnameLineEdit = new QLineEdit(raw2edfDialog);
-  PatientnameLineEdit->setGeometry(160, 220, 420, 20);
+  PatientnameLineEdit->setGeometry(160, 260, 420, 20);
   PatientnameLineEdit->setMaxLength(80);
 
   RecordingLabel = new QLabel(raw2edfDialog);
-  RecordingLabel->setGeometry(20, 260, 140, 20);
+  RecordingLabel->setGeometry(20, 300, 140, 20);
   RecordingLabel->setText("Recording");
 
   RecordingLineEdit = new QLineEdit(raw2edfDialog);
-  RecordingLineEdit->setGeometry(160, 260, 420, 20);
+  RecordingLineEdit->setGeometry(160, 300, 420, 20);
   RecordingLineEdit->setMaxLength(80);
 
   DatetimeLabel = new QLabel(raw2edfDialog);
-  DatetimeLabel->setGeometry(20, 300, 140, 20);
+  DatetimeLabel->setGeometry(20, 340, 140, 20);
   DatetimeLabel->setText("Startdate and time");
 
   StartDatetimeedit = new QDateTimeEdit(raw2edfDialog);
-  StartDatetimeedit->setGeometry(160, 300, 180, 20);
+  StartDatetimeedit->setGeometry(160, 340, 180, 20);
   StartDatetimeedit->setDisplayFormat("dd/MM/yyyy hh:mm:ss");
   StartDatetimeedit->setDateTime(QDateTime::currentDateTime());
   StartDatetimeedit->setToolTip("dd/MM/yyyy hh:mm:ss");
@@ -238,7 +255,8 @@ void UI_RAW2EDFapp::gobuttonpressed()
       skipblocksize,
       skipbytes,
       skipblockcntr,
-      bytecntr;
+      bytecntr,
+      big_endian;
 
   char str[256],
        path[MAX_PATH_LENGTH];
@@ -261,6 +279,9 @@ void UI_RAW2EDFapp::gobuttonpressed()
 
   straightbinary = EncodingCombobox->currentIndex();
   raw2edf_var->straightbinary = straightbinary;
+
+  big_endian = EndiannessCombobox->currentIndex();
+  raw2edf_var->endianness = big_endian;
 
   samplesize = SampleSizeSpinbox->value();
   raw2edf_var->samplesize = samplesize;
@@ -490,10 +511,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
 //         tmp = fgetc(inputfile);
 //         if(tmp == EOF)
 //         {
-//           edfclose_file(hdl);
-//           fclose(inputfile);
-//           free(buf);
-//           return;
+//           goto END_1;
 //         }
 //
 //         tmp += (fgetc(inputfile) * 256);
@@ -505,10 +523,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
           tmp = fgetc(inputfile);
           if(tmp == EOF)
           {
-            edfclose_file(hdl);
-            fclose(inputfile);
-            free(buf);
-            return;
+            goto END_1;
           }
           bytecntr++;
 
@@ -523,10 +538,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
                 tmp = fgetc(inputfile);
                 if(tmp == EOF)
                 {
-                  edfclose_file(hdl);
-                  fclose(inputfile);
-                  free(buf);
-                  return;
+                  goto END_1;
                 }
 //                bytecntr++;
 
@@ -538,7 +550,14 @@ void UI_RAW2EDFapp::gobuttonpressed()
             }
           }
 
-          var.four[0] = tmp;
+          if(big_endian)
+          {
+            var.four[1] = tmp;
+          }
+          else
+          {
+            var.four[0] = tmp;
+          }
         }
 
         if(samplesize == 1)
@@ -549,10 +568,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
         tmp = fgetc(inputfile);
         if(tmp == EOF)
         {
-          edfclose_file(hdl);
-          fclose(inputfile);
-          free(buf);
-          return;
+          goto END_1;
         }
 //         bytecntr++;
 
@@ -567,10 +583,7 @@ void UI_RAW2EDFapp::gobuttonpressed()
               tmp = fgetc(inputfile);
               if(tmp == EOF)
               {
-                edfclose_file(hdl);
-                fclose(inputfile);
-                free(buf);
-                return;
+                goto END_1;
               }
               bytecntr++;
 
@@ -582,7 +595,14 @@ void UI_RAW2EDFapp::gobuttonpressed()
           }
         }
 
-        var.four[1] = tmp;
+        if(big_endian && (samplesize == 2))
+        {
+          var.four[0] = tmp;
+        }
+        else
+        {
+          var.four[1] = tmp;
+        }
 
         if(straightbinary)
         {
@@ -612,12 +632,15 @@ void UI_RAW2EDFapp::gobuttonpressed()
 //    if(datarecords == 1)  break;
   }
 
+END_1:
+
   edfclose_file(hdl);
   fclose(inputfile);
   free(buf);
 
-  sprintf(str, "Ready, %i datarecords written.", datarecords);
-  QMessageBox messagewindow(QMessageBox::NoIcon, "Done", str);
+  sprintf(str, "A new EDF file has been created:\n\n%s", path);
+  QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
+  messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
 }
 
@@ -638,6 +661,8 @@ void UI_RAW2EDFapp::savebuttonpressed()
   raw2edf_var->phys_max = PhysicalMaximumSpinbox->value();
 
   raw2edf_var->straightbinary = EncodingCombobox->currentIndex();
+
+  raw2edf_var->endianness = EndiannessCombobox->currentIndex();
 
   raw2edf_var->samplesize = SampleSizeSpinbox->value();
 
@@ -685,6 +710,8 @@ void UI_RAW2EDFapp::savebuttonpressed()
   fprintf(outputfile, "  <phys_max>%i</phys_max>\n", raw2edf_var->phys_max);
 
   fprintf(outputfile, "  <straightbinary>%i</straightbinary>\n", raw2edf_var->straightbinary);
+
+  fprintf(outputfile, "  <endianness>%i</endianness>\n", raw2edf_var->endianness);
 
   fprintf(outputfile, "  <samplesize>%i</samplesize>\n", raw2edf_var->samplesize);
 
@@ -809,6 +836,24 @@ void UI_RAW2EDFapp::loadbuttonpressed()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "endianness", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    raw2edf_var->endianness = atoi(result);
+    if(raw2edf_var->endianness < 0)  raw2edf_var->endianness = 0;
+    if(raw2edf_var->endianness > 1)  raw2edf_var->endianness = 1;
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "samplesize", 0)))
   {
     result = xml_get_content_of_element(xml_hdl);
@@ -911,6 +956,8 @@ void UI_RAW2EDFapp::loadbuttonpressed()
 
   EncodingCombobox->setCurrentIndex(raw2edf_var->straightbinary);
 
+  EndiannessCombobox->setCurrentIndex(raw2edf_var->endianness);
+
   SampleSizeSpinbox->setValue(raw2edf_var->samplesize);
 
   OffsetSpinbox->setValue(raw2edf_var->offset);
@@ -933,6 +980,8 @@ void UI_RAW2EDFapp::sampleTypeChanged(int)
     {
       variableTypeLabel->setText("sampletype:     U8");
     }
+
+    EndiannessCombobox->setEnabled(false);
   }
   else
   {
@@ -944,6 +993,8 @@ void UI_RAW2EDFapp::sampleTypeChanged(int)
     {
       variableTypeLabel->setText("sampletype:     U16");
     }
+
+    EndiannessCombobox->setEnabled(true);
   }
 }
 

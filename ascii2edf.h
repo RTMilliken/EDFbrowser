@@ -65,7 +65,8 @@
 #include "utils.h"
 
 
-#define MAX_EDF_SIGNALS 256
+#define ASCII_MAX_EDF_SIGNALS 512
+#define ASCII_MAX_LINE_LEN 2048
 
 
 
@@ -125,15 +126,15 @@ char separator,
 int edfsignals,
     startline,
     columns,
-    column_enabled[MAX_EDF_SIGNALS],
+    column_enabled[ASCII_MAX_EDF_SIGNALS],
     autoPhysicalMaximum,
     edf_format;
 
 double samplefrequency,
        datrecduration,
-       sensitivity[MAX_EDF_SIGNALS],
-       value[MAX_EDF_SIGNALS],
-       physmax[MAX_EDF_SIGNALS];
+       sensitivity[ASCII_MAX_EDF_SIGNALS],
+       value[ASCII_MAX_EDF_SIGNALS],
+       physmax[ASCII_MAX_EDF_SIGNALS];
 
 
 int check_input(void);

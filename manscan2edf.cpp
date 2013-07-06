@@ -52,44 +52,33 @@
 #define MBIMAXEVLEN 40
 
 
-  struct segment_prop_struct{
-         long long data_offset;
-         int sweeps;
-         int channels;
-         int samplefrequency;
-         int sec_duration;
-         char label[MAXSIGNALS][17];
-         double gain[MAXSIGNALS];
-         int startdate_year;
-         int startdate_month;
-         int startdate_day;
-         int starttime_hour;
-         int starttime_minute;
-         int starttime_second;
-         double hpf;
-         double lpf;
-         char recorder_version[128];
-         char recorder_brand[128];
-         char datafilename[MAX_PATH_LENGTH];
-         long long starttime_offset;
-         int ev_cnt;
-         long long ev_onset[MBIMAXEVENTS];
-         long long ev_duration[MBIMAXEVENTS];
-         char ev_description[MBIMAXEVENTS][MBIMAXEVLEN + 1];
-         };
 
+struct segment_prop_struct{
+        long long data_offset;
+        int sweeps;
+        int channels;
+        int samplefrequency;
+        int sec_duration;
+        char label[MAXSIGNALS][17];
+        double gain[MAXSIGNALS];
+        int startdate_year;
+        int startdate_month;
+        int startdate_day;
+        int starttime_hour;
+        int starttime_minute;
+        int starttime_second;
+        double hpf;
+        double lpf;
+        char recorder_version[128];
+        char recorder_brand[128];
+        char datafilename[MAX_PATH_LENGTH];
+        long long starttime_offset;
+        int ev_cnt;
+        long long ev_onset[MBIMAXEVENTS];
+        long long ev_duration[MBIMAXEVENTS];
+        char ev_description[MBIMAXEVENTS][MBIMAXEVLEN + 1];
+        };
 
-int get_worddatafile(struct segment_prop_struct *, int, FILE *);
-int get_channel_gain(struct segment_prop_struct *, int, FILE *);
-int get_start_date(struct segment_prop_struct *, int, FILE *);
-int get_sample_rate(struct segment_prop_struct *, int, FILE *);
-int get_filter_settings(struct segment_prop_struct *, int, FILE *);
-int get_recorder_version(struct segment_prop_struct *, int, FILE *);
-int get_starttime_offset(struct segment_prop_struct *, int, FILE *);
-int get_events(struct segment_prop_struct *, int, FILE *);
-int get_number_of_segments(FILE *);
-char * fgetline(char *, int, FILE *);
-long long get_long_time(const char *);
 
 
 
@@ -158,14 +147,6 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   struct date_time_struct dtm_struct;
 
   pushButton1->setEnabled(FALSE);
-
-  segment_properties = (struct segment_prop_struct *)malloc(sizeof(struct segment_prop_struct));
-  if(segment_properties == NULL)
-  {
-    textEdit1->append("Malloc error (struct segment_prop_struct)");
-    pushButton1->setEnabled(TRUE);
-    return;
-  }
 
   strcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MBI files (*.mbi *.MBI)").toLocal8Bit().data());
 
@@ -746,7 +727,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 }
 
 
-int get_events(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_events(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
   int i,
       order=0,
@@ -892,7 +873,7 @@ int get_events(struct segment_prop_struct *segprop, int segment, FILE *inputfile
 }
 
 
-int get_starttime_offset(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_starttime_offset(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
   int segment_cnt=0;
 
@@ -953,7 +934,7 @@ int get_starttime_offset(struct segment_prop_struct *segprop, int segment, FILE 
 }
 
 
-int get_recorder_version(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_recorder_version(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
   int segment_cnt=0;
 
@@ -1010,7 +991,7 @@ int get_recorder_version(struct segment_prop_struct *segprop, int segment, FILE 
 }
 
 
-int get_filter_settings(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_filter_settings(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
   int segment_cnt=0;
 
@@ -1159,7 +1140,7 @@ int get_filter_settings(struct segment_prop_struct *segprop, int segment, FILE *
 }
 
 
-int get_sample_rate(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_sample_rate(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
   int sf,
       segment_cnt=0;
@@ -1261,7 +1242,7 @@ int get_sample_rate(struct segment_prop_struct *segprop, int segment, FILE *inpu
 }
 
 
-int get_start_date(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_start_date(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
   int p, p2, len,
       segment_cnt=0,
@@ -1448,7 +1429,7 @@ int get_start_date(struct segment_prop_struct *segprop, int segment, FILE *input
 }
 
 
-int get_channel_gain(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_channel_gain(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
   int i, j, len,
       segment_cnt=0,
@@ -1589,7 +1570,7 @@ int get_channel_gain(struct segment_prop_struct *segprop, int segment, FILE *inp
 }
 
 
-int get_worddatafile(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_worddatafile(struct segment_prop_struct *segprop, int segment, FILE *inputfile)
 {
   int i, j, p, len, tmp,
       segment_cnt=0,
@@ -1810,7 +1791,7 @@ int get_worddatafile(struct segment_prop_struct *segprop, int segment, FILE *inp
 }
 
 
-int get_number_of_segments(FILE *inputfile)
+int UI_MANSCAN2EDFwindow::get_number_of_segments(FILE *inputfile)
 {
   int segment_cnt=1;
 
@@ -1837,7 +1818,7 @@ int get_number_of_segments(FILE *inputfile)
 }
 
 
-char * fgetline(char *s, int size, FILE *stream)
+char * UI_MANSCAN2EDFwindow::fgetline(char *s, int size, FILE *stream)
 {
   int i, j, n,
       spc1=0,
@@ -1922,7 +1903,7 @@ char * fgetline(char *s, int size, FILE *stream)
 }
 
 
-long long get_long_time(const char *str)
+long long UI_MANSCAN2EDFwindow::get_long_time(const char *str)
 {
   int i, j=0, len=0, hasdot=0, dotposition=0, decimals=0;
 
