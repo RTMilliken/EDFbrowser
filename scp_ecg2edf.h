@@ -125,7 +125,9 @@ struct patient_data_struct{
         int birthdate_day;
         int sex;
         char device_model[6];
-        char manufacturer[21];
+        char device_serial[49];
+        char device_ident[49];
+        char manufacturer[49];
         unsigned char lang_code;
         } pat_dat;
 

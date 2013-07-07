@@ -131,7 +131,14 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr)
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
-    new QListWidgetItem(mainwindow->signalcomp[i]->signallabel, list);
+    if(mainwindow->signalcomp[i]->alias[0] != 0)
+    {
+      new QListWidgetItem(mainwindow->signalcomp[i]->alias, list);
+    }
+    else
+    {
+      new QListWidgetItem(mainwindow->signalcomp[i]->signallabel, list);
+    }
   }
 
   list->setCurrentRow(0, QItemSelectionModel::Select);

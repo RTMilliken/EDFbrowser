@@ -115,8 +115,7 @@ void UI_ViewMontagewindow::SelectButtonClicked()
 
   char *result,
        composition_txt[2048],
-       label[256],
-       alias[256];
+       label[256];
 
   double frequency,
          frequency2,

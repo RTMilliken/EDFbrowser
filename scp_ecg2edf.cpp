@@ -402,9 +402,9 @@ for(i=0; i<chns; i++)
 
   for(i=0; i<chns; i++)
   {
-    if(lp[i].start <1)
+    if(lp[i].start < 1)
     {
-      textEdit1->append("Error (55) (lp[i].start <1)\n");
+      textEdit1->append("Error (55) (lp[i].start < 1)\n");
       fclose(inputfile);
       free(block);
       pushButton1->setEnabled(TRUE);
@@ -414,6 +414,15 @@ for(i=0; i<chns; i++)
     if(lp[i].end <= lp[i].start)
     {
       textEdit1->append("Error (56) (lp[i].end <= lp[i].start)\n");
+      fclose(inputfile);
+      free(block);
+      pushButton1->setEnabled(TRUE);
+      return;
+    }
+
+    if(lp[i].start != 1)
+    {
+      textEdit1->append("Error (57) (lp[i].start != 1)\n");
       fclose(inputfile);
       free(block);
       pushButton1->setEnabled(TRUE);
@@ -515,6 +524,8 @@ printf("lead samples is %i   bytes is %i\n", lp[i].samples, lp[i].bytes);
 
 //////////////////////////////// patient data ////////////////////
 
+  memset(&pat_dat, 0, sizeof(struct patient_data_struct));
+
   if(get_patient_data(inputfile))
   {
     fclose(inputfile);
@@ -561,7 +572,7 @@ printf("patient ID:          %s\n"
 
   free(block);
 
-  buf = (int *)malloc(lp[0].samples * chns * sizeof(int));
+  buf = (int *)malloc(((lp[0].samples / sf) + 1) * chns * sf * sizeof(int));
   if(buf == NULL)
   {
     textEdit1->append("Malloc error (buf)\n");
@@ -948,7 +959,17 @@ printf("patient ID:          %s\n"
 
   edf_set_patientcode(hdl, pat_dat.pat_id);
 
-  edf_set_equipment(hdl, pat_dat.device_model);
+  strcpy(scratchpad, pat_dat.device_model);
+  strcat(scratchpad, " ");
+  strcat(scratchpad, pat_dat.device_ident);
+
+  edf_set_equipment(hdl, scratchpad);
+
+  strcpy(scratchpad, pat_dat.manufacturer);
+  strcat(scratchpad, " ");
+  strcat(scratchpad, pat_dat.device_serial);
+
+  edf_set_recording_additional(hdl, scratchpad);
 
   blocks = lp[0].samples / sf;
 
@@ -1312,8 +1333,6 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
   void *pntr=NULL;
 
 
-  memset(&pat_dat, 0, sizeof(struct patient_data_struct));
-
   if(inputfile == NULL)
   {
     return(-1);
@@ -1321,7 +1340,8 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
   offset = sp[1].file_offset + 16LL;
 
-  while(1)
+for(int k=0; ; k++)
+//  while(1)
   {
     fseeko(inputfile, offset, SEEK_SET);
 
@@ -1335,6 +1355,11 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
 
     if((offset + len + 3 - sp[1].file_offset) > sp[1].section_length)
     {
+// printf("Found an error in section 1 (81)\n"
+//                   "Conversion aborted\n"
+//       "k is %i   offset is %lli   len is %i   sp[1].file_offset is %lli   sp[1].section_length is %i\n",
+//       k, offset, len, sp[1].file_offset, sp[1].section_length);
+
       textEdit1->append("Found an error in section 1 (81)\n"
                         "Conversion aborted\n");
       return(-1);
@@ -1429,30 +1454,47 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
         strncpy(pat_dat.device_model, str + 8, 5);
         pat_dat.device_model[5] = 0;
 
-//         i = str[35];
-//         i += 36;
-//
-//         j = 0;
-//
-//         for( ; i<2046; i++)
-//         {
-//           if(str[i] == 0)
-//           {
-//             j++;
-//           }
-//
-//           if(j > 2)
-//           {
-//             if(i < 2000)
-//             {
-//               strncpy(pat_dat.manufacturer, str + i + 1, 20);
-//               pat_dat.manufacturer[20] = 0;
-//             }
-//
-//             break;
-//           }
-//         }
+        i = str[35];
+        i += 36;
 
+        if(i < 1500)
+        {
+          strncpy(pat_dat.device_serial, str + i + 1, 48);
+          pat_dat.device_serial[48] = 0;
+          latin1_to_ascii(pat_dat.device_serial, 48);
+          remove_trailing_spaces(pat_dat.device_serial);
+          remove_leading_spaces(pat_dat.device_serial);
+        }
+
+        j = 0;
+
+        for( ; i<1500; i++)
+        {
+          if(str[i] == 0)
+          {
+            j++;
+
+            if(j == 1)
+            {
+              strncpy(pat_dat.device_ident, str + i + 1, 48);
+              pat_dat.device_ident[48] = 0;
+              latin1_to_ascii(pat_dat.device_ident, 48);
+              remove_trailing_spaces(pat_dat.device_ident);
+              remove_leading_spaces(pat_dat.device_ident);
+            }
+
+            if(j == 3)
+            {
+              strncpy(pat_dat.manufacturer, str + i + 1, 48);
+              pat_dat.manufacturer[48] = 0;
+              latin1_to_ascii(pat_dat.manufacturer, 48);
+              remove_trailing_spaces(pat_dat.manufacturer);
+              remove_leading_spaces(pat_dat.manufacturer);
+
+              break;
+            }
+          }
+        }
       }
     }
   }
