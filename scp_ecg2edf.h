@@ -139,7 +139,7 @@ int check_crc(FILE *, long long, long long, unsigned short, char *);
 
 void crc_ccitt_init(void);
 
-unsigned short crc_ccitt(unsigned char const *, int, unsigned short);
+unsigned short crc_ccitt(const unsigned char *, int, unsigned short);
 
 inline unsigned char reverse_bitorder(unsigned char);
 

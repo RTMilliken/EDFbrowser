@@ -541,6 +541,16 @@ int edf_set_datarecord_duration(int handle, int duration);
 /* or set the samplefrequency to 1 Hz and the datarecord duration to 2 seconds. */
 /* Do not use this function, except when absolutely necessary! */
 
+int edf_set_number_of_annotation_signals(int handle, int annot_signals);
+
+/* Sets the number of annotation signals. The default value is 1 */
+/* This function is optional and can be called only after opening a file in writemode */
+/* and before the first sample write action */
+/* Normally you don't need to change the default value. Only when the number of annotations */
+/* you want to write is more than the number of seconds of the duration of the recording you can use */
+/* this function to increase the storage space for annotations */
+/* Minimum is 1, maximum is 64 */
+
 
 #ifdef __cplusplus
 } /* extern "C" */

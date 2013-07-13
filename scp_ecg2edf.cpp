@@ -231,18 +231,18 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   sp[0].file_offset = 6LL;
 
-printf("\nsection ID is %i\n"
-       "section file offset is %lli\n"
-       "section CRC is 0x%04X\n"
-       "section length is %i\n"
-       "section version is %i\n"
-       "section protocol version is %i\n",
-       sp[0].section_id,
-       sp[0].file_offset,
-       (int)sp[0].crc,
-       sp[0].section_length,
-       sp[0].section_version,
-       sp[0].section_protocol_version);
+// printf("\nsection ID is %i\n"
+//        "section file offset is %lli\n"
+//        "section CRC is 0x%04X\n"
+//        "section length is %i\n"
+//        "section version is %i\n"
+//        "section protocol version is %i\n",
+//        sp[0].section_id,
+//        sp[0].file_offset,
+//        (int)sp[0].crc,
+//        sp[0].section_length,
+//        sp[0].section_version,
+//        sp[0].section_protocol_version);
 
   if(read_data_section_zero(inputfile, block, filesize))
   {
@@ -273,7 +273,7 @@ printf("\nsection ID is %i\n"
 
   if(compression != 0)
   {
-    textEdit1->append("File contains bimodal compressed data which is not supported.\n ");
+    textEdit1->append("File contains bimodal compressed data which is not supported by this converter.\n ");
     fclose(inputfile);
     free(block);
     pushButton1->setEnabled(TRUE);
@@ -329,13 +329,13 @@ printf("\nsection ID is %i\n"
     return;
   }
 
-printf("chns is %u   AVM is %u   sf is %u   encoding is %u   compression is %u\n",
-       chns, avm, sf, encoding, compression);
-
-for(i=0; i<12; i++)
-{
-  printf("section %i is present: %i    file offset is %lli   length is %i\n", i, sp[i].present, sp[i].file_offset, sp[i].section_length);
-}
+// printf("chns is %u   AVM is %u   sf is %u   encoding is %u   compression is %u\n",
+//        chns, avm, sf, encoding, compression);
+//
+// for(i=0; i<12; i++)
+// {
+//   printf("section %i is present: %i    file offset is %lli   length is %i\n", i, sp[i].present, sp[i].file_offset, sp[i].section_length);
+// }
 
   memset(&lp, 0, sizeof(struct lead_prop_struct[256]));
 
@@ -371,10 +371,10 @@ for(i=0; i<12; i++)
     }
   }
 
-for(i=0; i<chns; i++)
-{
-  printf("lp[i].start is %i   lp[i].end is %i\n", lp[i].start, lp[i].end);
-}
+// for(i=0; i<chns; i++)
+// {
+//   printf("lp[i].start is %i   lp[i].end is %i\n", lp[i].start, lp[i].end);
+// }
 
   if(chns > 1)
   {
@@ -462,7 +462,7 @@ for(i=0; i<chns; i++)
 
     n += lp[i].bytes;
 
-printf("lead samples is %i   bytes is %i\n", lp[i].samples, lp[i].bytes);
+// printf("lead samples is %i   bytes is %i\n", lp[i].samples, lp[i].bytes);
 
     if(sp[2].present != 1)  // huffmantable
     {
@@ -509,8 +509,8 @@ printf("lead samples is %i   bytes is %i\n", lp[i].samples, lp[i].bytes);
     ht.base_value = *((unsigned short *)(block + 7));
     ht.base_code = *((unsigned int *)(block + 9));
 
-  printf("ht.h_tables_cnt is %i   ht.code_structs_cnt is %i   ht.prefix_bits is %i   ht.total_bits is %i\n",
-        ht.h_tables_cnt, ht.code_structs_cnt, ht.prefix_bits, ht.total_bits);
+//   printf("ht.h_tables_cnt is %i   ht.code_structs_cnt is %i   ht.prefix_bits is %i   ht.total_bits is %i\n",
+//         ht.h_tables_cnt, ht.code_structs_cnt, ht.prefix_bits, ht.total_bits);
 
     if(ht.h_tables_cnt != 19999)
     {
@@ -534,39 +534,38 @@ printf("lead samples is %i   bytes is %i\n", lp[i].samples, lp[i].bytes);
     return;
   }
 
-printf("patient ID:          %s\n"
-       "patient lastname:    %s\n"
-       "patient firstname:   %s\n"
-       "patient sex:         %i\n"
-       "startdate year:      %i\n"
-       "startdate month:     %i\n"
-       "startdate day:       %i\n"
-       "starttime hour:      %i\n"
-       "starttime minute:    %i\n"
-       "starttime second:    %i\n"
-       "birthdate year:      %i\n"
-       "birthdate month:     %i\n"
-       "birthdate day:       %i\n"
-       "device model:        %s\n"
-       "language code:       %u\n"
-       "manufacturer:        %s\n",
-       pat_dat.pat_id,
-       pat_dat.last_name,
-       pat_dat.first_name,
-       pat_dat.sex,
-       pat_dat.startdate_year,
-       pat_dat.startdate_month,
-       pat_dat.startdate_day,
-       pat_dat.starttime_hour,
-       pat_dat.starttime_minute,
-       pat_dat.starttime_second,
-       pat_dat.birthdate_year,
-       pat_dat.birthdate_month,
-       pat_dat.birthdate_day,
-       pat_dat.device_model,
-       pat_dat.lang_code,
-       pat_dat.manufacturer);
-
+// printf("patient ID:          %s\n"
+//        "patient lastname:    %s\n"
+//        "patient firstname:   %s\n"
+//        "patient sex:         %i\n"
+//        "startdate year:      %i\n"
+//        "startdate month:     %i\n"
+//        "startdate day:       %i\n"
+//        "starttime hour:      %i\n"
+//        "starttime minute:    %i\n"
+//        "starttime second:    %i\n"
+//        "birthdate year:      %i\n"
+//        "birthdate month:     %i\n"
+//        "birthdate day:       %i\n"
+//        "device model:        %s\n"
+//        "language code:       %u\n"
+//        "manufacturer:        %s\n",
+//        pat_dat.pat_id,
+//        pat_dat.last_name,
+//        pat_dat.first_name,
+//        pat_dat.sex,
+//        pat_dat.startdate_year,
+//        pat_dat.startdate_month,
+//        pat_dat.startdate_day,
+//        pat_dat.starttime_hour,
+//        pat_dat.starttime_minute,
+//        pat_dat.starttime_second,
+//        pat_dat.birthdate_year,
+//        pat_dat.birthdate_month,
+//        pat_dat.birthdate_day,
+//        pat_dat.device_model,
+//        pat_dat.lang_code,
+//        pat_dat.manufacturer);
 
 ////////////////////////// start conversion ///////////////////////////////
 
@@ -800,8 +799,8 @@ printf("patient ID:          %s\n"
 // FF       83       7F       E0       E6       F5       53       65       59       B6       5B       96       4B       96
 // 255      131      127      224      230      245      83       101      89       182      91       150      75       150
 
-  if(i == (lp[j].samples - 1))  printf("bits is %lli   bits / 8 is %lli   bits %% 8 is %lli   lp[j].bytes is %i\n",
-                                      bits, bits / 8LL, bits % 8LL, lp[j].bytes);
+//   if(i == (lp[j].samples - 1))  printf("bits is %lli   bits / 8 is %lli   bits %% 8 is %lli   lp[j].bytes is %i\n",
+//                                       bits, bits / 8LL, bits % 8LL, lp[j].bytes);
 
       }
       else  // huffmantable not present
@@ -1226,7 +1225,9 @@ int UI_SCPECG2EDFwindow::read_section_header(int n, FILE *inputfile, long long o
 }
 
 
-unsigned short UI_SCPECG2EDFwindow::crc_ccitt(unsigned char const message[], int nbytes, unsigned short remainder)
+// unsigned short UI_SCPECG2EDFwindow::crc_ccitt(unsigned char const message[], int nbytes, unsigned short remainder)
+
+unsigned short UI_SCPECG2EDFwindow::crc_ccitt(const unsigned char *message, int nbytes, unsigned short remainder)
 {
   int byte;
 

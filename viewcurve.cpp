@@ -3113,6 +3113,7 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   QObject::connect(sidemenuButton11,  SIGNAL(clicked()),                this,     SLOT(StatisticsButton()));
   QObject::connect(sidemenuButton12,  SIGNAL(clicked()),                this,     SLOT(ECGdetectButton()));
   QObject::connect(sidemenuButton13,  SIGNAL(clicked()),                this,     SLOT(sidemenu_close()));
+  QObject::connect(AliasLineEdit,     SIGNAL(returnPressed()),          this,     SLOT(sidemenu_close()));
 
   sidemenu->exec();
 }
