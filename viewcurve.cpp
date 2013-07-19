@@ -2033,7 +2033,6 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, int print_linewidth)
 {
   int i, j, k, n, x1, y1, x2, y2,
-      temp=0,
       signalcomps,
       baseline,
       value,
@@ -2046,7 +2045,8 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
 
   long long s, s2;
 
-  double dig_value=0.0;
+  double dig_value=0.0,
+         f_tmp=0.0;
 
   struct signalcompblock **signalcomp;
 
@@ -2231,12 +2231,12 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
               var.four[3] = 0x00;
             }
 
-            temp = var.one_signed;
+            f_tmp = var.one_signed;
           }
 
           if(signalcomp[i]->edfhdr->edf)
           {
-            temp = *(((short *)(
+            f_tmp = *(((short *)(
               viewbuf
               + signalcomp[i]->viewbufoffset
               + (signalcomp[i]->edfhdr->recordsize * (s2 / signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record))
@@ -2244,10 +2244,10 @@ void ViewCurve::drawCurve_stage_1(QPainter *painter, int w_width, int w_height, 
               + (s2 % signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].smp_per_record));
           }
 
-          temp += signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].offset;
-          temp *= signalcomp[i]->factor[j];
+          f_tmp += signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].offset;
+          f_tmp *= signalcomp[i]->factor[j];
 
-          dig_value += temp;
+          dig_value += f_tmp;
         }
 
         for(k=0; k<signalcomp[i]->filter_cnt; k++)
@@ -2583,7 +2583,6 @@ void drawCurve_stage_1_thread::init_vars(UI_Mainwindow *mainwindow_a, struct sig
 void drawCurve_stage_1_thread::run()
 {
   int j, k, n, x1, y1, x2, y2,
-      temp,
       baseline,
       value,
       minimum,
@@ -2593,7 +2592,8 @@ void drawCurve_stage_1_thread::run()
 
   long long s, s2;
 
-  double dig_value;
+  double dig_value,
+         f_tmp;
 
   union {
           unsigned int one;
@@ -2617,7 +2617,7 @@ void drawCurve_stage_1_thread::run()
 // printf("i is %i   signalcomp is %08X      screensamples is %08X\n",
 //        i, (int)signalcomp, (int)screensamples);
 
-    temp = 0;
+    f_tmp = 0.0;
     dig_value=0.0;
     stat_zero_crossing=0;
 
@@ -2669,12 +2669,12 @@ void drawCurve_stage_1_thread::run()
             var.four[3] = 0x00;
           }
 
-          temp = var.one_signed;
+          f_tmp = var.one_signed;
         }
 
         if(signalcomp->edfhdr->edf)
         {
-          temp = *(((short *)(
+          f_tmp = *(((short *)(
             viewbuf
             + signalcomp->viewbufoffset
             + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
@@ -2682,10 +2682,10 @@ void drawCurve_stage_1_thread::run()
             + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
         }
 
-        temp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;
-        temp *= signalcomp->factor[j];
+        f_tmp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;
+        f_tmp *= signalcomp->factor[j];
 
-        dig_value += temp;
+        dig_value += f_tmp;
       }
 
       for(k=0; k<signalcomp->filter_cnt; k++)
