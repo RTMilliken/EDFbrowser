@@ -344,7 +344,7 @@ void UI_AsciiExportwindow::ExportButtonClicked()
     edfparamascii[i].dig_max = atoi(scratchpad);
     edfparamascii[i].time_step = data_record_duration / edfparamascii[i].smp_per_record;
     edfparamascii[i].sense = (edfparamascii[i].phys_max - edfparamascii[i].phys_min) / (edfparamascii[i].dig_max - edfparamascii[i].dig_min);
-    edfparamascii[i].offset = (int)(edfparamascii[i].phys_max / edfparamascii[i].sense - edfparamascii[i].dig_max);
+    edfparamascii[i].offset = edfparamascii[i].phys_max / edfparamascii[i].sense - edfparamascii[i].dig_max;
   }
 
   cnv_buf = (char *)calloc(1, recordsize * samplesize);
@@ -865,11 +865,11 @@ void UI_AsciiExportwindow::ExportButtonClicked()
               var.four[3] = 0x00;
             }
 
-            value_tmp = (var.one_signed + edfparamascii[j].offset) * edfparamascii[j].sense;
+            value_tmp = ((double)var.one_signed + edfparamascii[j].offset) * edfparamascii[j].sense;
           }
           else
           {
-            value_tmp = ((*(((signed short *)cnv_buf)+edfparamascii[j].buf_offset+edfparamascii[j].smp_written)) + edfparamascii[j].offset) * edfparamascii[j].sense;
+            value_tmp = ((double)(*(((signed short *)cnv_buf) + edfparamascii[j].buf_offset + edfparamascii[j].smp_written)) + edfparamascii[j].offset) * edfparamascii[j].sense;
           }
           fprintf(outputfile, ",%f", value_tmp);
           edfparamascii[j].smp_written++;

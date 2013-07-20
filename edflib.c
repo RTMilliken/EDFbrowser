@@ -94,7 +94,7 @@ struct edfparamblock{
         char   prefilter[81];
         int    smp_per_record;
         char   reserved[33];
-        int    offset;
+        double offset;
         int    buf_offset;
         double bitvalue;
         int    annotation;
@@ -840,10 +840,10 @@ int edfread_physical_samples(int handle, int edfsignal, int n, double *buf)
   int bytes_per_smpl=2,
       tmp,
       i,
-      channel,
-      phys_offset;
+      channel;
 
-  double phys_bitvalue;
+  double phys_bitvalue,
+         phys_offset;
 
   long long smp_in_file,
             offset,
@@ -974,9 +974,7 @@ int edfread_physical_samples(int handle, int edfsignal, int n, double *buf)
       }
       var.four[1] = tmp;
 
-      var.two_signed[0] += phys_offset;
-
-      buf[i] = phys_bitvalue * (double)var.two_signed[0];
+      buf[i] = phys_bitvalue * (phys_offset + (double)var.two_signed[0]);
 
       sample_pntr++;
     }
@@ -1012,9 +1010,7 @@ int edfread_physical_samples(int handle, int edfsignal, int n, double *buf)
         var.four[3] = 0x00;
       }
 
-      var.one_signed += phys_offset;
-
-      buf[i] = phys_bitvalue * (double)var.one_signed;
+      buf[i] = phys_bitvalue * (phys_offset + (double)var.one_signed);
 
       sample_pntr++;
     }
@@ -2640,7 +2636,7 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
     else  n += edfhdr->edfparam[i].smp_per_record * 2;
 
     edfhdr->edfparam[i].bitvalue = (edfhdr->edfparam[i].phys_max - edfhdr->edfparam[i].phys_min) / (edfhdr->edfparam[i].dig_max - edfhdr->edfparam[i].dig_min);
-    edfhdr->edfparam[i].offset = (int)(edfhdr->edfparam[i].phys_max / edfhdr->edfparam[i].bitvalue - edfhdr->edfparam[i].dig_max);
+    edfhdr->edfparam[i].offset = edfhdr->edfparam[i].phys_max / edfhdr->edfparam[i].bitvalue - edfhdr->edfparam[i].dig_max;
   }
 
   edfhdr->file_hdl = inputfile;
@@ -4146,10 +4142,10 @@ int edfwrite_physical_samples(int handle, double *buf)
        digmax,
        digmin,
        value,
-       offset,
        edfsignal;
 
-  double bitvalue;
+  double bitvalue,
+         phys_offset;
 
   FILE *file;
 
@@ -4210,13 +4206,13 @@ int edfwrite_physical_samples(int handle, double *buf)
 
   bitvalue = hdr->edfparam[edfsignal].bitvalue;
 
-  offset = hdr->edfparam[edfsignal].offset;
+  phys_offset = hdr->edfparam[edfsignal].offset;
 
   for(i=0; i<sf; i++)
   {
     value = buf[i] / bitvalue;
 
-    value -= offset;
+    value -= phys_offset;
 
     if(value>digmax)
     {
@@ -4279,11 +4275,11 @@ int edf_blockwrite_physical_samples(int handle, double *buf)
        digmax,
        digmin,
        edfsignals,
-       offset,
        buf_offset,
        value;
 
-  double bitvalue;
+  double bitvalue,
+         phys_offset;
 
   FILE *file;
 
@@ -4350,13 +4346,13 @@ int edf_blockwrite_physical_samples(int handle, double *buf)
 
     bitvalue = hdr->edfparam[j].bitvalue;
 
-    offset = hdr->edfparam[j].offset;
+    phys_offset = hdr->edfparam[j].offset;
 
     for(i=0; i<sf; i++)
     {
       value = buf[i + buf_offset] / bitvalue;
 
-      value -= offset;
+      value -= phys_offset;
 
       if(value>digmax)
       {
@@ -4463,7 +4459,7 @@ int edflib_write_edf_header(struct edfhdrblock *hdr)
   for(i=0; i<edfsignals; i++)
   {
     hdr->edfparam[i].bitvalue = (hdr->edfparam[i].phys_max - hdr->edfparam[i].phys_min) / (hdr->edfparam[i].dig_max - hdr->edfparam[i].dig_min);
-    hdr->edfparam[i].offset = (int)(hdr->edfparam[i].phys_max / hdr->edfparam[i].bitvalue - hdr->edfparam[i].dig_max);
+    hdr->edfparam[i].offset = hdr->edfparam[i].phys_max / hdr->edfparam[i].bitvalue - hdr->edfparam[i].dig_max;
   }
 
   rewind(file);

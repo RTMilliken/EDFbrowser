@@ -89,7 +89,7 @@ struct asciiedfparamblock{
          int smp_written;
          int dig_min;
          int dig_max;
-         int offset;
+         double offset;
          int buf_offset;
          double phys_min;
          double phys_max;

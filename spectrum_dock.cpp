@@ -444,7 +444,6 @@ void UI_SpectrumDockWindow::clear()
 void UI_SpectrumDockWindow::update_curve()
 {
   int i, j, k, n,
-      temp=0,
       dftblocksize,
       dftblocks,
       samplesleft,
@@ -454,7 +453,8 @@ void UI_SpectrumDockWindow::update_curve()
 
   char str[512];
 
-  double dig_value=0.0;
+  double dig_value=0.0,
+         f_tmp=0.0;
 
   union {
           unsigned int one;
@@ -563,12 +563,12 @@ void UI_SpectrumDockWindow::update_curve()
           var.four[3] = 0x00;
         }
 
-        temp = var.one_signed;
+        f_tmp = var.one_signed;
       }
 
       if(signalcomp->edfhdr->edf)
       {
-        temp = *(((short *)(
+        f_tmp = *(((short *)(
           viewbuf
           + signalcomp->viewbufoffset
           + (signalcomp->edfhdr->recordsize * (s2 / signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record))
@@ -576,10 +576,10 @@ void UI_SpectrumDockWindow::update_curve()
           + (s2 % signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].smp_per_record));
       }
 
-      temp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;
-      temp *= signalcomp->factor[j];
+      f_tmp += signalcomp->edfhdr->edfparam[signalcomp->edfsignal[j]].offset;
+      f_tmp *= signalcomp->factor[j];
 
-      dig_value += temp;
+      dig_value += f_tmp;
     }
 
     for(k=0; k<signalcomp->filter_cnt; k++)
