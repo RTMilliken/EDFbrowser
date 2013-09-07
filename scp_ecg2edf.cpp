@@ -331,11 +331,6 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
 // printf("chns is %u   AVM is %u   sf is %u   encoding is %u   compression is %u\n",
 //        chns, avm, sf, encoding, compression);
-//
-// for(i=0; i<12; i++)
-// {
-//   printf("section %i is present: %i    file offset is %lli   length is %i\n", i, sp[i].present, sp[i].file_offset, sp[i].section_length);
-// }
 
   memset(&lp, 0, sizeof(struct lead_prop_struct[256]));
 
@@ -609,32 +604,9 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     return;
   }
 
-// msb  lsb
-// 11111111 10000011 01111111 11100000 11100110 11110001 01010011 01100101 01011001 10110110 01011011 10010110 01001011 10010110 0
-// FF       83       7F       E0       E6       F5       53       65       59       B6       5B       96       4B       96
-// 255      131      127      224      230      245      83       101      89       182      91       150      75       150
-
-//   *((unsigned char *)block) = 255;
-//   *((unsigned char *)(block + 1)) = 131;
-//   *((unsigned char *)(block + 2)) = 127;
-//   *((unsigned char *)(block + 3)) = 224;
-//   *((unsigned char *)(block + 4)) = 230;
-//   *((unsigned char *)(block + 5)) = 245;
-//   *((unsigned char *)(block + 6)) = 83;
-//   *((unsigned char *)(block + 7)) = 101;
-//   *((unsigned char *)(block + 8)) = 89;
-//   *((unsigned char *)(block + 9)) = 182;
-//   *((unsigned char *)(block + 10)) = 91;
-//   *((unsigned char *)(block + 11)) = 150;
-//   *((unsigned char *)(block + 12)) = 75;
-//   *((unsigned char *)(block + 13)) = 150;
-//   *((unsigned char *)(block + 13)) = 0;
-
-
   offset = 0;
 
   for(j=0; j<chns; j++)
-//  for(j=0; j<1; j++)
   {
     if(j > 0)
     {
@@ -644,15 +616,12 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     bits = 0LL;
 
     for(i=0; i<lp[j].samples; i++)
-//    for(i=0; i<28; i++)
     {
       if(sp[2].present == 1)  // huffmantable present
       {
-//        if((bits / 8LL) > (lp[j].bytes + 20))
         if((bits / 8LL) > lp[j].bytes)
         {
           textEdit1->append("Error, (bits / 8) >= lp[j].bytes (71)\n");
-// printf("\nbits / 8 is %i    lp[j].bytes is %i\n", (int)(bits / 8LL), lp[j].bytes);
           fclose(inputfile);
           free(buf);
           free(block);
@@ -740,68 +709,42 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
           {
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 7;
             bits += 9LL;
-//printf(" 7:i: %i  ", i);
           }
           else
           {
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -7;
             bits += 9LL;
-//printf(" -7:i: %i  ", i);
           }
         } else
         if(var.four[0] == 255)  // b11111111
         {
           if((var.four[1] & 3) == 0)  // b00000011
-//          if((var.four[1] & 192) == 0)
           {
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = 8;
             bits += 10LL;
-//printf(" 8:i: %i  ", i);
           } else
           if((var.four[1] & 3) == 2)  // b00000011
-//          if((var.four[1] & 192) == 64)
           {
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = -8;
             bits += 10LL;
-//printf(" -8:i: %i  ", i);
           } else
           if((var.four[1] & 3) == 1)  // b00000011
-//          if((var.four[1] & 192) == 128)
           {
-//            var.four[0] = var.four[2];
             var.ll_int >>= 2;
             var.four[1] = reverse_bitorder(var.four[1]);
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = *((signed char *)&(var.four[1]));  // 8-bit original
             bits += 18LL;
-//printf(" 8-bit:i: %i  ", i);
           } else
           if((var.four[1] & 3) == 3)  // b00000011
-//          if((var.four[1] & 192) == 192)
           {
-//            var.four[0] = var.four[2];
-//            var.four[-1] = var.four[3];
             var.ll_int >>= 10;
             ch_tmp = reverse_bitorder(var.four[0]);
             var.four[0] = reverse_bitorder(var.four[1]);
             var.four[1] = ch_tmp;
             buf[((i / sf) * (sf * chns)) + (j * sf) + (i % sf)] = *((signed short *)&(var.two[0]));  // 16-bit original
             bits += 26LL;
-//printf(" 16-bit:i: %i  ", i);
           }
         }
-
-// 11111111 11001111 11111010 10
-
-
-// msb  lsb
-// 11111111 10000011 01
-// 11111111 10000011 01111111 11100000 11100110 11110001 01010011 01100101 01011001 10110110 01011011 10010110 01001011 10010110 0
-// FF       83       7F       E0       E6       F5       53       65       59       B6       5B       96       4B       96
-// 255      131      127      224      230      245      83       101      89       182      91       150      75       150
-
-//   if(i == (lp[j].samples - 1))  printf("bits is %lli   bits / 8 is %lli   bits %% 8 is %lli   lp[j].bytes is %i\n",
-//                                       bits, bits / 8LL, bits % 8LL, lp[j].bytes);
-
       }
       else  // huffmantable not present
       {
@@ -809,12 +752,6 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       }
     }
   }
-
-// for(i=0; i<28; i++)
-// {
-//   printf(" %i", buf[i]);
-// }
-// putchar('\n');
 
   strcpy(edf_filename, input_filename);
 
@@ -1225,8 +1162,6 @@ int UI_SCPECG2EDFwindow::read_section_header(int n, FILE *inputfile, long long o
 }
 
 
-// unsigned short UI_SCPECG2EDFwindow::crc_ccitt(unsigned char const message[], int nbytes, unsigned short remainder)
-
 unsigned short UI_SCPECG2EDFwindow::crc_ccitt(const unsigned char *message, int nbytes, unsigned short remainder)
 {
   int byte;
@@ -1342,7 +1277,6 @@ int UI_SCPECG2EDFwindow::get_patient_data(FILE *inputfile)
   offset = sp[1].file_offset + 16LL;
 
 for(int k=0; ; k++)
-//  while(1)
   {
     fseeko(inputfile, offset, SEEK_SET);
 
@@ -1356,11 +1290,6 @@ for(int k=0; ; k++)
 
     if((offset + len + 3 - sp[1].file_offset) > sp[1].section_length)
     {
-// printf("Found an error in section 1 (81)\n"
-//                   "Conversion aborted\n"
-//       "k is %i   offset is %lli   len is %i   sp[1].file_offset is %lli   sp[1].section_length is %i\n",
-//       k, offset, len, sp[1].file_offset, sp[1].section_length);
-
       textEdit1->append("Found an error in section 1 (81)\n"
                         "Conversion aborted\n");
       return(-1);
@@ -1391,8 +1320,6 @@ for(int k=0; ; k++)
       }
 
       str[n] = 0;
-
-// printf("patient data: tag is: %i     text is ->%s<-\n", tag, str);
 
       if(tag == 2)  // Patient ID
       {

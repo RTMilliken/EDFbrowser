@@ -1415,6 +1415,37 @@ void strntolower(char *s, int n)
 }
 
 
+int round_125_cat(double value)
+{
+  if(value < 0.000001)  return(10);
+
+  while(value > 1000)  value /=10;
+
+  while(value < 100)  value *=10;
+
+  if(value > 670)
+  {
+    return(10);
+  }
+  else if(value > 300)
+    {
+      return(50);
+    }
+    else if(value > 135)
+      {
+        return(20);
+      }
+      else
+      {
+        return(10);
+      }
+
+  return(10);
+}
+
+
+
+
 
 
 

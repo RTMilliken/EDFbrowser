@@ -132,6 +132,10 @@ UI_Mainwindow::UI_Mainwindow()
 
   mousewheelsens = 10;
 
+  amplitude_doubler = 10;
+
+  timescale_doubler = 10;
+
   recent_montagedir[0] = 0;
   recent_savedir[0] = 0;
   recent_opendir[0] = 0;
@@ -2894,6 +2898,10 @@ void UI_Mainwindow::close_all_files()
 
   pagetime = 10 * TIME_DIMENSION;
 
+  timescale_doubler = 10;
+
+  amplitude_doubler = 10;
+
   for(i=0; i<64; i++)
   {
     zoomhistory->pntr = 0;
@@ -2957,20 +2965,80 @@ void UI_Mainwindow::set_page_div2()
 {
   int i;
 
+  long long l_tmp, trshld=100LL;
+
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
     for(i=0; i<files_open; i++)
     {
-      edfheaderlist[i]->viewtime += (pagetime / 4);
+      if(timescale_doubler == 50)
+      {
+        edfheaderlist[i]->viewtime += (pagetime * 0.3);
+      }
+      else
+      {
+        edfheaderlist[i]->viewtime += (pagetime / 4);
+      }
+
+      l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
+
+      if(l_tmp < trshld)
+      {
+        edfheaderlist[i]->viewtime -= l_tmp;
+      }
+
+      if(l_tmp > (TIME_DIMENSION - trshld))
+      {
+        edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+      }
     }
   }
 
   if(viewtime_sync==VIEWTIME_UNSYNCED)
   {
-    edfheaderlist[sel_viewtime]->viewtime += (pagetime / 4);
+    if(timescale_doubler == 50)
+    {
+      edfheaderlist[sel_viewtime]->viewtime += (pagetime * 0.3);
+    }
+    else
+    {
+      edfheaderlist[sel_viewtime]->viewtime += (pagetime / 4);
+    }
+
+      l_tmp = edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION;
+
+      if(l_tmp < trshld)
+      {
+        edfheaderlist[sel_viewtime]->viewtime -= l_tmp;
+      }
+
+      if(l_tmp > (TIME_DIMENSION - trshld))
+      {
+        edfheaderlist[sel_viewtime]->viewtime += (TIME_DIMENSION - l_tmp);
+      }
   }
 
-  pagetime /= 2;
+  if(timescale_doubler == 10)
+  {
+    timescale_doubler = 50;
+
+    pagetime /= 2;
+  }
+  else
+  {
+    if(timescale_doubler == 50)
+    {
+      timescale_doubler = 20;
+
+      pagetime /= 2.5;
+    }
+    else
+    {
+      timescale_doubler = 10;
+
+      pagetime /= 2;
+    }
+  }
 
   setup_viewbuf();
 }
@@ -2980,20 +3048,68 @@ void UI_Mainwindow::set_page_mult2()
 {
   int i;
 
+  long long l_tmp, trshld=100LL;
+
   if((viewtime_sync==VIEWTIME_SYNCED_OFFSET)||(viewtime_sync==VIEWTIME_SYNCED_ABSOLUT)||(viewtime_sync==VIEWTIME_USER_DEF_SYNCED))
   {
     for(i=0; i<files_open; i++)
     {
-      edfheaderlist[i]->viewtime -= (pagetime / 2);
+      if(timescale_doubler == 20)
+      {
+        edfheaderlist[i]->viewtime -= (pagetime * 0.75);
+      }
+      else
+      {
+        edfheaderlist[i]->viewtime -= (pagetime / 2);
+      }
+
+      l_tmp = edfheaderlist[i]->viewtime % TIME_DIMENSION;
+
+      if(l_tmp < trshld)
+      {
+        edfheaderlist[i]->viewtime -= l_tmp;
+      }
+
+      if(l_tmp > (TIME_DIMENSION - trshld))
+      {
+        edfheaderlist[i]->viewtime += (TIME_DIMENSION - l_tmp);
+      }
     }
   }
 
   if(viewtime_sync==VIEWTIME_UNSYNCED)
   {
-    edfheaderlist[sel_viewtime]->viewtime -= (pagetime / 2);
+    if(timescale_doubler == 20)
+    {
+      edfheaderlist[sel_viewtime]->viewtime -= (pagetime * 0.75);
+    }
+    else
+    {
+      edfheaderlist[sel_viewtime]->viewtime -= (pagetime / 2);
+    }
   }
 
-  pagetime *= 2;
+  if(timescale_doubler == 10)
+  {
+    timescale_doubler = 20;
+
+    pagetime *= 2;
+  }
+  else
+  {
+    if(timescale_doubler == 20)
+    {
+      timescale_doubler = 50;
+
+      pagetime *= 2.5;
+    }
+    else
+    {
+      timescale_doubler = 10;
+
+      pagetime *= 2;
+    }
+  }
 
   setup_viewbuf();
 }
@@ -3001,18 +3117,73 @@ void UI_Mainwindow::set_page_mult2()
 
 void UI_Mainwindow::set_display_time(QAction *action)
 {
-  if(action==page_10m)   pagetime = TIME_DIMENSION / 100;
-  if(action==page_20m)   pagetime = TIME_DIMENSION / 50;
-  if(action==page_50m)   pagetime = TIME_DIMENSION / 20;
-  if(action==page_100m)  pagetime = TIME_DIMENSION / 10;
-  if(action==page_200m)  pagetime = TIME_DIMENSION / 5;
-  if(action==page_500m)  pagetime = TIME_DIMENSION / 2;
-  if(action==page_1)     pagetime = TIME_DIMENSION;
-  if(action==page_2)     pagetime = TIME_DIMENSION * 2;
-  if(action==page_5)     pagetime = TIME_DIMENSION * 5;
-  if(action==page_10)    pagetime = TIME_DIMENSION * 10;
+  if(action==page_10m)
+  {
+    pagetime = TIME_DIMENSION / 100;
+
+    timescale_doubler = 10;
+  }
+  if(action==page_20m)
+  {
+    pagetime = TIME_DIMENSION / 50;
+
+    timescale_doubler = 20;
+  }
+  if(action==page_50m)
+  {
+    pagetime = TIME_DIMENSION / 20;
+
+    timescale_doubler = 50;
+  }
+  if(action==page_100m)
+  {
+    pagetime = TIME_DIMENSION / 10;
+
+    timescale_doubler = 10;
+  }
+  if(action==page_200m)
+  {
+    pagetime = TIME_DIMENSION / 5;
+
+    timescale_doubler = 20;
+  }
+  if(action==page_500m)
+  {
+    pagetime = TIME_DIMENSION / 2;
+
+    timescale_doubler = 50;
+  }
+  if(action==page_1)
+  {
+    pagetime = TIME_DIMENSION;
+
+    timescale_doubler = 10;
+  }
+  if(action==page_2)
+  {
+    pagetime = TIME_DIMENSION * 2;
+
+    timescale_doubler = 20;
+  }
+  if(action==page_5)
+  {
+    pagetime = TIME_DIMENSION * 5;
+
+    timescale_doubler = 50;
+  }
+  if(action==page_10)
+  {
+    pagetime = TIME_DIMENSION * 10;
+
+    timescale_doubler = 10;
+  }
   if(action==page_15)    pagetime = TIME_DIMENSION * 15;
-  if(action==page_20)    pagetime = TIME_DIMENSION * 20;
+  if(action==page_20)
+  {
+    pagetime = TIME_DIMENSION * 20;
+
+    timescale_doubler = 20;
+  }
   if(action==page_30)    pagetime = TIME_DIMENSION * 30;
   if(action==page_60)    pagetime = TIME_DIMENSION * 60;
   if(action==page_300)   pagetime = TIME_DIMENSION * 300;
@@ -3136,33 +3307,141 @@ void UI_Mainwindow::set_amplitude(QAction *action)
   double value=100.0, original_value, value2=100.0;
 
 
-  if(action==amp_00001) value = 0.0001;
-  if(action==amp_00002) value = 0.0002;
-  if(action==amp_00005) value = 0.0005;
-  if(action==amp_0001)  value = 0.001;
-  if(action==amp_0002)  value = 0.002;
-  if(action==amp_0005)  value = 0.005;
-  if(action==amp_001)   value = 0.01;
-  if(action==amp_002)   value = 0.02;
-  if(action==amp_005)   value = 0.05;
-  if(action==amp_01)    value = 0.1;
-  if(action==amp_02)    value = 0.2;
-  if(action==amp_05)    value = 0.5;
-  if(action==amp_1)     value = 1.0;
-  if(action==amp_2)     value = 2.0;
-  if(action==amp_5)     value = 5.0;
-  if(action==amp_10)    value = 10.0;
-  if(action==amp_20)    value = 20.0;
-  if(action==amp_50)    value = 50.0;
-  if(action==amp_100)   value = 100.0;
-  if(action==amp_200)   value = 200.0;
-  if(action==amp_500)   value = 500.0;
-  if(action==amp_1000)  value = 1000.0;
-  if(action==amp_2000)  value = 2000.0;
-  if(action==amp_5000)  value = 5000.0;
-  if(action==amp_10000) value = 10000.0;
-  if(action==amp_20000) value = 20000.0;
-  if(action==amp_50000) value = 50000.0;
+  if(action==amp_00001)
+  {
+    value = 0.0001;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_00002)
+  {
+    value = 0.0002;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_00005)
+  {
+    value = 0.0005;
+    amplitude_doubler = 50;
+  }
+  if(action==amp_0001)
+  {
+    value = 0.001;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_0002)
+  {
+    value = 0.002;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_0005)
+  {
+    value = 0.005;
+    amplitude_doubler = 50;
+  }
+  if(action==amp_001)
+  {
+    value = 0.01;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_002)
+  {
+    value = 0.02;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_005)
+  {
+    value = 0.05;
+    amplitude_doubler = 50;
+  }
+  if(action==amp_01)
+  {
+    value = 0.1;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_02)
+  {
+    value = 0.2;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_05)
+  {
+    value = 0.5;
+    amplitude_doubler = 50;
+  }
+  if(action==amp_1)
+  {
+    value = 1.0;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_2)
+  {
+    value = 2.0;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_5)
+  {
+    value = 5.0;
+    amplitude_doubler = 50;
+  }
+  if(action==amp_10)
+  {
+    value = 10.0;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_20)
+  {
+    value = 20.0;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_50)
+  {
+    value = 50.0;
+    amplitude_doubler = 50;
+  }
+  if(action==amp_100)
+  {
+    value = 100.0;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_200)
+  {
+    value = 200.0;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_500)
+  {
+    value = 500.0;
+    amplitude_doubler = 50;
+  }
+  if(action==amp_1000)
+  {
+    value = 1000.0;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_2000)
+  {
+    value = 2000.0;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_5000)
+  {
+    value = 5000.0;
+    amplitude_doubler = 50;
+  }
+  if(action==amp_10000)
+  {
+    value = 10000.0;
+    amplitude_doubler = 10;
+  }
+  if(action==amp_20000)
+  {
+    value = 20000.0;
+    amplitude_doubler = 20;
+  }
+  if(action==amp_50000)
+  {
+    value = 50000.0;
+    amplitude_doubler = 50;
+  }
 
   for(i=0; i<signalcomps; i++)
   {
@@ -3203,13 +3482,38 @@ void UI_Mainwindow::set_amplitude_mult2()
 
   for(i=0; i<signalcomps; i++)
   {
-    signalcomp[i]->voltpercm *= 2;
+    if(amplitude_doubler != 20)
+    {
+      signalcomp[i]->voltpercm *= 2;
 
-    signalcomp[i]->screen_offset /= 2;
+      signalcomp[i]->screen_offset /= 2;
+    }
+    else
+    {
+      signalcomp[i]->voltpercm *= 2.5;
+
+      signalcomp[i]->screen_offset /= 2.5;
+    }
 
     for(j=0; j<signalcomp[i]->num_of_signals; j++)
     {
       signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / signalcomp[i]->voltpercm) / pixelsizefactor;
+    }
+  }
+
+  if(amplitude_doubler == 10)
+  {
+    amplitude_doubler = 20;
+  }
+  else
+  {
+    if(amplitude_doubler == 20)
+    {
+      amplitude_doubler = 50;
+    }
+    else
+    {
+      amplitude_doubler = 10;
     }
   }
 
@@ -3231,13 +3535,38 @@ void UI_Mainwindow::set_amplitude_div2()
 
   for(i=0; i<signalcomps; i++)
   {
-    signalcomp[i]->voltpercm /= 2;
+    if(amplitude_doubler != 50)
+    {
+      signalcomp[i]->voltpercm /= 2;
 
-    signalcomp[i]->screen_offset *= 2;
+      signalcomp[i]->screen_offset *= 2;
+    }
+    else
+    {
+      signalcomp[i]->voltpercm /= 2.5;
+
+      signalcomp[i]->screen_offset *= 2.5;
+    }
 
     for(j=0; j<signalcomp[i]->num_of_signals; j++)
     {
       signalcomp[i]->sensitivity[j] = (signalcomp[i]->edfhdr->edfparam[signalcomp[i]->edfsignal[j]].bitvalue / signalcomp[i]->voltpercm) / pixelsizefactor;
+    }
+  }
+
+  if(amplitude_doubler == 10)
+  {
+    amplitude_doubler = 50;
+  }
+  else
+  {
+    if(amplitude_doubler == 50)
+    {
+      amplitude_doubler = 20;
+    }
+    else
+    {
+      amplitude_doubler = 10;
     }
   }
 

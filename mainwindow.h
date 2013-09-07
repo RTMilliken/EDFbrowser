@@ -202,7 +202,9 @@ public:
       spectrum_bw,
       spectrum_sqrt,
       use_threads,
-      check_for_updates;
+      check_for_updates,
+      amplitude_doubler,
+      timescale_doubler;
 
   long long pagetime,
             maxfilesize_to_readin_annotations;

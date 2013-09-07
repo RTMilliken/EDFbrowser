@@ -98,6 +98,7 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
 void UI_LoadMontagewindow::LoadButtonClicked()
 {
   int i, j, k, n, p,
+      tmp,
       skip,
       found,
       signalcomps_read=0,
@@ -111,7 +112,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       order=1,
       type=0,
       model=0,
-      size=0;
+      size=0,
+      amp_cat[3];
 
   char *result,
        scratchpad[2048],
@@ -1223,6 +1225,40 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   if(mainwindow->files_open == 1)
   {
     strcpy(&mainwindow->recent_file_mtg_path[0][0], mtg_path);
+  }
+
+  mainwindow->timescale_doubler = round_125_cat(mainwindow->pagetime);
+
+  for(i=0; i<3; i++)
+  {
+    amp_cat[i] = 0;
+  }
+
+  for(i=0; i<mainwindow->signalcomps; i++)
+  {
+    tmp = round_125_cat(mainwindow->signalcomp[i]->voltpercm);
+
+    switch(tmp)
+    {
+      case 10 : amp_cat[0]++;
+                break;
+      case 20 : amp_cat[1]++;
+                break;
+      case 50 : amp_cat[2]++;
+                break;
+    }
+  }
+
+  mainwindow->amplitude_doubler = 10;
+
+  if((amp_cat[1] > amp_cat[0]) && (amp_cat[1] >= amp_cat[2]))
+  {
+    mainwindow->amplitude_doubler = 20;
+  }
+
+  if((amp_cat[2] > amp_cat[0]) && (amp_cat[2] > amp_cat[1]))
+  {
+    mainwindow->amplitude_doubler = 50;
   }
 
   mainwindow->setup_viewbuf();

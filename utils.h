@@ -80,6 +80,8 @@ int fprint_ll_number_nonlocalized(FILE *, long long, int, int);
 int is_integer_number(char *);
 int is_number(char *);
 
+int round_125_cat(double);  /* returns 10, 20 or 50, depending on the value */
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
