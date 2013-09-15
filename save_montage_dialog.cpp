@@ -246,6 +246,19 @@ void UI_SaveMontagewindow::SaveButtonClicked()
         fprintf(mtgfile, "    </zratio_filter>\n");
       }
 
+      if(mainwindow->signalcomp[i]->hasruler)
+      {
+        fprintf(mtgfile, "    <floating_ruler>\n");
+
+        fprintf(mtgfile, "      <hasruler>1</hasruler>\n");
+
+        fprintf(mtgfile, "      <ruler_x_position>%i</ruler_x_position>\n", mainwindow->maincurve->ruler_x_position);
+
+        fprintf(mtgfile, "      <ruler_y_position>%i</ruler_y_position>\n", mainwindow->maincurve->ruler_y_position);
+
+        fprintf(mtgfile, "    </floating_ruler>\n");
+      }
+
       fprintf(mtgfile, "  </signalcomposition>\n");
     }
   }

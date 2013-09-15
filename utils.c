@@ -1417,6 +1417,8 @@ void strntolower(char *s, int n)
 
 int round_125_cat(double value)
 {
+  if(value < 0)  value *= -1;
+
   if(value < 0.000001)  return(10);
 
   while(value > 1000)  value /=10;

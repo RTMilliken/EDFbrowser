@@ -1,4 +1,11 @@
 
+ version 1.53 beta
+ ------------
+
+ - The activity of the floating ruler will now be stored in the montages as well.
+
+
+
  version 1.52      September 7, 2013
  ------------
 

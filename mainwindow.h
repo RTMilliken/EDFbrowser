@@ -389,8 +389,7 @@ private:
                *DisplayGroup,
                *load_predefined_mtg_group;
 
-  QTimer   *t1,
-           *live_stream_timer;
+  QTimer   *live_stream_timer;
 
   QSplashScreen *splash;
 

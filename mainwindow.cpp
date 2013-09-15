@@ -908,14 +908,6 @@ UI_Mainwindow::UI_Mainwindow()
   pixmap = new QPixmap(":/images/splash.png");
   splash = new QSplashScreen(this, *pixmap, Qt::WindowStaysOnTopHint);
 
-  t1 = new QTimer;
-  t1->setSingleShot(TRUE);
-  QObject::connect(t1, SIGNAL(timeout()), splash, SLOT(close()));
-
-  splash->show();
-
-  t1->start(3000);
-
   update_checker = NULL;
 
   if(check_for_updates)
@@ -930,7 +922,6 @@ UI_Mainwindow::~UI_Mainwindow()
 {
   delete pixmap;
   delete splash;
-  delete t1;
   delete myfont;
   delete monofont;
   delete maincurve;
@@ -3474,9 +3465,19 @@ void UI_Mainwindow::set_amplitude_mult2()
 
   for(i=0; i<signalcomps; i++)
   {
-    if(signalcomp[i]->voltpercm > 5000000.0)
+    if(signalcomp[i]->voltpercm < 0)
     {
-      return;
+      if(signalcomp[i]->voltpercm < -5000000.0)
+      {
+        return;
+      }
+    }
+    else
+    {
+      if(signalcomp[i]->voltpercm > 5000000.0)
+      {
+        return;
+      }
     }
   }
 
@@ -3527,9 +3528,19 @@ void UI_Mainwindow::set_amplitude_div2()
 
   for(i=0; i<signalcomps; i++)
   {
-    if(signalcomp[i]->voltpercm < 0.000001)
+    if(signalcomp[i]->voltpercm < 0)
     {
-      return;
+      if(signalcomp[i]->voltpercm > -0.000001)
+      {
+        return;
+      }
+    }
+    else
+    {
+      if(signalcomp[i]->voltpercm < 0.000001)
+      {
+        return;
+      }
     }
   }
 

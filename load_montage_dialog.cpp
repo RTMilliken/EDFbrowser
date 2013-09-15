@@ -113,7 +113,8 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       type=0,
       model=0,
       size=0,
-      amp_cat[3];
+      amp_cat[3],
+      f_ruler_cnt=0;
 
   char *result,
        scratchpad[2048],
@@ -1177,6 +1178,66 @@ void UI_LoadMontagewindow::LoadButtonClicked()
       }
     }
 
+    if(f_ruler_cnt == 0)
+    {
+      if(!xml_goto_nth_element_inside(xml_hdl, "floating_ruler", 0))
+      {
+        if(xml_goto_nth_element_inside(xml_hdl, "hasruler", 0))
+        {
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this montage file.");
+          messagewindow.exec();
+          free(newsignalcomp);
+          xml_close(xml_hdl);
+          return;
+        }
+        result = xml_get_content_of_element(xml_hdl);
+        tmp = atoi(result);
+        free(result);
+
+        xml_go_up(xml_hdl);
+
+        if(tmp == 1)
+        {
+          f_ruler_cnt = 1;
+
+          mainwindow->maincurve->ruler_x_position = 200;
+          mainwindow->maincurve->ruler_y_position = 200;
+
+          if(!xml_goto_nth_element_inside(xml_hdl, "ruler_x_position", 0))
+          {
+            result = xml_get_content_of_element(xml_hdl);
+            tmp = atoi(result);
+            free(result);
+
+            if((tmp >= 0) && (tmp < 5000))
+            {
+              mainwindow->maincurve->ruler_x_position = tmp;
+            }
+
+            xml_go_up(xml_hdl);
+          }
+
+          if(!xml_goto_nth_element_inside(xml_hdl, "ruler_y_position", 0))
+          {
+            result = xml_get_content_of_element(xml_hdl);
+            tmp = atoi(result);
+            free(result);
+
+            if((tmp >= 0) && (tmp < 5000))
+            {
+              mainwindow->maincurve->ruler_y_position = tmp;
+            }
+
+            xml_go_up(xml_hdl);
+          }
+
+          newsignalcomp->hasruler = 1;
+        }
+
+        xml_go_up(xml_hdl);
+      }
+    }
+
     mainwindow->signalcomp[mainwindow->signalcomps] = newsignalcomp;
 
     mainwindow->signalcomps++;
@@ -1259,6 +1320,11 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   if((amp_cat[2] > amp_cat[0]) && (amp_cat[2] > amp_cat[1]))
   {
     mainwindow->amplitude_doubler = 50;
+  }
+
+  if(f_ruler_cnt == 1)
+  {
+    mainwindow->maincurve->ruler_active = 1;
   }
 
   mainwindow->setup_viewbuf();
