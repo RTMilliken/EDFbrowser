@@ -1202,6 +1202,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
           mainwindow->maincurve->ruler_x_position = 200;
           mainwindow->maincurve->ruler_y_position = 200;
+          mainwindow->maincurve->floating_ruler_value = 0;
 
           if(!xml_goto_nth_element_inside(xml_hdl, "ruler_x_position", 0))
           {
@@ -1226,6 +1227,20 @@ void UI_LoadMontagewindow::LoadButtonClicked()
             if((tmp >= 0) && (tmp < 5000))
             {
               mainwindow->maincurve->ruler_y_position = tmp;
+            }
+
+            xml_go_up(xml_hdl);
+          }
+
+          if(!xml_goto_nth_element_inside(xml_hdl, "floating_ruler_value", 0))
+          {
+            result = xml_get_content_of_element(xml_hdl);
+            tmp = atoi(result);
+            free(result);
+
+            if((tmp >= 0) && (tmp < 2))
+            {
+              mainwindow->maincurve->floating_ruler_value = tmp;
             }
 
             xml_go_up(xml_hdl);

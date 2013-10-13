@@ -154,7 +154,8 @@ public:
       annot_marker_moving,
       pressed_on_label,
       label_press_y_position,
-      cpu_cnt;
+      cpu_cnt,
+      floating_ruler_value;
 
   double original_screen_offset;
 
@@ -233,8 +234,7 @@ private:
 
   int         printing,
               w,
-              h,
-              floating_ruler_value;
+              h;
 
   double      *original_sensitivity,
               painter_pixelsizefactor,

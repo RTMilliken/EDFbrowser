@@ -256,6 +256,8 @@ void UI_SaveMontagewindow::SaveButtonClicked()
 
         fprintf(mtgfile, "      <ruler_y_position>%i</ruler_y_position>\n", mainwindow->maincurve->ruler_y_position);
 
+        fprintf(mtgfile, "      <floating_ruler_value>%i</floating_ruler_value>\n", mainwindow->maincurve->floating_ruler_value);
+
         fprintf(mtgfile, "    </floating_ruler>\n");
       }
 
