@@ -3636,6 +3636,8 @@ void UI_Mainwindow::setup_viewbuf()
           unsigned char four[4];
         } var;
 
+  struct date_time_struct date_time_str;
+
 
   for(i=0; i<files_open; i++) edfheaderlist[i]->prefiltertime = 0;
 
@@ -4242,9 +4244,15 @@ void UI_Mainwindow::setup_viewbuf()
 
   if(signalcomps && (!signal_averaging_active))
   {
+    l_temp = (edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION;
+    l_temp += edfheaderlist[sel_viewtime]->utc_starttime;
+    utc_to_date_time(l_temp, &date_time_str);
+
+    snprintf(viewtime_string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
+
     if((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset)>=0LL)
     {
-      snprintf(viewtime_string, 32, "%2i:%02i:%02i.%04i",
+      snprintf(viewtime_string + strlen(viewtime_string), 32, "%2i:%02i:%02i.%04i",
               (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION)/ 3600LL) % 24LL),
               (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION) % 3600LL) / 60LL),
               (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION) % 60LL),
@@ -4261,9 +4269,9 @@ void UI_Mainwindow::setup_viewbuf()
       l_temp = edfheaderlist[sel_viewtime]->l_starttime + ((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) % (86400LL * TIME_DIMENSION));
       if(l_temp<=0)
       {
-        l_temp = (86400LL * TIME_DIMENSION) + l_temp;
+        l_temp += (86400LL * TIME_DIMENSION);
       }
-      snprintf(viewtime_string, 32, "%2i:%02i:%02i.%04i",
+      snprintf(viewtime_string + strlen(viewtime_string), 32, "%2i:%02i:%02i.%04i",
               (int)((((l_temp) / TIME_DIMENSION)/ 3600LL) % 24LL),
               (int)((((l_temp) / TIME_DIMENSION) % 3600LL) / 60LL),
               (int)(((l_temp) / TIME_DIMENSION) % 60LL),

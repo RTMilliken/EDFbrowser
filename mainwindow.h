@@ -210,8 +210,8 @@ public:
             maxfilesize_to_readin_annotations;
 
   char *viewbuf,
-       viewtime_string[64],
-       pagetime_string[32],
+       viewtime_string[128],
+       pagetime_string[64],
        recent_montagedir[MAX_PATH_LENGTH],
        recent_savedir[MAX_PATH_LENGTH],
        recent_opendir[MAX_PATH_LENGTH],
