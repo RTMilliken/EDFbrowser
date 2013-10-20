@@ -204,7 +204,9 @@ public:
       use_threads,
       check_for_updates,
       amplitude_doubler,
-      timescale_doubler;
+      timescale_doubler,
+      viewtime_indicator_type,
+      mainwindow_title_type;
 
   long long pagetime,
             maxfilesize_to_readin_annotations;

@@ -100,6 +100,10 @@ UI_Mainwindow::UI_Mainwindow()
 
   x_pixelsizefactor = 0.0294382;
 
+  viewtime_indicator_type = 1;
+
+  mainwindow_title_type = 1;
+
   check_for_updates = 1;
 
   use_threads = 1;
@@ -2595,7 +2599,7 @@ void UI_Mainwindow::setMainwindowTitle(struct edfhdrblock *edfhdr)
 {
   int i, len;
 
-  char str[256];
+  char str[MAX_PATH_LENGTH + 64];
 
   struct date_time_struct date_time;
 
@@ -2607,34 +2611,53 @@ void UI_Mainwindow::setMainwindowTitle(struct edfhdrblock *edfhdr)
     return;
   }
 
-  if(edfhdr->edfplus || edfhdr->bdfplus)
-  {
-    snprintf(str, 256, PROGRAM_NAME "  subject %s  birthdate %s  startdate %s",
-                  edfhdr->plus_patient_name,
-                  edfhdr->plus_birthdate,
-                  edfhdr->plus_startdate);
-  }
-  else
-  {
-    utc_to_date_time(edfhdr->utc_starttime, &date_time);
+  str[0] = 0;
 
-    date_time.month_str[0] += 32;
-    date_time.month_str[1] += 32;
-    date_time.month_str[2] += 32;
-
-    snprintf(str, 256, PROGRAM_NAME "  %s  startdate %i %s %i",
-                  edfhdr->patient,
-                  date_time.day,
-                  date_time.month_str,
-                  date_time.year);
-    len = strlen(str);
-    for(i=0; i<len; i++)
+  if(mainwindow_title_type == 0)
+  {
+    if(edfhdr->edfplus || edfhdr->bdfplus)
     {
-      if(str[i]=='_')
+      snprintf(str, 256, PROGRAM_NAME "  subject %s  birthdate %s  startdate %s",
+                    edfhdr->plus_patient_name,
+                    edfhdr->plus_birthdate,
+                    edfhdr->plus_startdate);
+    }
+    else
+    {
+      utc_to_date_time(edfhdr->utc_starttime, &date_time);
+
+      date_time.month_str[0] += 32;
+      date_time.month_str[1] += 32;
+      date_time.month_str[2] += 32;
+
+      snprintf(str, 256, PROGRAM_NAME "  %s  startdate %i %s %i",
+                    edfhdr->patient,
+                    date_time.day,
+                    date_time.month_str,
+                    date_time.year);
+      len = strlen(str);
+      for(i=0; i<len; i++)
       {
-        str[i] = ' ';
+        if(str[i]=='_')
+        {
+          str[i] = ' ';
+        }
       }
     }
+  }
+
+  if(mainwindow_title_type == 1)
+  {
+    get_filename_from_path(str, edfhdr->filename, MAX_PATH_LENGTH);
+
+    strcat(str, " - " PROGRAM_NAME);
+  }
+
+  if(mainwindow_title_type == 2)
+  {
+    strcpy(str, edfhdr->filename);
+
+    strcat(str, " - " PROGRAM_NAME);
   }
 
   setWindowTitle(str);
@@ -4244,25 +4267,38 @@ void UI_Mainwindow::setup_viewbuf()
 
   if(signalcomps && (!signal_averaging_active))
   {
-    l_temp = (edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION;
-    l_temp += edfheaderlist[sel_viewtime]->utc_starttime;
-    utc_to_date_time(l_temp, &date_time_str);
+    viewtime_string[0] = 0;
 
-    snprintf(viewtime_string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
+    if(viewtime_indicator_type == 2)
+    {
+      l_temp = (edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION;
+      l_temp += edfheaderlist[sel_viewtime]->utc_starttime;
+      utc_to_date_time(l_temp, &date_time_str);
+
+      snprintf(viewtime_string, 32, "%2i-%s ", date_time_str.day, date_time_str.month_str);
+    }
 
     if((edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset)>=0LL)
     {
-      snprintf(viewtime_string + strlen(viewtime_string), 32, "%2i:%02i:%02i.%04i",
-              (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION)/ 3600LL) % 24LL),
-              (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION) % 3600LL) / 60LL),
-              (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION) % 60LL),
-              (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) % TIME_DIMENSION) / 1000LL));
+      if(viewtime_indicator_type > 0)
+      {
+        snprintf(viewtime_string + strlen(viewtime_string), 32, "%2i:%02i:%02i.%04i (",
+                (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION)/ 3600LL) % 24LL),
+                (int)((((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION) % 3600LL) / 60LL),
+                (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) / TIME_DIMENSION) % 60LL),
+                (int)(((edfheaderlist[sel_viewtime]->l_starttime + edfheaderlist[sel_viewtime]->viewtime + edfheaderlist[sel_viewtime]->starttime_offset) % TIME_DIMENSION) / 1000LL));
+      }
 
-      snprintf(viewtime_string + strlen(viewtime_string), 32, " (%i:%02i:%02i.%04i)",
+      snprintf(viewtime_string + strlen(viewtime_string), 32, "%i:%02i:%02i.%04i",
               (int)((edfheaderlist[sel_viewtime]->viewtime / TIME_DIMENSION)/ 3600LL),
               (int)(((edfheaderlist[sel_viewtime]->viewtime / TIME_DIMENSION) % 3600LL) / 60LL),
               (int)((edfheaderlist[sel_viewtime]->viewtime / TIME_DIMENSION) % 60LL),
               (int)((edfheaderlist[sel_viewtime]->viewtime % TIME_DIMENSION) / 1000LL));
+
+      if(viewtime_indicator_type > 0)
+      {
+        sprintf(viewtime_string + strlen(viewtime_string), ")");
+      }
     }
     else
     {
@@ -4271,19 +4307,28 @@ void UI_Mainwindow::setup_viewbuf()
       {
         l_temp += (86400LL * TIME_DIMENSION);
       }
-      snprintf(viewtime_string + strlen(viewtime_string), 32, "%2i:%02i:%02i.%04i",
-              (int)((((l_temp) / TIME_DIMENSION)/ 3600LL) % 24LL),
-              (int)((((l_temp) / TIME_DIMENSION) % 3600LL) / 60LL),
-              (int)(((l_temp) / TIME_DIMENSION) % 60LL),
-              (int)(((l_temp) % TIME_DIMENSION) / 1000LL));
+
+      if(viewtime_indicator_type > 0)
+      {
+        snprintf(viewtime_string + strlen(viewtime_string), 32, "%2i:%02i:%02i.%04i (",
+                (int)((((l_temp) / TIME_DIMENSION)/ 3600LL) % 24LL),
+                (int)((((l_temp) / TIME_DIMENSION) % 3600LL) / 60LL),
+                (int)(((l_temp) / TIME_DIMENSION) % 60LL),
+                (int)(((l_temp) % TIME_DIMENSION) / 1000LL));
+      }
 
       l_temp = -edfheaderlist[sel_viewtime]->viewtime;
 
-      snprintf(viewtime_string + strlen(viewtime_string), 32, " (-%i:%02i:%02i.%04i)",
+      snprintf(viewtime_string + strlen(viewtime_string), 32, "-%i:%02i:%02i.%04i",
               (int)((l_temp / TIME_DIMENSION)/ 3600LL),
               (int)(((l_temp / TIME_DIMENSION) % 3600LL) / 60LL),
               (int)((l_temp / TIME_DIMENSION) % 60LL),
               (int)((l_temp % TIME_DIMENSION) / 1000LL));
+
+      if(viewtime_indicator_type > 0)
+      {
+        sprintf(viewtime_string + strlen(viewtime_string), ")");
+      }
     }
 
     if(pagetime >= (3600LL * TIME_DIMENSION))
@@ -6213,6 +6258,40 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "viewtime_indicator_type", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    viewtime_indicator_type = atoi(result);
+    if((viewtime_indicator_type < 0) || (viewtime_indicator_type > 2))  viewtime_indicator_type = 1;
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "mainwindow_title_type", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    mainwindow_title_type = atoi(result);
+    if((mainwindow_title_type < 0) || (mainwindow_title_type > 2))  mainwindow_title_type = 1;
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
   xml_close(xml_hdl);
 }
 
@@ -6568,6 +6647,10 @@ void UI_Mainwindow::write_settings()
     fprintf(cfgfile, "    </raw2edf_var>\n");
 
     fprintf(cfgfile, "    <check_for_updates>%i</check_for_updates>\n", check_for_updates);
+
+    fprintf(cfgfile, "    <viewtime_indicator_type>%i</viewtime_indicator_type>\n", viewtime_indicator_type);
+
+    fprintf(cfgfile, "    <mainwindow_title_type>%i</mainwindow_title_type>\n", mainwindow_title_type);
 
     fprintf(cfgfile, "  </UI>\n</config>\n");
 

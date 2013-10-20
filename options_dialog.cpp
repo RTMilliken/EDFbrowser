@@ -582,6 +582,32 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   QObject::connect(checkbox4_5, SIGNAL(stateChanged(int)), this, SLOT(checkbox4_5Clicked(int)));
 
+  label4_9 = new QLabel(tab4);
+  label4_9->setGeometry(20, 415, 310, 25);
+  label4_9->setText("Viewtime / fileposition indicator");
+
+  combobox4_2 = new QComboBox(tab4);
+  combobox4_2->setGeometry(200, 415, 140, 20);
+  combobox4_2->addItem("relative");
+  combobox4_2->addItem("real (relative)");
+  combobox4_2->addItem("date real (relative)");
+  combobox4_2->setCurrentIndex(mainwindow->viewtime_indicator_type);
+
+  QObject::connect(combobox4_2, SIGNAL(currentIndexChanged(int)), this, SLOT(combobox4_2IndexChanged(int)));
+
+  label4_10 = new QLabel(tab4);
+  label4_10->setGeometry(20, 455, 310, 25);
+  label4_10->setText("Window title content");
+
+  combobox4_3 = new QComboBox(tab4);
+  combobox4_3->setGeometry(200, 455, 180, 20);
+  combobox4_3->addItem("Subject info");
+  combobox4_3->addItem("Filename");
+  combobox4_3->addItem("Filename with full path");
+  combobox4_3->setCurrentIndex(mainwindow->mainwindow_title_type);
+
+  QObject::connect(combobox4_3, SIGNAL(currentIndexChanged(int)), this, SLOT(combobox4_3IndexChanged(int)));
+
   tabholder->addTab(tab4, "Other");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -639,6 +665,22 @@ void UI_OptionsDialog::combobox4_1IndexChanged(int index)
   {
     mainwindow->powerlinefreq = 60;
   }
+}
+
+
+void UI_OptionsDialog::combobox4_2IndexChanged(int index)
+{
+  mainwindow->viewtime_indicator_type = index;
+
+  mainwindow->setup_viewbuf();
+}
+
+
+void UI_OptionsDialog::combobox4_3IndexChanged(int index)
+{
+  mainwindow->mainwindow_title_type = index;
+
+  mainwindow->setMainwindowTitle(mainwindow->edfheaderlist[mainwindow->sel_viewtime]);
 }
 
 

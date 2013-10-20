@@ -97,7 +97,7 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
 
 void UI_LoadMontagewindow::LoadButtonClicked()
 {
-  int i, j, k, n, p,
+  int i, k, n, p,
       tmp,
       skip,
       found,
@@ -126,8 +126,6 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   double frequency=1.0,
          frequency2=2.0,
          ripple=1.0;
-
-  struct date_time_struct date_time;
 
 
   struct xml_handle *xml_hdl;
@@ -1277,26 +1275,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
 
   if(LoadMontageDialog!=NULL) LoadMontageDialog->close();
 
-  utc_to_date_time(mainwindow->edfheaderlist[mainwindow->sel_viewtime]->utc_starttime, &date_time);
-
-  date_time.month_str[0] += 32;
-  date_time.month_str[1] += 32;
-  date_time.month_str[2] += 32;
-
-  snprintf(scratchpad, 512, PROGRAM_NAME "  %s  %i %s %i",
-                mainwindow->edfheaderlist[mainwindow->sel_viewtime]->patient,
-                date_time.day,
-                date_time.month_str,
-                date_time.year);
-  len = strlen(scratchpad);
-  for(j=0; j<len; j++)
-  {
-    if(scratchpad[j]=='_')
-    {
-      scratchpad[j] = ' ';
-    }
-  }
-  mainwindow->setWindowTitle(scratchpad);
+  mainwindow->setMainwindowTitle(mainwindow->edfheaderlist[mainwindow->sel_viewtime]);
 
   if(mainwindow->files_open == 1)
   {
