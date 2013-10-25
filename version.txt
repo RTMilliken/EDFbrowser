@@ -4,6 +4,15 @@
 
  - The activity of the floating ruler will now be stored in the montages as well.
 
+ - Added a filter to the annotationslist.
+
+ - Modified the BI9800 to EDF converter to make it work with 48-hour recordings.
+
+ - Made the viewtime (fileposition) indicator configurable.
+   Added the date to the viewtime indicator in the left down corner of the screen.
+
+ - Made the window title bar configurable.
+
 
 
  version 1.52      September 7, 2013
