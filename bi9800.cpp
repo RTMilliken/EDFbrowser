@@ -251,7 +251,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
       starttime_minute = atoi(str2 + 3);
       starttime_second = atoi(str2 + 6);
 
-      if((starttime_hour < 0)   || (starttime_hour > 23)   ||
+      if((starttime_hour < 0)  || (starttime_hour > 23)   ||
         (starttime_minute < 0) || (starttime_minute > 59) ||
         (starttime_second < 0) || (starttime_second > 59))
       {
@@ -270,7 +270,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
       strncpy(str2, str + 13, 10);
       str2[2] = 0;
 
-      if(atoi(str2) != 24)
+      if((atoi(str2) != 24) && (atoi(str2) != 48))
       {
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Wrong record hours.");
         messagewindow.exec();
