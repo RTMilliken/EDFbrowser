@@ -63,6 +63,7 @@
 #include "viewcurve.h"
 #include "utils.h"
 #include "averager_dialog.h"
+#include "edf_annot_list.h"
 
 
 class UI_Mainwindow;
@@ -95,9 +96,15 @@ private:
 
   QDialog *dialog1;
 
+  QHBoxLayout *h_layout;
+
   QVBoxLayout *v_layout;
 
   QCheckBox *checkbox1;
+
+  QLabel *label1;
+
+  QLineEdit *lineedit1;
 
   QAction *show_between_act,
           *average_annot_act,
@@ -119,6 +126,7 @@ private slots:
   void hide_same_annots(bool);
   void unhide_same_annots(bool);
   void unhide_all_annots(bool);
+  void filter_edited(const QString);
 };
 
 

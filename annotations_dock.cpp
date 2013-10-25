@@ -62,6 +62,12 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   checkbox1->setTristate(FALSE);
   checkbox1->setCheckState(Qt::Checked);
 
+  label1 = new QLabel;
+  label1->setText("Filter:");
+
+  lineedit1 = new QLineEdit;
+  lineedit1->setMaxLength(16);
+
   list = new QListWidget(dialog1);
   list->setFont(*mainwindow->monofont);
   list->setAutoFillBackground(TRUE);
@@ -84,8 +90,13 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   list->insertAction(NULL, unhide_all_annots_act);
   list->insertAction(NULL, average_annot_act);
 
+  h_layout = new QHBoxLayout;
+  h_layout->addWidget(checkbox1);
+  h_layout->addWidget(label1);
+  h_layout->addWidget(lineedit1);
+
   v_layout = new QVBoxLayout(dialog1);
-  v_layout->addWidget(checkbox1);
+  v_layout->addLayout(h_layout);
   v_layout->addWidget(list);
   v_layout->setSpacing(1);
 
@@ -103,6 +114,66 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   QObject::connect(unhide_all_annots_act,  SIGNAL(triggered(bool)),                this, SLOT(unhide_all_annots(bool)));
   QObject::connect(average_annot_act,      SIGNAL(triggered(bool)),                this, SLOT(average_annot(bool)));
   QObject::connect(show_between_act,       SIGNAL(triggered(bool)),                this, SLOT(show_between(bool)));
+  QObject::connect(lineedit1,              SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+}
+
+
+void UI_Annotationswindow::filter_edited(const QString text)
+{
+  int i, cnt, n, len;
+
+  char filter_str[32];
+
+  struct annotationblock *annot;
+
+
+  annot = mainwindow->annotationlist[file_num];
+
+  cnt = edfplus_annotation_count(&annot);
+
+  if(cnt < 1)
+  {
+    return;
+  }
+
+  if(text.length() < 1)
+  {
+    while(annot != NULL)
+    {
+      annot->hided_in_list = 0;
+
+      annot = annot->next_annotation;
+    }
+
+    updateList();
+
+    return;
+  }
+
+  strcpy(filter_str, lineedit1->text().toUtf8().data());
+
+  len = strlen(filter_str);
+
+  while(annot != NULL)
+  {
+    annot->hided_in_list = 1;
+
+    n = strlen(annot->annotation) - len + 1;
+
+    for(i=0; i<n; i++)
+    {
+      if(!(strncmp(filter_str, annot->annotation + i, len)))
+      {
+        annot->hided_in_list = 0;
+
+        break;
+      }
+    }
+
+    annot = annot->next_annotation;
+  }
+
+  updateList();
 }
 
 
@@ -434,8 +505,17 @@ void UI_Annotationswindow::updateList(void)
 
   annotation = mainwindow->annotationlist[file_num];
 
-  while(annotation)
+  while(annotation != NULL)
   {
+    if(annotation->hided_in_list)
+    {
+      annotation = annotation->next_annotation;
+
+      sequence_nr++;
+
+      continue;
+    }
+
     string = QString::fromUtf8(annotation->annotation);
 
     ba = string.toUtf8();

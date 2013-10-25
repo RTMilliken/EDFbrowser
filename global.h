@@ -231,6 +231,7 @@ struct annotationblock{
         int selected;
         int jump;
         int hided;
+        int hided_in_list;
        };
 
 struct active_markersblock{
