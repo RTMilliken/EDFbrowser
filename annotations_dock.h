@@ -52,6 +52,7 @@
 #include <QCheckBox>
 #include <QAction>
 #include <QMessageBox>
+#include <QVariant>
 
 #include <stdio.h>
 #include <stdlib.h>

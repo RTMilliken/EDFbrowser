@@ -572,6 +572,8 @@ void UI_Annotationswindow::updateList(void)
 
     listitem = new QListWidgetItem(string, list);
 
+    listitem->setData(Qt::UserRole, QVariant(sequence_nr));
+
     if(annotation->modified==1)
     {
       listitem->setFont(specialfont);
@@ -672,7 +674,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
 
   annotation = mainwindow->annotationlist[file_num];
 
-  n = list->row(item);
+  n = item->data(Qt::UserRole).toInt();
 
   if(mainwindow->annot_editor_active)
   {
