@@ -473,6 +473,20 @@ int edf_blockwrite_physical_samples(int handle, double *buf);
 /* Returns 0 on success, otherwise -1 */
 
 
+int edfwrite_digital_short_samples(int handle, short *buf);
+
+/* Writes n "raw" digital samples from *buf belonging to one signal */
+/* where n is the samplefrequency of the signal. */
+/* The samples will be written to the file without any conversion. */
+/* Because the size of a short is 16-bit, do not use this function with BDF (24-bit) */
+/* The number of samples written is equal to the samplefrequency of the signal */
+/* Size of buf should be equal to or bigger than sizeof(int[samplefrequency]) */
+/* Call this function for every signal in the file. The order is important! */
+/* When there are 4 signals in the file,  the order of calling this function */
+/* must be: signal 0, signal 1, signal 2, signal 3, signal 0, signal 1, signal 2, etc. */
+/* Returns 0 on success, otherwise -1 */
+
+
 int edfwrite_digital_samples(int handle, int *buf);
 
 /* Writes n "raw" digital samples from *buf belonging to one signal */
@@ -484,6 +498,34 @@ int edfwrite_digital_samples(int handle, int *buf);
 /* Call this function for every signal in the file. The order is important! */
 /* When there are 4 signals in the file,  the order of calling this function */
 /* must be: signal 0, signal 1, signal 2, signal 3, signal 0, signal 1, signal 2, etc. */
+/* Returns 0 on success, otherwise -1 */
+
+
+int edf_blockwrite_digital_3byte_samples(int handle, void *buf);
+
+/* Writes "raw" digital samples from *buf. */
+/* buf must be filled with samples from all signals, starting with n samples of signal 0, n samples of signal 1, n samples of signal 2, etc. */
+/* where n is the samplefrequency of the signal. */
+/* One block equals one second. One sample equals 3 bytes, order is little endian (least significant byte first) */
+/* Encoding is second's complement, most significant bit of most significant byte is the sign-bit */
+/* Warning: this function can only be used when all signals have the same samplefrequency! */
+/* The samples will be written to the file without any conversion. */
+/* Because the size of a 3-byte sample is 24-bit, do not use this function with EDF (16-bit). */
+/* The total number of samples written is equal to: samplefrequency x number of signals. */
+/* Size of buf should be equal to or bigger than: samplefrequency x number of signals x 3 bytes */
+/* Returns 0 on success, otherwise -1 */
+
+
+int edf_blockwrite_digital_short_samples(int handle, short *buf);
+
+/* Writes "raw" digital samples from *buf. */
+/* buf must be filled with samples from all signals, starting with n samples of signal 0, n samples of signal 1, n samples of signal 2, etc. */
+/* where n is the samplefrequency of the signal. */
+/* One block equals one second. */
+/* The samples will be written to the file without any conversion. */
+/* Because the size of a short is 16-bit, do not use this function with BDF (24-bit) */
+/* The number of samples written is equal to the sum of the samplefrequencies of all signals. */
+/* Size of buf should be equal to or bigger than sizeof(int) multiplied by the sum of the samplefrequencies of all signals */
 /* Returns 0 on success, otherwise -1 */
 
 

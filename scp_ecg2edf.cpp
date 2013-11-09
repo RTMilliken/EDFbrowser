@@ -313,7 +313,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   if(scratchpad[1] & 1)
   {
-    textEdit1->append("Error, reference beat subtraction used for compression.\n ");
+    textEdit1->append("Reference beat subtraction used for compression which is not supported by this converter.\n ");
     fclose(inputfile);
     free(block);
     pushButton1->setEnabled(TRUE);
@@ -322,7 +322,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   if(!(scratchpad[1] & 4))
   {
-    textEdit1->append("Error, leads are not simultaneously recorded. (1)\n ");
+    textEdit1->append("Leads are not simultaneously recorded which is not supported by this converter. (1)\n ");
     fclose(inputfile);
     free(block);
     pushButton1->setEnabled(TRUE);
@@ -399,7 +399,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     if(lp[i].start < 1)
     {
-      textEdit1->append("Error (55) (lp[i].start < 1)\n");
+      textEdit1->append("Error, start sample number in section 3 is less than 1.\n");
       fclose(inputfile);
       free(block);
       pushButton1->setEnabled(TRUE);
