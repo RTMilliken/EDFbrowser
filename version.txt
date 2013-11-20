@@ -13,6 +13,12 @@
 
  - Made the window title bar configurable.
 
+ - Added support for the Unisens fileformat. You will find the converter in the Tools menu.
+   Limitations of the converter:
+   - the following binary sampletypes are not (yet) supported: int64, uint64, double and float.
+   - XML-file must be encoded in UTF-8 or ISO-8859-1.
+   - minimum samplerate is 1 Hz. Broken numbers will be rounded e.g. 2.5 Hz will be rounded to 2 Hz.
+
 
 
  version 1.52      September 7, 2013

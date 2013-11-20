@@ -206,11 +206,171 @@ int xml_strncpy_encode_entity(char *dest, const char *src, int n)
 }
 
 
+void xml_strcpy_decode_entity(char *dest, const char *src)
+{
+  int i, len, p=0;
+
+  len = strlen(src);
+
+  for(i=0; i<len; i++)
+  {
+    if((i + p) < (len - 4))
+    {
+      if(!strncmp(src + i + p, "&lt;", 4))
+      {
+        dest[i] = '<';
+        p += 3;
+        continue;
+      }
+
+      if(!strncmp(src + i + p, "&gt;", 4))
+      {
+        dest[i] = '>';
+        p += 3;
+        continue;
+      }
+    }
+
+    if((i + p) < (len - 5))
+    {
+      if(!strncmp(src + i + p, "&amp;", 5))
+      {
+        dest[i] = '&';
+        p += 4;
+        continue;
+      }
+    }
+
+    if((i + p) < (len - 6))
+    {
+      if(!strncmp(src + i + p, "&apos;", 6))
+      {
+        dest[i] = '\'';
+        p += 5;
+        continue;
+      }
+
+      if(!strncmp(src + i + p, "&quot;", 6))
+      {
+        dest[i] = '\"';
+        p += 5;
+        continue;
+      }
+    }
+
+    dest[i] = src[i + p];
+
+    if(dest[i] == 0)  break;
+  }
+}
+
+
+int xml_strncpy_decode_entity(char *dest, const char *src, int n)
+{
+  int i, len, p=0;
+
+  if(n < 1)
+  {
+    return(0);
+  }
+
+  len = strlen(src);
+
+  for(i=0; i<len; i++)
+  {
+    if((i + p) < (len - 4))
+    {
+      if(!strncmp(src + i + p, "&lt;", 4))
+      {
+        dest[i] = '<';
+        p += 3;
+        continue;
+      }
+
+      if(!strncmp(src + i + p, "&gt;", 4))
+      {
+        dest[i] = '>';
+        p += 3;
+        continue;
+      }
+    }
+
+    if((i + p) < (len - 5))
+    {
+      if(!strncmp(src + i + p, "&amp;", 5))
+      {
+        dest[i] = '&';
+        p += 4;
+        continue;
+      }
+    }
+
+    if((i + p) < (len - 6))
+    {
+      if(!strncmp(src + i + p, "&apos;", 6))
+      {
+        dest[i] = '\'';
+        p += 5;
+        continue;
+      }
+
+      if(!strncmp(src + i + p, "&quot;", 6))
+      {
+        dest[i] = '\"';
+        p += 5;
+        continue;
+      }
+    }
+
+    dest[i] = src[i + p];
+
+    if(i >= (n - 1))
+    {
+      i++;
+
+      break;
+    }
+  }
+
+  return(i);
+}
+
+
+int xml_get_attribute_of_element(struct xml_handle *handle_p, const char *attr_name, char *str_buf, int content_len)
+{
+  if(handle_p == NULL)  return(1);
+
+  while(handle_p->child_handle_p != NULL)
+  {
+    handle_p = handle_p->child_handle_p;
+  }
+
+  if(handle_p->attributes == NULL)  return(1);
+
+  if(strlen(attr_name) < 1)  return(1);
+
+  if(content_len < 1)  return(1);
+
+  if(xml_attribute(handle_p->attributes, attr_name, str_buf, content_len) < 1)
+  {
+    return(1);
+  }
+
+  return(0);
+}
+
+
 int xml_attribute(const char *data, const char *item, char *result, int result_len)
 {
   int i, j,
       data_len,
-      item_len;
+      item_len,
+      quote=0;
+
+  if(data == NULL)
+  {
+    return(-1);
+  }
 
   data_len = strlen(data);
   item_len = strlen(item);
@@ -220,9 +380,22 @@ int xml_attribute(const char *data, const char *item, char *result, int result_l
     return(-1);
   }
 
-
   for(i=0; i<(data_len - item_len); i++)
   {
+    if(data[i] == '\"')
+    {
+      if(quote)
+      {
+        quote--;
+      }
+      else
+      {
+        quote++;
+      }
+    }
+
+    if(quote)  continue;
+
     if(!strncmp(data + i, item, item_len))
     {
       i += item_len;
@@ -239,7 +412,8 @@ int xml_attribute(const char *data, const char *item, char *result, int result_l
             {
               if((j - i) < result_len)
               {
-                strncpy(result, data + i, j - i);
+                // strncpy(result, data + i, j - i);
+                xml_strncpy_decode_entity(result, data + i, j - i);
                 result[j - i] = 0;
 
                 return(j - i);
@@ -266,16 +440,6 @@ struct xml_handle * xml_get_handle(const char *filename)
   handle_p = (struct xml_handle *)calloc(1, sizeof(struct xml_handle));
   if(handle_p==NULL)  return(NULL);
 
-  handle_p->level = 0;
-  handle_p->offset = 0;
-  handle_p->len = 0;
-  handle_p->elementname = NULL;
-  handle_p->attribute = NULL;
-  handle_p->parent_handle_p = NULL;
-  handle_p->child_handle_p = NULL;
-  handle_p->tag_search_result = NULL;
-  handle_p->encoding = 0;
-
   handle_p->file = fopen(filename, "rb");
   if(handle_p->file==NULL)
   {
@@ -296,60 +460,33 @@ struct xml_handle * xml_get_handle(const char *filename)
     return(NULL);
   }
 
-  if(strlen(handle_p->tag_search_result) < 19)
+  if(strlen(handle_p->tag_search_result) < 3)
   {
     xml_close(handle_p);
     return(NULL);
   }
 
-  if(strncmp(handle_p->tag_search_result, "?xml ", 5)  || (handle_p->tag_search_result[strlen(handle_p->tag_search_result) - 1] != '?'))
+  if((handle_p->tag_search_result[0] == '?')  && (handle_p->tag_search_result[strlen(handle_p->tag_search_result) - 1] == '?'))
   {
-    xml_close(handle_p);
-    return(NULL);
-  }
-
-  if(xml_attribute(handle_p->tag_search_result, "version", scratchpad, 512) < 0)
-  {
-    xml_close(handle_p);
-    return(NULL);
-  }
-  else
-  {
-    if(strcmp(scratchpad, "1.0"))
+    if(xml_attribute(handle_p->tag_search_result, "encoding", scratchpad, 512) < 0)
     {
-      xml_close(handle_p);
-      return(NULL);
+      handle_p->encoding = 0;  // attribute encoding not present
     }
-  }
-
-  if(xml_attribute(handle_p->tag_search_result, "encoding", scratchpad, 512) < 0)
-  {
-    handle_p->encoding = 0;
-  }
-  else
-  {
-    if(strcmp(scratchpad, "ISO-8859-1"))
+    else
     {
-      handle_p->encoding = 1;
+      if(!strcmp(scratchpad, "ISO-8859-1"))
+      {
+        handle_p->encoding = 1;
+      }
+      else if(!strcmp(scratchpad, "UTF-8"))
+        {
+          handle_p->encoding = 2;
+        }
+        else
+        {
+          handle_p->encoding = 99999;  // unknown encoding
+        }
     }
-
-    if(strcmp(scratchpad, "UTF-8"))
-    {
-      handle_p->encoding = 2;
-    }
-  }
-
-  handle_p->offset = next_tag(handle_p->offset, handle_p);
-  if(handle_p->offset==-1)
-  {
-    xml_close(handle_p);
-    return(NULL);
-  }
-
-  if(handle_p->tag_search_result==NULL)
-  {
-    xml_close(handle_p);
-    return(NULL);
   }
 
   while((handle_p->tag_search_result[0]=='!') || (handle_p->tag_search_result[0]=='?'))
@@ -378,9 +515,6 @@ struct xml_handle * xml_get_handle(const char *filename)
 }
 
 
-
-
-
 struct xml_handle * xml_create_handle(const char *filename, char *rootname)
 {
   int len;
@@ -393,15 +527,6 @@ struct xml_handle * xml_create_handle(const char *filename, char *rootname)
 
   handle_p = (struct xml_handle *)calloc(1, sizeof(struct xml_handle));
   if(handle_p==NULL)  return(NULL);
-
-  handle_p->level = 0;
-  handle_p->offset = 0;
-  handle_p->len = 0;
-  handle_p->elementname = NULL;
-  handle_p->attribute = NULL;
-  handle_p->parent_handle_p = NULL;
-  handle_p->child_handle_p = NULL;
-  handle_p->tag_search_result = NULL;
 
   handle_p->file = fopen(filename, "wb+");
   if(handle_p->file==NULL)
@@ -695,7 +820,7 @@ int xml_goto_next_element_with_same_name(struct xml_handle *handle_p)
 
 int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
 {
-  int offset, deep=0;
+  int offset, deep=0, ts_len;
 
   if(handle_p==NULL)  return(1);
 
@@ -731,7 +856,12 @@ int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
     }
     else
     {
-      deep++;
+      ts_len = strlen(handle_p->tag_search_result);
+
+      if(handle_p->tag_search_result[ts_len - 1]!='/')
+      {
+        deep++;
+      }
     }
   }
 
@@ -780,7 +910,7 @@ int xml_goto_next_element_at_same_level(struct xml_handle *handle_p)
 
 int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, int n)
 {
-  int len, offset, deep=0, cnt=0;
+  int len, offset, deep=0, cnt=0, ts_len;
 
   struct xml_handle *new_handle_p;
 
@@ -822,7 +952,13 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
       }
       else
       {
-        deep++;
+        ts_len = strlen(handle_p->tag_search_result);
+
+        if(handle_p->tag_search_result[ts_len - 1]!='/')
+        {
+          deep++;
+        }
+
         break;
       }
     }
@@ -848,7 +984,7 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
             new_handle_p->offset = offset;
             new_handle_p->len = 0;
             new_handle_p->elementname = NULL;
-            new_handle_p->attribute = NULL;
+            new_handle_p->attributes = NULL;
             new_handle_p->parent_handle_p = handle_p;
             new_handle_p->child_handle_p = NULL;
             new_handle_p->tag_search_result = NULL;
@@ -875,7 +1011,7 @@ int xml_goto_nth_element_inside(struct xml_handle *handle_p, const char *name, i
 
 int process_tag(const char *str, struct xml_handle *handle_p)
 {
-  int len, i;
+  int len, i, p;
 
   if(handle_p==NULL)  return(1);
 
@@ -889,12 +1025,34 @@ int process_tag(const char *str, struct xml_handle *handle_p)
     if((str[i]==' ')||(str[i]=='>'))  break;
   }
 
-  if(handle_p->elementname)  free(handle_p->elementname);
+  if(handle_p->elementname != NULL)  free(handle_p->elementname);
 
   handle_p->elementname = (char *)calloc(1, i + 1);
   if(handle_p->elementname==NULL)  return(1);
   strncpy(handle_p->elementname, str, i);
   handle_p->elementname[i] = 0;
+
+  if(handle_p->attributes != NULL)  free(handle_p->attributes);
+
+  if(str[i]!=' ')  return(0);
+
+  i++;
+
+  p = i;
+
+  for(; i<len; i++)
+  {
+    if(str[i]=='>')  break;
+  }
+
+  len = i - p;
+
+  if(len < 2)  return(0);
+
+  handle_p->attributes = (char *)calloc(1, len + 1);
+  if(handle_p->attributes==NULL)  return(1);
+  strncpy(handle_p->attributes, str + p, len);
+  handle_p->attributes[len] = 0;
 
   return(0);
 }
@@ -907,9 +1065,9 @@ void xml_close(struct xml_handle *handle_p)  /* delete everything and close the 
   {
     xml_goto_root(handle_p);
 
-    if(handle_p->file!=NULL)  fclose(handle_p->file);
+    if(handle_p->file != NULL)  fclose(handle_p->file);
     if(handle_p->elementname)  free(handle_p->elementname);
-    if(handle_p->attribute)  free(handle_p->attribute);
+    if(handle_p->attributes)  free(handle_p->attributes);
     if(handle_p->tag_search_result)  free(handle_p->tag_search_result);
     free(handle_p);
     handle_p = NULL;
@@ -929,9 +1087,9 @@ void xml_goto_root(struct xml_handle *handle_p) /* go to rootlevel and delete ev
 
   while(handle_p->level!=0)
   {
-    if(handle_p->elementname!=NULL)  free(handle_p->elementname);
-    if(handle_p->attribute!=NULL)  free(handle_p->attribute);
-    if(handle_p->tag_search_result!=NULL)  free(handle_p->tag_search_result);
+    if(handle_p->elementname != NULL)  free(handle_p->elementname);
+    if(handle_p->attributes != NULL)  free(handle_p->attributes);
+    if(handle_p->tag_search_result != NULL)  free(handle_p->tag_search_result);
 
     handle_p = handle_p->parent_handle_p;
 
@@ -962,9 +1120,9 @@ void xml_go_up(struct xml_handle *handle_p) /* go one level up and delete everyt
 
   while(handle_p->level!=level)
   {
-    if(handle_p->elementname!=NULL)  free(handle_p->elementname);
-    if(handle_p->attribute!=NULL)  free(handle_p->attribute);
-    if(handle_p->tag_search_result!=NULL)  free(handle_p->tag_search_result);
+    if(handle_p->elementname != NULL)  free(handle_p->elementname);
+    if(handle_p->attributes != NULL)  free(handle_p->attributes);
+    if(handle_p->tag_search_result != NULL)  free(handle_p->tag_search_result);
 
     handle_p = handle_p->parent_handle_p;
 

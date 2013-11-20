@@ -589,7 +589,7 @@ int edf_set_number_of_annotation_signals(int handle, int annot_signals);
 /* This function is optional and can be called only after opening a file in writemode */
 /* and before the first sample write action */
 /* Normally you don't need to change the default value. Only when the number of annotations */
-/* you want to write is more than the number of seconds of the duration of the recording you can use */
+/* you want to write is more than the number of seconds of the duration of the recording, you can use */
 /* this function to increase the storage space for annotations */
 /* Minimum is 1, maximum is 64 */
 

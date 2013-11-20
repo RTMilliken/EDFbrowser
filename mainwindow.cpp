@@ -644,6 +644,7 @@ UI_Mainwindow::UI_Mainwindow()
   toolsmenu->addAction("Convert EDF+D to EDF+C", this, SLOT(edfd_converter()));
   toolsmenu->addAction("Convert Biosemi to BDF+", this, SLOT(biosemi2bdfplus_converter()));
   toolsmenu->addAction("Convert BDF to EDF", this, SLOT(bdf2edf_converter()));
+  toolsmenu->addAction("Convert Unisens to EDF+", this, SLOT(unisens2edf_converter()));
   toolsmenu->addAction("Convert BI9800TL+3 to EDF", this, SLOT(BI98002edf_converter()));
   toolsmenu->addAction("Convert Wave to EDF", this, SLOT(convert_wave_to_edf()));
   toolsmenu->addAction("Convert Binary/raw data to EDF", this, SLOT(convert_binary_to_edf()));
@@ -1775,6 +1776,12 @@ void UI_Mainwindow::reduce_signals()
 void UI_Mainwindow::edit_header()
 {
   UI_headerEditorWindow header_edit(this);
+}
+
+
+void UI_Mainwindow::unisens2edf_converter()
+{
+  UI_UNISENS2EDFwindow unisens2edfconv(recent_opendir, recent_savedir);
 }
 
 

@@ -148,6 +148,7 @@
 #include "check_for_updates.h"
 #include "manscan2edf.h"
 #include "scp_ecg2edf.h"
+#include "unisens2edf.h"
 
 #include "third_party/fidlib/fidlib.h"
 
@@ -489,6 +490,7 @@ private slots:
   void set_dc_offset_to_zero();
   void annotation_editor();
   void save_file();
+  void unisens2edf_converter();
   void BI98002edf_converter();
   void export_annotations();
   void load_predefined_mtg(QAction *);

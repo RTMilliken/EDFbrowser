@@ -47,7 +47,7 @@ struct xml_handle
   int offset;
   int len;
   char *elementname;
-  char *attribute;
+  char *attributes;
   struct xml_handle *parent_handle_p;
   struct xml_handle *child_handle_p;
   char *tag_search_result;
@@ -59,7 +59,7 @@ struct xml_handle * xml_get_handle(const char *);
 struct xml_handle * xml_create_handle(const char *, char *);
 void xml_close(struct xml_handle *);
 void xml_go_up(struct xml_handle *);
-int xml_goto_nth_element_inside(struct xml_handle *,const char *, int);
+int xml_goto_nth_element_inside(struct xml_handle *, const char *, int);
 int xml_goto_next_element_with_same_name(struct xml_handle *);
 int xml_goto_next_element_at_same_level(struct xml_handle *);
 void xml_goto_root(struct xml_handle *);
@@ -68,7 +68,10 @@ void xml_strcpy_encode_entity(char *, const char *);
 int xml_strncpy_encode_entity(char *, const char *, int);
 void xml_fwrite_encode_entity(FILE *, const char *);
 void xml_fnwrite_encode_entity(FILE *, const char *, int);
+void xml_strcpy_decode_entity(char *, const char *);
+int xml_strncpy_decode_entity(char *, const char *, int);
 int xml_character_encoding_type(struct xml_handle *);
+int xml_get_attribute_of_element(struct xml_handle *, const char *, char *, int);
 
 #endif
 
