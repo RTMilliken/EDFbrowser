@@ -51,6 +51,7 @@
   <li><a href="#Z_EEG">Z-EEG</a></li>
   <li><a href="#ASCII_to_EDF_converter">ASCII to EDF/BDF format converter</a></li>
   <li><a href="#Nihon_Kohden_to_EDF_format_converter">Nihon Kohden to EDF(+) format converter</a></li>
+  <li><a href="#UNISENS_TO_EDFPLUS">Unisens to EDF+ format converter</a></li>
   <li><a href="#SCP_ECG_to_EDFplus">SCP ECG to EDF+ format converter</a></li>
   <li><a href="#Manscan_to_EDFplus">Manscan to EDF+ format converter</a></li>
   <li><a href="#Biosemi_to_BDFplus">Biosemi to BDF+ format converter</a></li>
@@ -1004,6 +1005,26 @@
 
 <p><br><br></p>
 
+<h3><a name="UNISENS_TO_EDFPLUS">Unisens to EDF+ format converter</a></h3>
+
+<p>
+  This tool converts the waveform data and events/triggers from a collection of Unisense data files to EDF+.<br>
+<br>
+   Limitations of the converter:<br>
+   - the following binary sampletypes are not (yet) supported: int64, uint64, double and float.<br>
+   - the Unisens XML-file must be encoded in UTF-8 or ISO-8859-1.<br>
+   - minimum samplerate is 1 Hz. Broken numbers will be rounded e.g. 2.5 Hz will be rounded to 2 Hz.<br>
+<br>
+   An extra feature of the converter which is not in the offical Unisens data format specification:<br>
+   - support for binary sampletypes: int24 and uint24.
+</p>
+
+<p><br></p>
+
+<p><a href="#Table_of_Contents">Table of Contents</a></p>
+
+<p><br><br></p>
+
 <h3><a name="SCP_ECG_to_EDFplus">SCP ECG to EDF+ format converter</a></h3>
 
 <p>
@@ -1051,11 +1072,9 @@
 
   Limitations:<br><br>
 
- - The maximum number of annotations (input triggers) in the new file<br>
- &nbsp;&nbsp;is: duration of file in seconds multiplied by 32. If the original file contains more<br>
- &nbsp;&nbsp;trigger input events, they will be ignored.<br>
- &nbsp;&nbsp;If, for example, the duration of a file is 5 minutes, the first 9600 input triggers<br>
- &nbsp;&nbsp;will be converted to BDF+ annotations.<br><br>
+ - The maximum number of annotations (input triggers) in the new file is:<br>
+ &nbsp;&nbsp;duration of file in seconds multiplied by 32. If the original file contains more trigger input events, they will be ignored.<br>
+ &nbsp;&nbsp;If, for example, the duration of a file is 5 minutes, the first 9600 input triggers will be converted to BDF+ annotations.<br><br>
 
  - The precision of the annotations is limited to 100 microSeconds (0.0001 sec.).<br><br>
 

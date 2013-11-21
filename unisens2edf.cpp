@@ -47,6 +47,33 @@
 
 #endif
 
+#define US_DATATYPE_FLOAT_LI     0
+#define US_DATATYPE_FLOAT_BI     1
+#define US_DATATYPE_DOUBLE_LI    2
+#define US_DATATYPE_DOUBLE_BI    3
+#define US_DATATYPE_INT64_LI     4
+#define US_DATATYPE_INT64_BI     5
+#define US_DATATYPE_UINT64_LI    6
+#define US_DATATYPE_UINT64_BI    7
+#define US_DATATYPE_INT32_LI     8
+#define US_DATATYPE_INT32_BI     9
+#define US_DATATYPE_UINT32_LI   10
+#define US_DATATYPE_UINT32_BI   11
+#define US_DATATYPE_INT24_LI    12
+#define US_DATATYPE_INT24_BI    13
+#define US_DATATYPE_UINT24_LI   14
+#define US_DATATYPE_UINT24_BI   15
+#define US_DATATYPE_INT16_LI    16
+#define US_DATATYPE_INT16_BI    17
+#define US_DATATYPE_UINT16_LI   18
+#define US_DATATYPE_UINT16_BI   19
+#define US_DATATYPE_INT8_LI     20
+#define US_DATATYPE_INT8_BI     21
+#define US_DATATYPE_UINT8_LI    22
+#define US_DATATYPE_UINT8_BI    23
+
+
+#define US_SAMPLERATE_OUT_OF_RANGE  22
 
 
 
@@ -232,18 +259,34 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   bdf = 0;
 
+  int skip = 0;
+
   for(file_cnt=0; file_cnt<MAXFILES; file_cnt++)
   {
-    if(xml_goto_nth_element_inside(xml_hdl, "signalEntry", file_cnt))
+    if(xml_goto_nth_element_inside(xml_hdl, "signalEntry", file_cnt + skip))
     {
       break;
     }
 
-    if(get_signalparameters_from_BIN_attributes(xml_hdl, file_cnt))
+    tmp = get_signalparameters_from_BIN_attributes(xml_hdl, file_cnt);
+    if(tmp)
     {
-      xml_close(xml_hdl);
-      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
-      return;
+      if(tmp == US_SAMPLERATE_OUT_OF_RANGE)
+      {
+        xml_go_up(xml_hdl);
+
+        file_cnt--;
+
+        skip++;
+
+        continue;
+      }
+      else
+      {
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
     }
 
     if(xml_goto_nth_element_inside(xml_hdl, "binFileFormat", 0))
@@ -289,6 +332,8 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     else
     {
       big_endian[file_cnt] = 1;
+
+      datatype[file_cnt]++;
     }
 
     xml_go_up(xml_hdl);
@@ -734,6 +779,14 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   char *buf1_t;
 
+  union {
+          unsigned int one;
+          signed int one_signed;
+          unsigned short two[2];
+          signed short two_signed[2];
+          unsigned char four[4];
+        } var;
+
   for(blocks_written=0; blocks_written<max_datablocks; blocks_written++)
   {
     if(!(blocks_written % progress_steps))
@@ -774,7 +827,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
           return;
         }
 
-        if((samplesize[k] == 2) && (big_endian[k] == 0) && (straightbinary[k] == 0))  // int16
+        if(datatype[k] == US_DATATYPE_INT16_LI)
         {
           for(i=0; i<sf_t; i++)
           {
@@ -784,7 +837,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
             }
           }
         }
-        else if((samplesize[k] == 2) && (big_endian[k] == 0) && (straightbinary[k] == 1))  // uint16
+        else if(datatype[k] == US_DATATYPE_UINT16_LI)
           {
             for(i=0; i<sf_t; i++)
             {
@@ -796,110 +849,208 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
               }
             }
           }
-          else if((samplesize[k] == 1) && (straightbinary[k] == 0))  // int8
+          else if(datatype[k] == US_DATATYPE_INT24_LI)
             {
               for(i=0; i<sf_t; i++)
               {
                 for(j=0; j<signals_t; j++)
                 {
-                  buf2_t[(j * sf_t) + i] = *(((signed char *)buf1_t) + (i * signals_t) + j);
+                  var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                  var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                  var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+
+                  if(var.four[2] & 0x80)
+                  {
+                    var.four[3] = 0xff;
+                  }
+                  else
+                  {
+                    var.four[3] = 0x00;
+                  }
+
+                  buf2_t[(j * sf_t) + i] = var.one_signed;
                 }
               }
             }
-            else if((samplesize[k] == 1) && (straightbinary[k] == 1))  // uint8
+            else if(datatype[k] == US_DATATYPE_UINT24_LI)
               {
                 for(i=0; i<sf_t; i++)
                 {
                   for(j=0; j<signals_t; j++)
                   {
-                    tmp2 = *(((signed char *)buf1_t) + (i * signals_t) + j) + 128;
+                    var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                    var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                    var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
 
-                    buf2_t[(j * sf_t) + i] = tmp2;
+                    if(var.four[2] & 0x80)
+                    {
+                      var.four[2] &= 0x7f;
+
+                      var.four[3] = 0x00;
+                    }
+                    else
+                    {
+                      var.four[2] |= 0x80;
+
+                      var.four[3] = 0xff;
+                    }
+
+                    buf2_t[(j * sf_t) + i] = var.one_signed;
                   }
                 }
               }
-              else if((samplesize[k] == 2) && (big_endian[k] == 1) && (straightbinary[k] == 0))  // int16  big endian
+              else if((datatype[k] == US_DATATYPE_INT8_LI) || (datatype[k] == US_DATATYPE_INT8_BI))
                 {
                   for(i=0; i<sf_t; i++)
                   {
                     for(j=0; j<signals_t; j++)
                     {
-                      tmp3 = *(((short *)buf1_t) + (i * signals_t) + j);
-
-                      tmp3 = (((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8);
-
-                      buf2_t[(j * sf_t) + i] = tmp3;
+                      buf2_t[(j * sf_t) + i] = *(((signed char *)buf1_t) + (i * signals_t) + j);
                     }
                   }
                 }
-                else if((samplesize[k] == 2) && (big_endian[k] == 1) && (straightbinary[k] == 1))  // uint16  big endian
+                else if((datatype[k] == US_DATATYPE_UINT8_LI) || (datatype[k] == US_DATATYPE_UINT8_BI))
                   {
                     for(i=0; i<sf_t; i++)
                     {
                       for(j=0; j<signals_t; j++)
                       {
-                        tmp3 = *(((short *)buf1_t) + (i * signals_t) + j);
+                        tmp2 = *(((signed char *)buf1_t) + (i * signals_t) + j) + 128;
 
-                        tmp3 = (((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8);
-
-                        tmp3 += 32768;
-
-                        buf2_t[(j * sf_t) + i] = tmp3;
+                        buf2_t[(j * sf_t) + i] = tmp2;
                       }
                     }
                   }
-                  else if((samplesize[k] == 4) && (big_endian[k] == 0) && (straightbinary[k] == 0))  // int32
+                  else if(datatype[k] == US_DATATYPE_INT16_BI)
                     {
                       for(i=0; i<sf_t; i++)
                       {
                         for(j=0; j<signals_t; j++)
                         {
-                          buf2_t[(j * sf_t) + i] = *(((int *)buf1_t) + (i * signals_t) + j);
+                          tmp3 = *(((short *)buf1_t) + (i * signals_t) + j);
+
+                          tmp3 = (((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8);
+
+                          buf2_t[(j * sf_t) + i] = tmp3;
                         }
                       }
                     }
-                    else if((samplesize[k] == 4) && (big_endian[k] == 0) && (straightbinary[k] == 1))  // uint32
+                    else if(datatype[k] == US_DATATYPE_UINT16_BI)
                       {
                         for(i=0; i<sf_t; i++)
                         {
                           for(j=0; j<signals_t; j++)
                           {
-                            tmp = *(((int *)buf1_t) + (i * signals_t) + j);
+                            tmp3 = *(((short *)buf1_t) + (i * signals_t) + j);
 
-                            tmp += 0x80000000;
+                            tmp3 = (((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8);
 
-                            buf2_t[(j * sf_t) + i] = tmp;
+                            tmp3 += 32768;
+
+                            buf2_t[(j * sf_t) + i] = tmp3;
                           }
                         }
                       }
-                      else if((samplesize[k] == 4) && (big_endian[k] == 1) && (straightbinary[k] == 0))  // int32  big endian
+                      else if(datatype[k] == US_DATATYPE_INT24_BI)
                         {
                           for(i=0; i<sf_t; i++)
                           {
                             for(j=0; j<signals_t; j++)
                             {
-                                tmp = *(((int *)buf1_t) + (i * signals_t) + j);
+                              var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                              var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                              var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
 
-                                tmp = (((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24);
+                              if(var.four[2] & 0x80)
+                              {
+                                var.four[3] = 0xff;
+                              }
+                              else
+                              {
+                                var.four[3] = 0x00;
+                              }
 
-                                buf2_t[(j * sf_t) + i] = tmp;
+                              buf2_t[(j * sf_t) + i] = var.one_signed;
                             }
                           }
                         }
-                        else if((samplesize[k] == 4) && (big_endian[k] == 1) && (straightbinary[k] == 1))  // int32  big endian
+                        else if(datatype[k] == US_DATATYPE_UINT24_BI)
                           {
                             for(i=0; i<sf_t; i++)
                             {
                               for(j=0; j<signals_t; j++)
                               {
-                                tmp = *(((int *)buf1_t) + (i * signals_t) + j);
+                                var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                                var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                                var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
 
-                                tmp += 0x80000000;
+                                if(var.four[2] & 0x80)
+                                {
+                                  var.four[2] &= 0x7f;
 
-                                buf2_t[(j * sf_t) + i] = tmp;
+                                  var.four[3] = 0x00;
+                                }
+                                else
+                                {
+                                  var.four[2] |= 0x80;
+
+                                  var.four[3] = 0xff;
+                                }
+
+                                buf2_t[(j * sf_t) + i] = var.one_signed;
                               }
                             }
                           }
+                          else if(datatype[k] == US_DATATYPE_INT32_LI)
+                            {
+                              for(i=0; i<sf_t; i++)
+                              {
+                                for(j=0; j<signals_t; j++)
+                                {
+                                  buf2_t[(j * sf_t) + i] = *(((int *)buf1_t) + (i * signals_t) + j);
+                                }
+                              }
+                            }
+                            else if(datatype[k] == US_DATATYPE_UINT32_LI)
+                              {
+                                for(i=0; i<sf_t; i++)
+                                {
+                                  for(j=0; j<signals_t; j++)
+                                  {
+                                    buf2_t[(j * sf_t) + i] = *(((int *)buf1_t) + (i * signals_t) + j) + 0x80000000;
+                                  }
+                                }
+                              }
+                              else if(datatype[k] == US_DATATYPE_INT32_BI)
+                                {
+                                  for(i=0; i<sf_t; i++)
+                                  {
+                                    for(j=0; j<signals_t; j++)
+                                    {
+                                        tmp = *(((int *)buf1_t) + (i * signals_t) + j);
+
+                                        tmp = (((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24);
+
+                                        buf2_t[(j * sf_t) + i] = tmp;
+                                    }
+                                  }
+                                }
+                                else if(datatype[k] == US_DATATYPE_UINT32_BI)
+                                  {
+                                    for(i=0; i<sf_t; i++)
+                                    {
+                                      for(j=0; j<signals_t; j++)
+                                      {
+                                        tmp = *(((int *)buf1_t) + (i * signals_t) + j);
+
+                                        tmp = (((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24);
+
+                                        tmp += 0x80000000;
+
+                                        buf2_t[(j * sf_t) + i] = tmp;
+                                      }
+                                    }
+                                  }
       }
       else if(blocks_written == datablocks[k])
         {
@@ -1165,6 +1316,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
   char str[256],
        scratchpad[2048];
 
+  int tmp;
+
 
   if(xml_get_attribute_of_element(xml_hdl, "id", str, 255))
   {
@@ -1234,9 +1387,9 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   if((sf[file_nr] < 1) || (sf[file_nr] > 1000000))
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attribute \"sampleRate\" is out of range.");
-    messagewindow.exec();
-    return(1);
+//     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attribute \"sampleRate\" is out of range.");
+//     messagewindow.exec();
+    return(US_SAMPLERATE_OUT_OF_RANGE);
   }
 
   if(!xml_get_attribute_of_element(xml_hdl, "baseline", str, 255))
@@ -1299,6 +1452,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   if(!strcmp(str, "uint8"))
   {
+    datatype[file_nr] = US_DATATYPE_UINT8_LI;
     straightbinary[file_nr] = 1;
     samplesize[file_nr] = 1;
     physmax[file_nr] *= (127 - baseline[file_nr]);
@@ -1308,6 +1462,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
   }
   else if(!strcmp(str, "int8"))
     {
+      datatype[file_nr] = US_DATATYPE_INT8_LI;
       straightbinary[file_nr] = 0;
       samplesize[file_nr] = 1;
       physmax[file_nr] *= (127 - baseline[file_nr]);
@@ -1317,6 +1472,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     }
     else if(!strcmp(str, "uint16"))
       {
+        datatype[file_nr] = US_DATATYPE_UINT16_LI;
         straightbinary[file_nr] = 1;
         samplesize[file_nr] = 2;
         physmax[file_nr] *= (32767 - baseline[file_nr]);
@@ -1326,6 +1482,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       }
       else if(!strcmp(str, "int16"))
         {
+          datatype[file_nr] = US_DATATYPE_INT16_LI;
           straightbinary[file_nr] = 0;
           samplesize[file_nr] = 2;
           physmax[file_nr] *= (32767 - baseline[file_nr]);
@@ -1333,33 +1490,57 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
           digmax[file_nr] = 32767;
           digmin[file_nr] = -32768;
         }
-        else if(!strcmp(str, "uint32"))
+        else if(!strcmp(str, "uint24"))
           {
+            datatype[file_nr] = US_DATATYPE_UINT24_LI;
             bdf = 1;
             straightbinary[file_nr] = 1;
-            samplesize[file_nr] = 4;
+            samplesize[file_nr] = 3;
             physmax[file_nr] *= (8388607 - baseline[file_nr]);
             physmin[file_nr] *= (-8388608 - baseline[file_nr]);
             digmax[file_nr] = 8388607;
             digmin[file_nr] = -8388608;
           }
-          else if(!strcmp(str, "int32"))
+          else if(!strcmp(str, "int24"))
             {
+              datatype[file_nr] = US_DATATYPE_INT24_LI;
               bdf = 1;
               straightbinary[file_nr] = 0;
-              samplesize[file_nr] = 4;
+              samplesize[file_nr] = 3;
               physmax[file_nr] *= (8388607 - baseline[file_nr]);
               physmin[file_nr] *= (-8388608 - baseline[file_nr]);
               digmax[file_nr] = 8388607;
               digmin[file_nr] = -8388608;
             }
-            else
-            {
-              snprintf(scratchpad, 2047, "Unsupported binary datatype: %s", str);
-              QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
-              messagewindow.exec();
-              return(1);
-            }
+            else if(!strcmp(str, "uint32"))
+              {
+                datatype[file_nr] = US_DATATYPE_UINT32_LI;
+                bdf = 1;
+                straightbinary[file_nr] = 1;
+                samplesize[file_nr] = 4;
+                physmax[file_nr] *= (8388607 - baseline[file_nr]);
+                physmin[file_nr] *= (-8388608 - baseline[file_nr]);
+                digmax[file_nr] = 8388607;
+                digmin[file_nr] = -8388608;
+              }
+              else if(!strcmp(str, "int32"))
+                {
+                  datatype[file_nr] = US_DATATYPE_INT32_LI;
+                  bdf = 1;
+                  straightbinary[file_nr] = 0;
+                  samplesize[file_nr] = 4;
+                  physmax[file_nr] *= (8388607 - baseline[file_nr]);
+                  physmin[file_nr] *= (-8388608 - baseline[file_nr]);
+                  digmax[file_nr] = 8388607;
+                  digmin[file_nr] = -8388608;
+                }
+                else
+                {
+                  snprintf(scratchpad, 2047, "Unsupported binary datatype: %s", str);
+                  QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+                  messagewindow.exec();
+                  return(1);
+                }
 
   return(0);
 }

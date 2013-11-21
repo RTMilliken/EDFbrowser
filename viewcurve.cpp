@@ -2964,8 +2964,8 @@ void drawCurve_stage_1_thread::run()
         }
       }
 
-      if(((int)dig_value)>signalcomp->max_dig_value)  signalcomp->max_dig_value = dig_value;
-      if(((int)dig_value)<signalcomp->min_dig_value)  signalcomp->min_dig_value = dig_value;
+      if(dig_value > signalcomp->max_dig_value)  signalcomp->max_dig_value = dig_value;
+      if(dig_value < signalcomp->min_dig_value)  signalcomp->min_dig_value = dig_value;
 
       if(printing)
       {

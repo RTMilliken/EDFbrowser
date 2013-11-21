@@ -87,6 +87,7 @@ char  *recent_opendir,
 int straightbinary[MAXFILES],
     big_endian[MAXFILES],
     samplesize[MAXFILES],
+    datatype[MAXFILES],
     sf[MAXFILES],
     digmax[MAXFILES],
     digmin[MAXFILES],
@@ -106,10 +107,10 @@ int straightbinary[MAXFILES],
     buf1_freadsize[MAXFILES],
     sf_divider,
     char_encoding,
-    starttime_fraction,
     bdf,
     evt_sf[MAXFILES],
-    total_annotations;
+    total_annotations,
+    starttime_fraction;
 
 double physmax[MAXFILES],
        physmin[MAXFILES];

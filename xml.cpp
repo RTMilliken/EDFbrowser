@@ -474,11 +474,11 @@ struct xml_handle * xml_get_handle(const char *filename)
     }
     else
     {
-      if(!strcmp(scratchpad, "ISO-8859-1"))
+      if((!strcmp(scratchpad, "ISO-8859-1")) || (!strcmp(scratchpad, "iso-8859-1")))
       {
         handle_p->encoding = 1;
       }
-      else if(!strcmp(scratchpad, "UTF-8"))
+      else if((!strcmp(scratchpad, "UTF-8"))  || (!strcmp(scratchpad, "utf-8")))
         {
           handle_p->encoding = 2;
         }
