@@ -1013,7 +1013,9 @@
    Limitations of the converter:<br>
    - the following binary sampletypes are not (yet) supported: int64, uint64, double and float.<br>
    - the Unisens XML-file must be encoded in UTF-8 or ISO-8859-1.<br>
-   - minimum samplerate is 1 Hz. Broken numbers will be rounded e.g. 2.5 Hz will be rounded to 2 Hz.<br>
+   - Broken numbers for samplerate >= 1 Hz will be rounded e.g. 2.5 Hz will be rounded to 2 Hz.<br>
+     Samplerates below 1 Hz will be rounded to 1/2, 1/3, 1/4, etc. til 1/1000 Hz.<br>
+     Lowest samplerate is 0.001 Hz<br>
 <br>
    An extra feature of the converter which is not in the offical Unisens data format specification:<br>
    - support for binary sampletypes: int24 and uint24.

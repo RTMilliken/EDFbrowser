@@ -442,7 +442,7 @@ void UI_headerEditorWindow::read_header()
     return;
   }
 
-  fileNameLabel->setText(path);
+  fileNameLabel->setText(QString::fromLocal8Bit(path));
 
   rewind(file);
 

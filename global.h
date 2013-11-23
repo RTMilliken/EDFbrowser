@@ -35,7 +35,7 @@
 
 
 #define PROGRAM_NAME "EDFbrowser"
-#define PROGRAM_VERSION "1.53_beta_1"
+#define PROGRAM_VERSION "1.53_beta_2"
 #define MINIMUM_QT_VERSION 0x040701
 #define MAXFILES 32
 #define MAXSIGNALS 512

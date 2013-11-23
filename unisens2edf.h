@@ -50,6 +50,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 
 #include "global.h"
 #include "xml.h"
@@ -89,6 +90,10 @@ int straightbinary[MAXFILES],
     samplesize[MAXFILES],
     datatype[MAXFILES],
     sf[MAXFILES],
+    csv_enc[MAXFILES],
+    sf_less_1,
+    sf_inv[MAXFILES],
+    sf_divider,
     digmax[MAXFILES],
     digmin[MAXFILES],
     adcres[MAXFILES],
@@ -105,7 +110,6 @@ int straightbinary[MAXFILES],
     buf1_offset[MAXFILES],
     buf2_offset[MAXFILES],
     buf1_freadsize[MAXFILES],
-    sf_divider,
     char_encoding,
     bdf,
     evt_sf[MAXFILES],
@@ -113,7 +117,8 @@ int straightbinary[MAXFILES],
     starttime_fraction;
 
 double physmax[MAXFILES],
-       physmin[MAXFILES];
+       physmin[MAXFILES],
+       lsbval[MAXFILES];
 
 FILE *binfile[MAXFILES];
 

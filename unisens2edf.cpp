@@ -116,7 +116,8 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       *buf2,
       bufsize,
       blocks_written,
-      progress_steps;
+      progress_steps,
+      lines;
 
   short tmp3;
 
@@ -261,11 +262,24 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   int skip = 0;
 
+  sf_less_1 = 0;
+
   for(file_cnt=0; file_cnt<MAXFILES; file_cnt++)
   {
+    csv_enc[file_cnt] = 0;
+
+    big_endian[file_cnt] = 0;
+
     if(xml_goto_nth_element_inside(xml_hdl, "signalEntry", file_cnt + skip))
     {
       break;
+    }
+
+    if(!xml_goto_nth_element_inside(xml_hdl, "csvFileFormat", 0))
+    {
+      csv_enc[file_cnt] = 1;
+
+      xml_go_up(xml_hdl);
     }
 
     tmp = get_signalparameters_from_BIN_attributes(xml_hdl, file_cnt);
@@ -289,54 +303,118 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       }
     }
 
-    if(xml_goto_nth_element_inside(xml_hdl, "binFileFormat", 0))
+    if(csv_enc[file_cnt])
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find element \"binFileFormat\".");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
-      return;
-    }
+      if(xml_goto_nth_element_inside(xml_hdl, "csvFileFormat", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find element \"csvFileFormat\".");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
 
-    if(xml_get_attribute_of_element(xml_hdl, "endianess", str, 255))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find attribute \"endianess\".");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
-      return;
-    }
+      if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find attribute \"separator\".");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
 
-    if(strlen(str) < 1)
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find attribute \"endianess\".");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
-      return;
-    }
+      if(strlen(str) != 1)
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Value for \"separator\" must be one character.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
 
-    if(strcmp(str, "LITTLE") && strcmp(str, "BIG"))
-    {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attribute \"endianess\" has an unknown value.");
-      messagewindow.exec();
-      xml_close(xml_hdl);
-      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
-      return;
-    }
+      csv_sep[file_cnt] = str[0];
 
-    if(!(strcmp(str, "LITTLE")))
-    {
-      big_endian[file_cnt] = 0;
+      if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255))
+      {
+        csv_dec_sep[file_cnt] = '.';  // if attribute decimalSeparator is not present, fall back to a dot
+      }
+      else
+      {
+        if(strlen(str) != 1)
+        {
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "Value for \"decimalSeparator\" must be one character.");
+          messagewindow.exec();
+          xml_close(xml_hdl);
+          for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+          return;
+        }
+
+        csv_dec_sep[file_cnt] = str[0];
+
+        if(csv_sep[file_cnt] == csv_dec_sep[file_cnt])
+        {
+          QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attribute \"decimalSeparator\" and \"separator\" have equal values.");
+          messagewindow.exec();
+          xml_close(xml_hdl);
+          for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+          return;
+        }
+
+      }
+
+      xml_go_up(xml_hdl);
     }
     else
     {
-      big_endian[file_cnt] = 1;
+      if(xml_goto_nth_element_inside(xml_hdl, "binFileFormat", 0))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find element \"binFileFormat\".");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
 
-      datatype[file_cnt]++;
+      if(xml_get_attribute_of_element(xml_hdl, "endianess", str, 255))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find attribute \"endianess\".");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
+
+      if(strlen(str) < 1)
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find attribute \"endianess\".");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
+
+      if(strcmp(str, "LITTLE") && strcmp(str, "BIG"))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attribute \"endianess\" has an unknown value.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
+
+      if(!(strcmp(str, "LITTLE")))
+      {
+        big_endian[file_cnt] = 0;
+      }
+      else
+      {
+        big_endian[file_cnt] = 1;
+
+        datatype[file_cnt]++;
+      }
+
+      xml_go_up(xml_hdl);
     }
-
-    xml_go_up(xml_hdl);
 
     edf_signal_start[file_cnt] = total_edf_signals;
 
@@ -383,7 +461,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     if(chns < 1)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "No channels in element \"signalEntry\".");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "No channels in element \"signalEntry\" or in element \"csvFileFormat\".");
       messagewindow.exec();
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
@@ -392,7 +470,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     if(chns >= MAXSIGNALS)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many channels in element \"signalEntry\".");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many channels.");
       messagewindow.exec();
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
@@ -420,7 +498,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   if(file_cnt < 1)
   {
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find element \"signalEntry\".");
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find element \"signalEntry\" or element \"csvFileFormat\".");
     messagewindow.exec();
     xml_close(xml_hdl);
     return;
@@ -435,74 +513,79 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     return;
   }
 
-  sf_divider = 10;
+  sf_divider = 1;
 
-  for(i=0; i<file_cnt; i++)
+  if(sf_less_1 == 0)
   {
-    if(sf[i] % 10)
-    {
-      sf_divider = 1;
-
-      break;
-    }
-  }
-
-  if(sf_divider == 1)
-  {
-    sf_divider = 8;
+    sf_divider = 10;
 
     for(i=0; i<file_cnt; i++)
     {
-      if(sf[i] % 8)
+      if(sf[i] % 10)
       {
         sf_divider = 1;
 
         break;
       }
     }
-  }
 
-  if(sf_divider == 1)
-  {
-    sf_divider = 5;
-
-    for(i=0; i<file_cnt; i++)
+    if(sf_divider == 1)
     {
-      if(sf[i] % 5)
-      {
-        sf_divider = 1;
+      sf_divider = 8;
 
-        break;
+      for(i=0; i<file_cnt; i++)
+      {
+        if(sf[i] % 8)
+        {
+          sf_divider = 1;
+
+          break;
+        }
       }
     }
-  }
 
-  if(sf_divider == 1)
-  {
-    sf_divider = 4;
-
-    for(i=0; i<file_cnt; i++)
+    if(sf_divider == 1)
     {
-      if(sf[i] % 4)
-      {
-        sf_divider = 1;
+      sf_divider = 5;
 
-        break;
+      for(i=0; i<file_cnt; i++)
+      {
+        if(sf[i] % 5)
+        {
+          sf_divider = 1;
+
+          break;
+        }
       }
     }
-  }
 
-  if(sf_divider == 1)
-  {
-    sf_divider = 2;
-
-    for(i=0; i<file_cnt; i++)
+    if(sf_divider == 1)
     {
-      if(sf[i] % 2)
-      {
-        sf_divider = 1;
+      sf_divider = 4;
 
-        break;
+      for(i=0; i<file_cnt; i++)
+      {
+        if(sf[i] % 4)
+        {
+          sf_divider = 1;
+
+          break;
+        }
+      }
+    }
+
+    if(sf_divider == 1)
+    {
+      sf_divider = 2;
+
+      for(i=0; i<file_cnt; i++)
+      {
+        if(sf[i] % 2)
+        {
+          sf_divider = 1;
+
+          break;
+        }
       }
     }
   }
@@ -513,8 +596,42 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
   {
     sf[k] /= sf_divider;
 
-    fseeko(binfile[k], 0LL, SEEK_END);
-    datablocks[k] = ftello(binfile[k]) / (edf_signals[k] * samplesize[k] * sf[k]);
+    if(csv_enc[k])
+    {
+      lines = 0;
+
+      while(1)
+      {
+        tmp = fgetc(binfile[k]);
+
+        if(tmp == EOF)  break;
+
+        if(tmp == '\n')  lines++;
+      }
+
+      if(sf_inv[k])  // samplefrequency lower than 1 Hz
+      {
+        datablocks[k] = lines * sf_inv[k];
+      }
+      else
+      {
+        datablocks[k] = lines / sf[k];
+      }
+    }
+    else
+    {
+      fseeko(binfile[k], 0LL, SEEK_END);
+
+      if(sf_inv[k])  // samplefrequency lower than 1 Hz
+      {
+        datablocks[k] = (ftello(binfile[k]) / (edf_signals[k] * samplesize[k])) * sf_inv[k];
+      }
+      else
+      {
+        datablocks[k] = ftello(binfile[k]) / (edf_signals[k] * samplesize[k] * sf[k]);
+      }
+    }
+
     fseeko(binfile[k], 0LL, SEEK_SET);
 
     if(datablocks[k] > max_datablocks)
@@ -777,7 +894,13 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   int sf_t, signals_t, *buf2_t;
 
-  char *buf1_t;
+  char *buf1_t,
+       linebuf[128],
+       *ptr,
+       dec_sep;
+
+  double d_tmp,
+         lsbvalue;
 
   union {
           unsigned int one;
@@ -786,6 +909,20 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
           signed short two_signed[2];
           unsigned char four[4];
         } var;
+
+// for(i=0; i<file_cnt; i++)
+// {
+//   printf("\nfile: %i\n"
+//          "sf = %i\n"
+//          "sf_inv = %i\n"
+//          "datablocks = %i\n"
+//          "csv_enc = %i\n",
+//          i,
+//          sf[i],
+//          sf_inv[i],
+//          datablocks[i],
+//          csv_enc[i]);
+// }
 
   for(blocks_written=0; blocks_written<max_datablocks; blocks_written++)
   {
@@ -811,20 +948,75 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       buf2_t = buf2 + buf2_offset[k];
 
+      lsbvalue = lsbval[k];
+
+      dec_sep = csv_dec_sep[k];
+
       if(blocks_written < datablocks[k])
       {
-        n = fread(buf1_t, buf1_freadsize[k], 1, binfile[k]);
-        if(n != 1)
+        if((sf_inv[k] == 0) || (!(blocks_written % sf_inv[k])))
         {
-          progress.reset();
-          QMessageBox messagewindow(QMessageBox::Critical, "Error", "A read error occurred during the conversion.");
-          messagewindow.exec();
-          for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
-          xml_close(xml_hdl);
-          edfclose_file(hdl);
-          free(buf1);
-          free(buf2);
-          return;
+          if(csv_enc[k])
+          {
+            if(fgets(linebuf, 128, binfile[k]) == NULL)
+            {
+              progress.reset();
+              QMessageBox messagewindow(QMessageBox::Critical, "Error", "A read error occurred during the conversion.");
+              messagewindow.exec();
+              for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+              xml_close(xml_hdl);
+              edfclose_file(hdl);
+              free(buf1);
+              free(buf2);
+              return;
+            }
+
+            if(dec_sep != '.')
+            {
+              for(ptr=linebuf; *ptr!=0; ptr++)
+              {
+                if(*ptr == dec_sep)  *ptr = '.';
+              }
+            }
+
+            for(i=0; i<sf_t; i++)
+            {
+              d_tmp = atof(linebuf) / lsbvalue;
+// if(k==6)
+// {
+//   printf("d_tmp = %f\n", d_tmp);
+// }
+
+              if(d_tmp >= 8388607.0)
+              {
+                buf2_t[i] = 8388607;
+              }
+              else if(d_tmp <= -8388608.0)
+                {
+                  buf2_t[i] = -8388608;
+                }
+                else
+                {
+                  buf2_t[i] = d_tmp;
+                }
+            }
+          }
+          else
+          {
+            n = fread(buf1_t, buf1_freadsize[k], 1, binfile[k]);
+            if(n != 1)
+            {
+              progress.reset();
+              QMessageBox messagewindow(QMessageBox::Critical, "Error", "A read error occurred during the conversion.");
+              messagewindow.exec();
+              for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+              xml_close(xml_hdl);
+              edfclose_file(hdl);
+              free(buf1);
+              free(buf2);
+              return;
+            }
+          }
         }
 
         if(datatype[k] == US_DATATYPE_INT16_LI)
@@ -1316,7 +1508,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
   char str[256],
        scratchpad[2048];
 
-  int tmp;
+  double d_tmp;
 
 
   if(xml_get_attribute_of_element(xml_hdl, "id", str, 255))
@@ -1369,6 +1561,10 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   physdim[file_nr][8] = 0;
 
+  remove_leading_spaces(physdim[file_nr]);
+
+  remove_trailing_spaces(physdim[file_nr]);
+
   if(xml_get_attribute_of_element(xml_hdl, "sampleRate", str, 255))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find attribute \"sampleRate\".");
@@ -1383,13 +1579,33 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     return(1);
   }
 
+  sf_inv[file_nr] = 0;
+
   sf[file_nr] = atoi(str);
 
   if((sf[file_nr] < 1) || (sf[file_nr] > 1000000))
   {
-//     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attribute \"sampleRate\" is out of range.");
-//     messagewindow.exec();
-    return(US_SAMPLERATE_OUT_OF_RANGE);
+    if(sf[file_nr] < 1)
+    {
+      d_tmp = atof(str);
+
+      if(d_tmp >= 0.001)
+      {
+        sf_inv[file_nr] = nearbyint(1.0 / d_tmp);
+
+        sf[file_nr] = 1;
+
+        sf_less_1 = 1;
+      }
+      else
+      {
+        return(US_SAMPLERATE_OUT_OF_RANGE);
+      }
+    }
+    else
+    {
+      return(US_SAMPLERATE_OUT_OF_RANGE);
+    }
   }
 
   if(!xml_get_attribute_of_element(xml_hdl, "baseline", str, 255))
@@ -1426,22 +1642,24 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   if(xml_get_attribute_of_element(xml_hdl, "lsbValue", str, 255))
   {
-    physmax[file_nr] = 1.0;
+    lsbval[file_nr] = 1.0;
   }
   else if(strlen(str) < 1)
     {
-      physmax[file_nr] = 1.0;
+      lsbval[file_nr] = 1.0;
     }
-    else physmax[file_nr] = atof(str);
+    else lsbval[file_nr] = atof(str);
 
-  if((physmax[file_nr] < -1000000.0) || (physmax[file_nr] > 1000000.0))
+  if((lsbval[file_nr] < -1000000.0) || (lsbval[file_nr] > 1000000.0))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attribute \"lsbValue\" is out of range.");
     messagewindow.exec();
     return(1);
   }
 
-  physmin[file_nr] = physmax[file_nr];
+  physmax[file_nr] = lsbval[file_nr];
+
+  physmin[file_nr] = lsbval[file_nr];
 
   if(xml_get_attribute_of_element(xml_hdl, "dataType", str, 255))
   {
@@ -1450,97 +1668,154 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
     return(1);
   }
 
-  if(!strcmp(str, "uint8"))
+  if(csv_enc[file_nr])
   {
-    datatype[file_nr] = US_DATATYPE_UINT8_LI;
-    straightbinary[file_nr] = 1;
-    samplesize[file_nr] = 1;
-    physmax[file_nr] *= (127 - baseline[file_nr]);
-    physmin[file_nr] *= (-128 - baseline[file_nr]);
-    digmax[file_nr] = 127;
-    digmin[file_nr] = -128;
-  }
-  else if(!strcmp(str, "int8"))
+    if(!strcmp(str, "double"))
     {
-      datatype[file_nr] = US_DATATYPE_INT8_LI;
+      datatype[file_nr] = US_DATATYPE_DOUBLE_LI;
+      bdf = 1;
       straightbinary[file_nr] = 0;
+      samplesize[file_nr] = 8;
+      physmax[file_nr] *= (8388607 - baseline[file_nr]);
+      physmin[file_nr] *= (-8388608 - baseline[file_nr]);
+      digmax[file_nr] = 8388607;
+      digmin[file_nr] = -8388608;
+    }
+    else if(!strcmp(str, "float"))
+      {
+        datatype[file_nr] = US_DATATYPE_FLOAT_LI;
+        bdf = 1;
+        straightbinary[file_nr] = 0;
+        samplesize[file_nr] = 4;
+        physmax[file_nr] *= (8388607 - baseline[file_nr]);
+        physmin[file_nr] *= (-8388608 - baseline[file_nr]);
+        digmax[file_nr] = 8388607;
+        digmin[file_nr] = -8388608;
+      }
+      else if(!strcmp(str, "int32"))
+        {
+          datatype[file_nr] = US_DATATYPE_INT32_LI;
+          bdf = 1;
+          straightbinary[file_nr] = 0;
+          samplesize[file_nr] = 4;
+          physmax[file_nr] *= (8388607 - baseline[file_nr]);
+          physmin[file_nr] *= (-8388608 - baseline[file_nr]);
+          digmax[file_nr] = 8388607;
+          digmin[file_nr] = -8388608;
+        }
+        else if(!strcmp(str, "uint32"))
+          {
+            datatype[file_nr] = US_DATATYPE_UINT32_LI;
+            bdf = 1;
+            straightbinary[file_nr] = 0;
+            samplesize[file_nr] = 4;
+            physmax[file_nr] *= (8388607 - baseline[file_nr]);
+            physmin[file_nr] *= (-8388608 - baseline[file_nr]);
+            digmax[file_nr] = 8388607;
+            digmin[file_nr] = -8388608;
+          }
+          else
+          {
+            snprintf(scratchpad, 2047, "Unsupported combination of datatype: %s and csv file", str);
+            QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+            messagewindow.exec();
+            return(1);
+          }
+  }
+  else
+  {
+    if(!strcmp(str, "uint8"))
+    {
+      datatype[file_nr] = US_DATATYPE_UINT8_LI;
+      straightbinary[file_nr] = 1;
       samplesize[file_nr] = 1;
       physmax[file_nr] *= (127 - baseline[file_nr]);
       physmin[file_nr] *= (-128 - baseline[file_nr]);
       digmax[file_nr] = 127;
       digmin[file_nr] = -128;
     }
-    else if(!strcmp(str, "uint16"))
+    else if(!strcmp(str, "int8"))
       {
-        datatype[file_nr] = US_DATATYPE_UINT16_LI;
-        straightbinary[file_nr] = 1;
-        samplesize[file_nr] = 2;
-        physmax[file_nr] *= (32767 - baseline[file_nr]);
-        physmin[file_nr] *= (-32768 - baseline[file_nr]);
-        digmax[file_nr] = 32767;
-        digmin[file_nr] = -32768;
+        datatype[file_nr] = US_DATATYPE_INT8_LI;
+        straightbinary[file_nr] = 0;
+        samplesize[file_nr] = 1;
+        physmax[file_nr] *= (127 - baseline[file_nr]);
+        physmin[file_nr] *= (-128 - baseline[file_nr]);
+        digmax[file_nr] = 127;
+        digmin[file_nr] = -128;
       }
-      else if(!strcmp(str, "int16"))
+      else if(!strcmp(str, "uint16"))
         {
-          datatype[file_nr] = US_DATATYPE_INT16_LI;
-          straightbinary[file_nr] = 0;
+          datatype[file_nr] = US_DATATYPE_UINT16_LI;
+          straightbinary[file_nr] = 1;
           samplesize[file_nr] = 2;
           physmax[file_nr] *= (32767 - baseline[file_nr]);
           physmin[file_nr] *= (-32768 - baseline[file_nr]);
           digmax[file_nr] = 32767;
           digmin[file_nr] = -32768;
         }
-        else if(!strcmp(str, "uint24"))
+        else if(!strcmp(str, "int16"))
           {
-            datatype[file_nr] = US_DATATYPE_UINT24_LI;
-            bdf = 1;
-            straightbinary[file_nr] = 1;
-            samplesize[file_nr] = 3;
-            physmax[file_nr] *= (8388607 - baseline[file_nr]);
-            physmin[file_nr] *= (-8388608 - baseline[file_nr]);
-            digmax[file_nr] = 8388607;
-            digmin[file_nr] = -8388608;
+            datatype[file_nr] = US_DATATYPE_INT16_LI;
+            straightbinary[file_nr] = 0;
+            samplesize[file_nr] = 2;
+            physmax[file_nr] *= (32767 - baseline[file_nr]);
+            physmin[file_nr] *= (-32768 - baseline[file_nr]);
+            digmax[file_nr] = 32767;
+            digmin[file_nr] = -32768;
           }
-          else if(!strcmp(str, "int24"))
+          else if(!strcmp(str, "uint24"))
             {
-              datatype[file_nr] = US_DATATYPE_INT24_LI;
+              datatype[file_nr] = US_DATATYPE_UINT24_LI;
               bdf = 1;
-              straightbinary[file_nr] = 0;
+              straightbinary[file_nr] = 1;
               samplesize[file_nr] = 3;
               physmax[file_nr] *= (8388607 - baseline[file_nr]);
               physmin[file_nr] *= (-8388608 - baseline[file_nr]);
               digmax[file_nr] = 8388607;
               digmin[file_nr] = -8388608;
             }
-            else if(!strcmp(str, "uint32"))
+            else if(!strcmp(str, "int24"))
               {
-                datatype[file_nr] = US_DATATYPE_UINT32_LI;
+                datatype[file_nr] = US_DATATYPE_INT24_LI;
                 bdf = 1;
-                straightbinary[file_nr] = 1;
-                samplesize[file_nr] = 4;
+                straightbinary[file_nr] = 0;
+                samplesize[file_nr] = 3;
                 physmax[file_nr] *= (8388607 - baseline[file_nr]);
                 physmin[file_nr] *= (-8388608 - baseline[file_nr]);
                 digmax[file_nr] = 8388607;
                 digmin[file_nr] = -8388608;
               }
-              else if(!strcmp(str, "int32"))
+              else if(!strcmp(str, "uint32"))
                 {
-                  datatype[file_nr] = US_DATATYPE_INT32_LI;
+                  datatype[file_nr] = US_DATATYPE_UINT32_LI;
                   bdf = 1;
-                  straightbinary[file_nr] = 0;
+                  straightbinary[file_nr] = 1;
                   samplesize[file_nr] = 4;
                   physmax[file_nr] *= (8388607 - baseline[file_nr]);
                   physmin[file_nr] *= (-8388608 - baseline[file_nr]);
                   digmax[file_nr] = 8388607;
                   digmin[file_nr] = -8388608;
                 }
-                else
-                {
-                  snprintf(scratchpad, 2047, "Unsupported binary datatype: %s", str);
-                  QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
-                  messagewindow.exec();
-                  return(1);
-                }
+                else if(!strcmp(str, "int32"))
+                  {
+                    datatype[file_nr] = US_DATATYPE_INT32_LI;
+                    bdf = 1;
+                    straightbinary[file_nr] = 0;
+                    samplesize[file_nr] = 4;
+                    physmax[file_nr] *= (8388607 - baseline[file_nr]);
+                    physmin[file_nr] *= (-8388608 - baseline[file_nr]);
+                    digmax[file_nr] = 8388607;
+                    digmin[file_nr] = -8388608;
+                  }
+                  else
+                  {
+                    snprintf(scratchpad, 2047, "Unsupported combination of datatype: %s and binary file", str);
+                    QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+                    messagewindow.exec();
+                    return(1);
+                  }
+  }
 
   return(0);
 }
