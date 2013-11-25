@@ -168,7 +168,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   if(inputfile==NULL)
   {
     snprintf(txt_string, 2048, "Can not open file %s for reading.\n", path);
-    textEdit1->append(txt_string);
+    textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(TRUE);
     return;
   }
@@ -714,7 +714,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   if(outputfile==NULL)
   {
     snprintf(txt_string, 2048, "Error, can not open file %s for writing.\n", path);
-    textEdit1->append(txt_string);
+    textEdit1->append(QString::fromLocal8Bit(txt_string));
     fclose(inputfile);
     free(logbuf);
     pushButton1->setEnabled(TRUE);
@@ -982,7 +982,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   fclose(outputfile);
 
   snprintf(txt_string, 2048, "Done, your EDF+ file is %s\n", path);
-  textEdit1->append(txt_string);
+  textEdit1->append(QString::fromLocal8Bit(txt_string));
 
   pushButton1->setEnabled(TRUE);
 }

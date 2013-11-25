@@ -142,7 +142,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   if(inputfile==NULL)
   {
     snprintf(txt_string, 2048, "Can not open file %s for reading.\n", input_filename);
-    textEdit1->append(txt_string);
+    textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(TRUE);
     return;
   }
@@ -150,7 +150,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   get_filename_from_path(scratchpad, input_filename, MAX_PATH_LENGTH);
 
   snprintf(txt_string, 2048, "Read file: %s", scratchpad);
-  textEdit1->append(txt_string);
+  textEdit1->append(QString::fromLocal8Bit(txt_string));
 
   fseeko(inputfile, 0LL, SEEK_END);
   filesize = ftello(inputfile);

@@ -222,7 +222,7 @@ void UI_NK2EDFwindow::SelectFileButton()
         snprintf(txt_string, 2048, "Can not open file %s for reading,\n"
                             "if there is no .log file you can try to create an EDF file instead of EDF+.\n",
                             logfilepath);
-        textEdit1->append(txt_string);
+        textEdit1->append(QString::fromLocal8Bit(txt_string));
         fclose(inputfile);
         pushButton1->setEnabled(TRUE);
         return;
@@ -242,7 +242,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     if(check_device(scratchpad))
     {
       snprintf(txt_string, 2048, "error, .log file has unknown signature: \"%s\"\n", scratchpad);
-      textEdit1->append(txt_string);
+      textEdit1->append(QString::fromLocal8Bit(txt_string));
       fclose(logfile);
       fclose(inputfile);
       pushButton1->setEnabled(TRUE);
@@ -380,7 +380,7 @@ void UI_NK2EDFwindow::SelectFileButton()
         snprintf(txt_string, 2048, "Can not open file %s for reading,\n"
                             "if there is no .pnt file you can try to create an EDF file instead of EDF+.\n",
                             pntfilepath);
-        textEdit1->append(txt_string);
+        textEdit1->append(QString::fromLocal8Bit(txt_string));
         fclose(logfile);
         fclose(inputfile);
         free(log_buf);
@@ -406,7 +406,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     if(check_device(scratchpad))
     {
       snprintf(txt_string, 2048, "error, .pnt file has unknown signature: \"%s\"\n", scratchpad);
-      textEdit1->append(txt_string);
+      textEdit1->append(QString::fromLocal8Bit(txt_string));
       fclose(pntfile);
       fclose(logfile);
       fclose(inputfile);
@@ -566,7 +566,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       if(outputfile==NULL)
       {
         snprintf(txt_string, 2048, "can not open file %s for writing.\n", outputpath);
-        textEdit1->append(txt_string);
+        textEdit1->append(QString::fromLocal8Bit(txt_string));
         pushButton1->setEnabled(TRUE);
         fclose(inputfile);
         if(edfplus)

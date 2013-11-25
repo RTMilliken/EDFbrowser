@@ -273,7 +273,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
   if(inputfile==NULL)
   {
     snprintf(txt_string, 2048, "Can not open file %s for reading.", inputpath);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(txt_string));
     messagewindow.exec();
     return;
   }
@@ -302,7 +302,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
 
 /***************** load signalproperties ******************************/
 
-  label1->setText(inputpath);
+  label1->setText(QString::fromLocal8Bit(inputpath));
 
   SignalsTablewidget->setRowCount(edfhdr->edfsignals);
 

@@ -426,7 +426,7 @@ void UI_ECGExport::Export_RR_intervals()
   if(!import_as_annots)
   {
     sprintf(str, "Done. The R-onsets and/or RR-intervals are exported to:\n\n%s", path);
-    QMessageBox messagewindow(QMessageBox::Information, "Ready", str);
+    QMessageBox messagewindow(QMessageBox::Information, "Ready", QString::fromLocal8Bit(str));
     messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
     messagewindow.exec();
   }

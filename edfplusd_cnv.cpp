@@ -146,7 +146,7 @@ void UI_EDFDwindow::SelectFileButton()
   if(inputfile==NULL)
   {
     snprintf(txt_string, 2048, "Error, can not open file %s for reading.\n", inputpath);
-    textEdit1->append(txt_string);
+    textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(TRUE);
     return;
   }
@@ -283,7 +283,7 @@ void UI_EDFDwindow::SelectFileButton()
   strcpy(txt_string, "Creating file ");
   len = strlen(txt_string);
   get_filename_from_path(txt_string + len, output_path, MAX_PATH_LENGTH - len);
-  textEdit1->append(txt_string);
+  textEdit1->append(QString::fromLocal8Bit(txt_string));
 
   outputfile = fopeno(output_path, "w+b");
   if(outputfile==NULL)

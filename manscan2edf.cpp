@@ -162,7 +162,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   if(header_inputfile==NULL)
   {
     snprintf(txt_string, 2048, "Can not open file %s for reading.\n", header_filename);
-    textEdit1->append(txt_string);
+    textEdit1->append(QString::fromLocal8Bit(txt_string));
     pushButton1->setEnabled(TRUE);
     return;
   }
@@ -170,7 +170,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   get_filename_from_path(scratchpad, header_filename, MAX_PATH_LENGTH);
 
   snprintf(txt_string, 2048, "Read file: %s", scratchpad);
-  textEdit1->append(txt_string);
+  textEdit1->append(QString::fromLocal8Bit(txt_string));
 
   fseeko(header_inputfile, 0LL, SEEK_END);
   filesize = ftello(header_inputfile);
@@ -347,7 +347,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
     if(data_inputfile==NULL)
     {
       snprintf(txt_string, 2048, "Can not open file %s for reading.\n", data_filename);
-      textEdit1->append(txt_string);
+      textEdit1->append(QString::fromLocal8Bit(txt_string));
       fclose(header_inputfile);
       free(buf);
       free(segment_properties);
@@ -387,7 +387,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
     if(hdl<0)
     {
       snprintf(txt_string, 2048, "Can not open file %s for writing.\n", edf_filename);
-      textEdit1->append(txt_string);
+      textEdit1->append(QString::fromLocal8Bit(txt_string));
       fclose(header_inputfile);
       fclose(data_inputfile);
       free(buf);

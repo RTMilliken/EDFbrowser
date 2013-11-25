@@ -127,7 +127,8 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
        scratchpad[2048],
        str[256],
        *buf1,
-       tmp2;
+       tmp2,
+       linebuf[512];
 
   struct xml_handle *xml_hdl;
 
@@ -269,6 +270,17 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     csv_enc[file_cnt] = 0;
 
     big_endian[file_cnt] = 0;
+
+    nedval_enc[file_cnt] = 0;
+
+    for(i=0; i<MAXSIGNALS; i++)
+    {
+      nedval_value[file_cnt][i] = 0;
+
+      nedval_value2[file_cnt][i] = 0;
+    }
+
+    nedval_smpl[file_cnt] = 0;
 
     if(xml_goto_nth_element_inside(xml_hdl, "signalEntry", file_cnt + skip))
     {
@@ -455,13 +467,11 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
       xml_go_up(xml_hdl);
     }
 
-    edf_signal_stop[file_cnt] = total_edf_signals;
-
     edf_signals[file_cnt] = chns;
 
     if(chns < 1)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "No channels in element \"signalEntry\" or in element \"csvFileFormat\".");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "No signals in element \"signalEntry\" or in element \"csvFileFormat\".");
       messagewindow.exec();
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
@@ -470,7 +480,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     if(chns >= MAXSIGNALS)
     {
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many channels.");
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many signals.");
       messagewindow.exec();
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
@@ -486,7 +496,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
     if(binfile[file_cnt] == NULL)
     {
       sprintf(scratchpad, "Can not open binary file:\n%s", binfilepath);
-      QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
       messagewindow.exec();
       xml_close(xml_hdl);
       for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
@@ -495,6 +505,212 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     xml_go_up(xml_hdl);
   }
+
+////////////////////// read parameters for valuesEntry type files ///////////////////////////
+
+  int value_entry_file_cnt = 0;
+
+  skip = 0;
+
+  for(; file_cnt<MAXFILES; file_cnt++)
+  {
+    csv_enc[file_cnt] = 0;
+
+    big_endian[file_cnt] = 0;
+
+    nedval_enc[file_cnt] = 0;
+
+    for(i=0; i<MAXSIGNALS; i++)
+    {
+      nedval_value[file_cnt][i] = 0;
+
+      nedval_value2[file_cnt][i] = 0;
+    }
+
+    nedval_smpl[file_cnt] = 0;
+
+    if(xml_goto_nth_element_inside(xml_hdl, "valuesEntry", value_entry_file_cnt + skip))
+    {
+      break;
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "csvFileFormat", 0))
+    {
+      xml_go_up(xml_hdl);
+
+      file_cnt--;
+
+      skip++;
+
+      continue;
+    }
+
+    csv_enc[file_cnt] = 1;
+
+    nedval_enc[file_cnt] = 1;
+
+    xml_go_up(xml_hdl);
+
+    tmp = get_signalparameters_from_BIN_attributes(xml_hdl, file_cnt);
+    if(tmp)
+    {
+      if(tmp == US_SAMPLERATE_OUT_OF_RANGE)
+      {
+        xml_go_up(xml_hdl);
+
+        file_cnt--;
+
+        skip++;
+
+        continue;
+      }
+      else
+      {
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
+    }
+
+    if(xml_goto_nth_element_inside(xml_hdl, "csvFileFormat", 0))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find element \"csvFileFormat\".");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+      return;
+    }
+
+    if(xml_get_attribute_of_element(xml_hdl, "separator", str, 255))
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find attribute \"separator\".");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+      return;
+    }
+
+    if(strlen(str) != 1)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Value for \"separator\" must be one character.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+      return;
+    }
+
+    csv_sep[file_cnt] = str[0];
+
+    if(xml_get_attribute_of_element(xml_hdl, "decimalSeparator", str, 255))
+    {
+      csv_dec_sep[file_cnt] = '.';  // if attribute decimalSeparator is not present, fall back to a dot
+    }
+    else
+    {
+      if(strlen(str) != 1)
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Value for \"decimalSeparator\" must be one character.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
+
+      csv_dec_sep[file_cnt] = str[0];
+
+      if(csv_sep[file_cnt] == csv_dec_sep[file_cnt])
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Attribute \"decimalSeparator\" and \"separator\" have equal values.");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
+    }
+
+    xml_go_up(xml_hdl);
+
+    edf_signal_start[file_cnt] = total_edf_signals;
+
+    for(chns=0; chns<MAXSIGNALS; chns++)
+    {
+      if(xml_goto_nth_element_inside(xml_hdl, "channel", chns))
+      {
+        break;
+      }
+
+      if(xml_get_attribute_of_element(xml_hdl, "name", str, 255))
+      {
+        QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find attribute \"name\" in element \"channel\".");
+        messagewindow.exec();
+        xml_close(xml_hdl);
+        for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+        return;
+      }
+
+      if(char_encoding == 1)  // Latin-1
+      {
+        strncpy(signallabel[total_edf_signals], str, 16);
+      }
+      else if(char_encoding == 2)
+        {
+          strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);
+        }
+        else
+        {
+//          strncpy(signallabel[total_edf_signals], str, 16);
+          strncpy(signallabel[total_edf_signals], QString::fromUtf8(str).toLatin1().data(), 16);  // default for XML is UTF-8
+        }
+
+      signallabel[total_edf_signals][16] = 0;
+
+      total_edf_signals++;
+
+      xml_go_up(xml_hdl);
+    }
+
+    edf_signals[file_cnt] = chns;
+
+    if(chns < 1)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "No signals in element \"valuesEntry\".");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+      return;
+    }
+
+    if(chns >= MAXSIGNALS)
+    {
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many signals.");
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+      return;
+    }
+
+    get_directory_from_path(binfilepath, path, MAX_PATH_LENGTH);
+
+    strcat(binfilepath, "/");
+    strcat(binfilepath, binfilename[file_cnt]);
+
+    binfile[file_cnt] = fopeno(binfilepath, "rb");
+    if(binfile[file_cnt] == NULL)
+    {
+      sprintf(scratchpad, "Can not open binary file:\n%s", binfilepath);
+      QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
+      messagewindow.exec();
+      xml_close(xml_hdl);
+      for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+      return;
+    }
+
+    xml_go_up(xml_hdl);
+
+    value_entry_file_cnt++;
+  }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
   if(file_cnt < 1)
   {
@@ -598,24 +814,45 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
     if(csv_enc[k])
     {
-      lines = 0;
-
-      while(1)
+      if(nedval_enc[k])
       {
-        tmp = fgetc(binfile[k]);
+        tmp = 0;
 
-        if(tmp == EOF)  break;
+        while(fgets(linebuf, 32, binfile[k]) != NULL)
+        {
+          tmp = atoi(linebuf);
+        }
 
-        if(tmp == '\n')  lines++;
-      }
-
-      if(sf_inv[k])  // samplefrequency lower than 1 Hz
-      {
-        datablocks[k] = lines * sf_inv[k];
+        if(sf_inv[k])  // samplefrequency lower than 1 Hz
+        {
+          datablocks[k] = (tmp * sf_inv[k]) + 1;
+        }
+        else
+        {
+          datablocks[k] = (tmp / sf[k]) + 1;
+        }
       }
       else
       {
-        datablocks[k] = lines / sf[k];
+        lines = 0;
+
+        while(1)
+        {
+          tmp = fgetc(binfile[k]);
+
+          if(tmp == EOF)  break;
+
+          if(tmp == '\n')  lines++;
+        }
+
+        if(sf_inv[k])  // samplefrequency lower than 1 Hz
+        {
+          datablocks[k] = lines * sf_inv[k];
+        }
+        else
+        {
+          datablocks[k] = lines / sf[k];
+        }
       }
     }
     else
@@ -895,12 +1132,11 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
   int sf_t, signals_t, *buf2_t;
 
   char *buf1_t,
-       linebuf[128],
        *ptr,
-       dec_sep;
+       dec_sep,
+       sep;
 
-  double d_tmp,
-         lsbvalue;
+  double lsbvalue;
 
   union {
           unsigned int one;
@@ -916,13 +1152,63 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 //          "sf = %i\n"
 //          "sf_inv = %i\n"
 //          "datablocks = %i\n"
-//          "csv_enc = %i\n",
+//          "csv_enc = %i\n"
+//          "nedval_enc = %i\n",
 //          i,
 //          sf[i],
 //          sf_inv[i],
 //          datablocks[i],
-//          csv_enc[i]);
+//          csv_enc[i],
+//          nedval_enc[i]);
 // }
+
+  for(k=0; k<file_cnt; k++)
+  {
+    if(csv_enc[k] && nedval_enc[k])
+    {
+      sf_t = sf[k];
+
+      signals_t = edf_signals[k];
+
+      lsbvalue = lsbval[k];
+
+      dec_sep = csv_dec_sep[k];
+
+      sep = csv_sep[k];
+
+      if(fgets(linebuf, 512, binfile[k]) != NULL)
+      {
+        if(dec_sep != '.')
+        {
+          for(ptr=linebuf; *ptr!=0; ptr++)
+          {
+            if(*ptr == dec_sep)  *ptr = '.';
+          }
+        }
+
+        nedval_smpl[k] = atoi(linebuf);
+
+        ptr=linebuf;
+
+        for(i=0; i<signals_t; i++)
+        {
+          for(; *ptr!=0; ptr++)
+          {
+            if(*ptr == sep)
+            {
+              ptr++;
+
+              break;
+            }
+          }
+
+          nedval_value[k][i] = nearbyint(atof(ptr) / lsbvalue);
+
+          nedval_value2[k][i] = 0;
+        }
+      }
+    }
+  }
 
   for(blocks_written=0; blocks_written<max_datablocks; blocks_written++)
   {
@@ -952,53 +1238,111 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       dec_sep = csv_dec_sep[k];
 
+      sep = csv_sep[k];
+
       if(blocks_written < datablocks[k])
       {
         if((sf_inv[k] == 0) || (!(blocks_written % sf_inv[k])))
         {
           if(csv_enc[k])
           {
-            if(fgets(linebuf, 128, binfile[k]) == NULL)
+            if(nedval_enc[k])
             {
-              progress.reset();
-              QMessageBox messagewindow(QMessageBox::Critical, "Error", "A read error occurred during the conversion.");
-              messagewindow.exec();
-              for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
-              xml_close(xml_hdl);
-              edfclose_file(hdl);
-              free(buf1);
-              free(buf2);
-              return;
-            }
-
-            if(dec_sep != '.')
-            {
-              for(ptr=linebuf; *ptr!=0; ptr++)
+              for(i=0; i<sf_t; i++)
               {
-                if(*ptr == dec_sep)  *ptr = '.';
+                if(((blocks_written * sf_t) + i) == nedval_smpl[k])
+                {
+                  if(fgets(linebuf, 512, binfile[k]) != NULL)
+                  {
+                    if(dec_sep != '.')
+                    {
+                      for(ptr=linebuf; *ptr!=0; ptr++)
+                      {
+                        if(*ptr == dec_sep)  *ptr = '.';
+                      }
+                    }
+
+                    nedval_smpl[k] = atoi(linebuf);
+
+                    ptr=linebuf;
+
+                    for(j=0; j<signals_t; j++)
+                    {
+                      for(; *ptr!=0; ptr++)
+                      {
+                        if(*ptr == sep)
+                        {
+                          ptr++;
+
+                          break;
+                        }
+                      }
+
+                      nedval_value2[k][j] = nedval_value[k][j];
+
+                      nedval_value[k][j] = nearbyint(atof(ptr) / lsbvalue);
+                    }
+                  }
+                  else
+                  {
+                    for(j=0; j<signals_t; j++)
+                    {
+                      nedval_value2[k][j] = nedval_value[k][j];
+
+                      nedval_smpl[k] = 0;
+                    }
+                  }
+                }
+
+                for(j=0; j<signals_t; j++)
+                {
+                  buf2_t[(j * sf_t) + i] = nedval_value2[k][j];
+                }
               }
             }
-
-            for(i=0; i<sf_t; i++)
+            else
             {
-              d_tmp = atof(linebuf) / lsbvalue;
-// if(k==6)
-// {
-//   printf("d_tmp = %f\n", d_tmp);
-// }
-
-              if(d_tmp >= 8388607.0)
+              if(fgets(linebuf, 512, binfile[k]) == NULL)
               {
-                buf2_t[i] = 8388607;
+                progress.reset();
+                QMessageBox messagewindow(QMessageBox::Critical, "Error", "A read error occurred during the conversion.");
+                messagewindow.exec();
+                for(i=0; i<file_cnt; i++)  fclose(binfile[i]);
+                xml_close(xml_hdl);
+                edfclose_file(hdl);
+                free(buf1);
+                free(buf2);
+                return;
               }
-              else if(d_tmp <= -8388608.0)
+
+              if(dec_sep != '.')
+              {
+                for(ptr=linebuf; *ptr!=0; ptr++)
                 {
-                  buf2_t[i] = -8388608;
+                  if(*ptr == dec_sep)  *ptr = '.';
                 }
-                else
+              }
+
+              ptr = linebuf;
+
+              for(j=0; j<signals_t; j++)
+              {
+                if((*ptr == 0) || (*ptr == '\n'))  break;
+
+                buf2_t[j] = nearbyint(atof(ptr) / lsbvalue);
+
+                while(*(++ptr) != 0)
                 {
-                  buf2_t[i] = d_tmp;
+                  if(*ptr == '\n')  break;
+
+                  if(*ptr == sep)
+                  {
+                    ptr++;
+
+                    break;
+                  }
                 }
+              }
             }
           }
           else
@@ -1016,241 +1360,254 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
               free(buf2);
               return;
             }
-          }
-        }
 
-        if(datatype[k] == US_DATATYPE_INT16_LI)
-        {
-          for(i=0; i<sf_t; i++)
-          {
-            for(j=0; j<signals_t; j++)
-            {
-              buf2_t[(j * sf_t) + i] = *(((short *)buf1_t) + (i * signals_t) + j);
-            }
-          }
-        }
-        else if(datatype[k] == US_DATATYPE_UINT16_LI)
-          {
-            for(i=0; i<sf_t; i++)
-            {
-              for(j=0; j<signals_t; j++)
-              {
-                tmp3 = *(((short *)buf1_t) + (i * signals_t) + j) + 32768;
-
-                buf2_t[(j * sf_t) + i] = tmp3;
-              }
-            }
-          }
-          else if(datatype[k] == US_DATATYPE_INT24_LI)
+            if(datatype[k] == US_DATATYPE_INT16_LI)
             {
               for(i=0; i<sf_t; i++)
               {
                 for(j=0; j<signals_t; j++)
                 {
-                  var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
-                  var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
-                  var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
-
-                  if(var.four[2] & 0x80)
-                  {
-                    var.four[3] = 0xff;
-                  }
-                  else
-                  {
-                    var.four[3] = 0x00;
-                  }
-
-                  buf2_t[(j * sf_t) + i] = var.one_signed;
+                  buf2_t[(j * sf_t) + i] = *(((short *)buf1_t) + (i * signals_t) + j);
                 }
               }
             }
-            else if(datatype[k] == US_DATATYPE_UINT24_LI)
+            else if(datatype[k] == US_DATATYPE_UINT16_LI)
               {
                 for(i=0; i<sf_t; i++)
                 {
                   for(j=0; j<signals_t; j++)
                   {
-                    var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
-                    var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
-                    var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+                    tmp3 = *(((short *)buf1_t) + (i * signals_t) + j) + 32768;
 
-                    if(var.four[2] & 0x80)
-                    {
-                      var.four[2] &= 0x7f;
-
-                      var.four[3] = 0x00;
-                    }
-                    else
-                    {
-                      var.four[2] |= 0x80;
-
-                      var.four[3] = 0xff;
-                    }
-
-                    buf2_t[(j * sf_t) + i] = var.one_signed;
+                    buf2_t[(j * sf_t) + i] = tmp3;
                   }
                 }
               }
-              else if((datatype[k] == US_DATATYPE_INT8_LI) || (datatype[k] == US_DATATYPE_INT8_BI))
+              else if(datatype[k] == US_DATATYPE_INT24_LI)
                 {
                   for(i=0; i<sf_t; i++)
                   {
                     for(j=0; j<signals_t; j++)
                     {
-                      buf2_t[(j * sf_t) + i] = *(((signed char *)buf1_t) + (i * signals_t) + j);
+                      var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                      var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                      var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+
+                      if(var.four[2] & 0x80)
+                      {
+                        var.four[3] = 0xff;
+                      }
+                      else
+                      {
+                        var.four[3] = 0x00;
+                      }
+
+                      buf2_t[(j * sf_t) + i] = var.one_signed;
                     }
                   }
                 }
-                else if((datatype[k] == US_DATATYPE_UINT8_LI) || (datatype[k] == US_DATATYPE_UINT8_BI))
+                else if(datatype[k] == US_DATATYPE_UINT24_LI)
                   {
                     for(i=0; i<sf_t; i++)
                     {
                       for(j=0; j<signals_t; j++)
                       {
-                        tmp2 = *(((signed char *)buf1_t) + (i * signals_t) + j) + 128;
+                        var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                        var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                        var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
 
-                        buf2_t[(j * sf_t) + i] = tmp2;
+                        if(var.four[2] & 0x80)
+                        {
+                          var.four[2] &= 0x7f;
+
+                          var.four[3] = 0x00;
+                        }
+                        else
+                        {
+                          var.four[2] |= 0x80;
+
+                          var.four[3] = 0xff;
+                        }
+
+                        buf2_t[(j * sf_t) + i] = var.one_signed;
                       }
                     }
                   }
-                  else if(datatype[k] == US_DATATYPE_INT16_BI)
+                  else if((datatype[k] == US_DATATYPE_INT8_LI) || (datatype[k] == US_DATATYPE_INT8_BI))
                     {
                       for(i=0; i<sf_t; i++)
                       {
                         for(j=0; j<signals_t; j++)
                         {
-                          tmp3 = *(((short *)buf1_t) + (i * signals_t) + j);
-
-                          tmp3 = (((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8);
-
-                          buf2_t[(j * sf_t) + i] = tmp3;
+                          buf2_t[(j * sf_t) + i] = *(((signed char *)buf1_t) + (i * signals_t) + j);
                         }
                       }
                     }
-                    else if(datatype[k] == US_DATATYPE_UINT16_BI)
+                    else if((datatype[k] == US_DATATYPE_UINT8_LI) || (datatype[k] == US_DATATYPE_UINT8_BI))
                       {
                         for(i=0; i<sf_t; i++)
                         {
                           for(j=0; j<signals_t; j++)
                           {
-                            tmp3 = *(((short *)buf1_t) + (i * signals_t) + j);
+                            tmp2 = *(((signed char *)buf1_t) + (i * signals_t) + j) + 128;
 
-                            tmp3 = (((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8);
-
-                            tmp3 += 32768;
-
-                            buf2_t[(j * sf_t) + i] = tmp3;
+                            buf2_t[(j * sf_t) + i] = tmp2;
                           }
                         }
                       }
-                      else if(datatype[k] == US_DATATYPE_INT24_BI)
+                      else if(datatype[k] == US_DATATYPE_INT16_BI)
                         {
                           for(i=0; i<sf_t; i++)
                           {
                             for(j=0; j<signals_t; j++)
                             {
-                              var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
-                              var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
-                              var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+                              tmp3 = *(((short *)buf1_t) + (i * signals_t) + j);
 
-                              if(var.four[2] & 0x80)
-                              {
-                                var.four[3] = 0xff;
-                              }
-                              else
-                              {
-                                var.four[3] = 0x00;
-                              }
+                              tmp3 = (((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8);
 
-                              buf2_t[(j * sf_t) + i] = var.one_signed;
+                              buf2_t[(j * sf_t) + i] = tmp3;
                             }
                           }
                         }
-                        else if(datatype[k] == US_DATATYPE_UINT24_BI)
+                        else if(datatype[k] == US_DATATYPE_UINT16_BI)
                           {
                             for(i=0; i<sf_t; i++)
                             {
                               for(j=0; j<signals_t; j++)
                               {
-                                var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
-                                var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
-                                var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+                                tmp3 = *(((short *)buf1_t) + (i * signals_t) + j);
 
-                                if(var.four[2] & 0x80)
-                                {
-                                  var.four[2] &= 0x7f;
+                                tmp3 = (((unsigned short)tmp3 & 0xFF00) >> 8) | (((unsigned short)tmp3 & 0x00FF) << 8);
 
-                                  var.four[3] = 0x00;
-                                }
-                                else
-                                {
-                                  var.four[2] |= 0x80;
+                                tmp3 += 32768;
 
-                                  var.four[3] = 0xff;
-                                }
-
-                                buf2_t[(j * sf_t) + i] = var.one_signed;
+                                buf2_t[(j * sf_t) + i] = tmp3;
                               }
                             }
                           }
-                          else if(datatype[k] == US_DATATYPE_INT32_LI)
+                          else if(datatype[k] == US_DATATYPE_INT24_BI)
                             {
                               for(i=0; i<sf_t; i++)
                               {
                                 for(j=0; j<signals_t; j++)
                                 {
-                                  buf2_t[(j * sf_t) + i] = *(((int *)buf1_t) + (i * signals_t) + j);
+                                  var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                                  var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                                  var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+
+                                  if(var.four[2] & 0x80)
+                                  {
+                                    var.four[3] = 0xff;
+                                  }
+                                  else
+                                  {
+                                    var.four[3] = 0x00;
+                                  }
+
+                                  buf2_t[(j * sf_t) + i] = var.one_signed;
                                 }
                               }
                             }
-                            else if(datatype[k] == US_DATATYPE_UINT32_LI)
+                            else if(datatype[k] == US_DATATYPE_UINT24_BI)
                               {
                                 for(i=0; i<sf_t; i++)
                                 {
                                   for(j=0; j<signals_t; j++)
                                   {
-                                    buf2_t[(j * sf_t) + i] = *(((int *)buf1_t) + (i * signals_t) + j) + 0x80000000;
+                                    var.four[2] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3));
+                                    var.four[1] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 1);
+                                    var.four[0] = *((unsigned char *)buf1_t + (((i * signals_t) + j) * 3) + 2);
+
+                                    if(var.four[2] & 0x80)
+                                    {
+                                      var.four[2] &= 0x7f;
+
+                                      var.four[3] = 0x00;
+                                    }
+                                    else
+                                    {
+                                      var.four[2] |= 0x80;
+
+                                      var.four[3] = 0xff;
+                                    }
+
+                                    buf2_t[(j * sf_t) + i] = var.one_signed;
                                   }
                                 }
                               }
-                              else if(datatype[k] == US_DATATYPE_INT32_BI)
+                              else if(datatype[k] == US_DATATYPE_INT32_LI)
                                 {
                                   for(i=0; i<sf_t; i++)
                                   {
                                     for(j=0; j<signals_t; j++)
                                     {
-                                        tmp = *(((int *)buf1_t) + (i * signals_t) + j);
-
-                                        tmp = (((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24);
-
-                                        buf2_t[(j * sf_t) + i] = tmp;
+                                      buf2_t[(j * sf_t) + i] = *(((int *)buf1_t) + (i * signals_t) + j);
                                     }
                                   }
                                 }
-                                else if(datatype[k] == US_DATATYPE_UINT32_BI)
+                                else if(datatype[k] == US_DATATYPE_UINT32_LI)
                                   {
                                     for(i=0; i<sf_t; i++)
                                     {
                                       for(j=0; j<signals_t; j++)
                                       {
-                                        tmp = *(((int *)buf1_t) + (i * signals_t) + j);
-
-                                        tmp = (((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24);
-
-                                        tmp += 0x80000000;
-
-                                        buf2_t[(j * sf_t) + i] = tmp;
+                                        buf2_t[(j * sf_t) + i] = *(((int *)buf1_t) + (i * signals_t) + j) + 0x80000000;
                                       }
                                     }
                                   }
+                                  else if(datatype[k] == US_DATATYPE_INT32_BI)
+                                    {
+                                      for(i=0; i<sf_t; i++)
+                                      {
+                                        for(j=0; j<signals_t; j++)
+                                        {
+                                            tmp = *(((int *)buf1_t) + (i * signals_t) + j);
+
+                                            tmp = (((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24);
+
+                                            buf2_t[(j * sf_t) + i] = tmp;
+                                        }
+                                      }
+                                    }
+                                    else if(datatype[k] == US_DATATYPE_UINT32_BI)
+                                      {
+                                        for(i=0; i<sf_t; i++)
+                                        {
+                                          for(j=0; j<signals_t; j++)
+                                          {
+                                            tmp = *(((int *)buf1_t) + (i * signals_t) + j);
+
+                                            tmp = (((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24);
+
+                                            tmp += 0x80000000;
+
+                                            buf2_t[(j * sf_t) + i] = tmp;
+                                          }
+                                        }
+                                      }
+          }
+        }
       }
       else if(blocks_written == datablocks[k])
         {
-          for(i=0; i<sf_t; i++)
+          if(!nedval_enc[k])
           {
-            for(j=0; j<signals_t; j++)
+            for(i=0; i<sf_t; i++)
             {
-              buf2_t[(j * sf_t) + i] = 0;
+              for(j=0; j<signals_t; j++)
+              {
+                buf2_t[(j * sf_t) + i] = 0;
+              }
+            }
+          }
+          else
+          {
+            for(i=0; i<sf_t; i++)
+            {
+              for(j=0; j<signals_t; j++)
+              {
+                buf2_t[(j * sf_t) + i] = nedval_value2[k][j] / lsbvalue;
+              }
             }
           }
         }
@@ -1707,20 +2064,60 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
           {
             datatype[file_nr] = US_DATATYPE_UINT32_LI;
             bdf = 1;
-            straightbinary[file_nr] = 0;
+            straightbinary[file_nr] = 1;
             samplesize[file_nr] = 4;
             physmax[file_nr] *= (8388607 - baseline[file_nr]);
             physmin[file_nr] *= (-8388608 - baseline[file_nr]);
             digmax[file_nr] = 8388607;
             digmin[file_nr] = -8388608;
           }
-          else
-          {
-            snprintf(scratchpad, 2047, "Unsupported combination of datatype: %s and csv file", str);
-            QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
-            messagewindow.exec();
-            return(1);
-          }
+          else if(!strcmp(str, "int16"))
+            {
+              datatype[file_nr] = US_DATATYPE_INT16_LI;
+              straightbinary[file_nr] = 0;
+              samplesize[file_nr] = 2;
+              physmax[file_nr] *= (32767 - baseline[file_nr]);
+              physmin[file_nr] *= (-32768 - baseline[file_nr]);
+              digmax[file_nr] = 32767;
+              digmin[file_nr] = -32768;
+            }
+            else if(!strcmp(str, "uint16"))
+              {
+                datatype[file_nr] = US_DATATYPE_UINT16_LI;
+                straightbinary[file_nr] = 1;
+                samplesize[file_nr] = 2;
+                physmax[file_nr] *= (32767 - baseline[file_nr]);
+                physmin[file_nr] *= (-32768 - baseline[file_nr]);
+                digmax[file_nr] = 32767;
+                digmin[file_nr] = -32768;
+              }
+              else if(!strcmp(str, "int8"))
+                {
+                  datatype[file_nr] = US_DATATYPE_INT8_LI;
+                  straightbinary[file_nr] = 0;
+                  samplesize[file_nr] = 1;
+                  physmax[file_nr] *= (127 - baseline[file_nr]);
+                  physmin[file_nr] *= (-128 - baseline[file_nr]);
+                  digmax[file_nr] = 127;
+                  digmin[file_nr] = -128;
+                }
+                else if(!strcmp(str, "uint8"))
+                  {
+                    datatype[file_nr] = US_DATATYPE_UINT8_LI;
+                    straightbinary[file_nr] = 1;
+                    samplesize[file_nr] = 1;
+                    physmax[file_nr] *= (127 - baseline[file_nr]);
+                    physmin[file_nr] *= (-128 - baseline[file_nr]);
+                    digmax[file_nr] = 127;
+                    digmin[file_nr] = -128;
+                  }
+                  else
+                  {
+                    snprintf(scratchpad, 2047, "Unsupported combination of datatype: %s and csv file", str);
+                    QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+                    messagewindow.exec();
+                    return(1);
+                  }
   }
   else
   {
@@ -1866,9 +2263,6 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_EVT_attributes(struct xml_ha
 
   return(0);
 }
-
-
-
 
 
 
