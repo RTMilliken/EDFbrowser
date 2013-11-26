@@ -44,7 +44,7 @@
 #include <QStringList>
 #include <QByteArray>
 #include <QProgressDialog>
-#include <QMessageBox>
+#include <QTextEdit>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,6 +68,8 @@ public:
   UI_UNISENS2EDFwindow(char *recent_dir=NULL, char *save_dir=NULL);
 
 private:
+
+QTextEdit    *textEdit1;
 
 QPushButton  *pushButton1,
              *pushButton2;
