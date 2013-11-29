@@ -1133,13 +1133,14 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
   int sf_t,
       signals_t,
-      *buf2_t,
-      adcz;
+      *buf2_t;
 
   char *buf1_t,
        *ptr,
        dec_sep,
        sep;
+
+long long adcz;
 
   union {
           unsigned int one;
@@ -1156,13 +1157,19 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 //          "sf_inv = %i\n"
 //          "datablocks = %i\n"
 //          "csv_enc = %i\n"
-//          "nedval_enc = %i\n",
+//          "nedval_enc = %i\n"
+//          "adczero = %lli\n"
+//          "baseline = %lli\n"
+//          "lsbvalue = %.20f\n",
 //          i,
 //          sf[i],
 //          sf_inv[i],
 //          datablocks[i],
 //          csv_enc[i],
-//          nedval_enc[i]);
+//          nedval_enc[i],
+//          adczero[i],
+//          baseline[i],
+//          lsbval[i]);
 // }
 
   for(k=0; k<file_cnt; k++)
@@ -1916,7 +1923,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
 
   sf_inv[file_nr] = 0;
 
-  sf[file_nr] = atoi(str);
+  sf[file_nr] = nearbyint(atof(str));
 
   if((sf[file_nr] < 1) || (sf[file_nr] > 1000000))
   {
@@ -1951,11 +1958,11 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       return(1);
     }
 
-    baseline[file_nr] = atoi(str);
+    baseline[file_nr] = atoll(str);
   }
   else
   {
-    baseline[file_nr] = 0;
+    baseline[file_nr] = 0LL;
   }
 
   if(!xml_get_attribute_of_element(xml_hdl, "adcZero", str, 255))
@@ -1966,11 +1973,11 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       return(1);
     }
 
-    adczero[file_nr] = atoi(str);
+    adczero[file_nr] = atoll(str);
   }
   else
   {
-    adczero[file_nr] = 0;
+    adczero[file_nr] = 0LL;
   }
 
   if(xml_get_attribute_of_element(xml_hdl, "lsbValue", str, 255))
@@ -2007,8 +2014,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
       bdf = 1;
       straightbinary[file_nr] = 0;
       samplesize[file_nr] = 8;
-      physmax[file_nr] *= (8388607 - (baseline[file_nr] - adczero[file_nr]));
-      physmin[file_nr] *= (-8388608 - (baseline[file_nr] - adczero[file_nr]));
+      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
       digmax[file_nr] = 8388607;
       digmin[file_nr] = -8388608;
     }
@@ -2018,8 +2025,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
         bdf = 1;
         straightbinary[file_nr] = 0;
         samplesize[file_nr] = 4;
-        physmax[file_nr] *= (8388607 - (baseline[file_nr] - adczero[file_nr]));
-        physmin[file_nr] *= (-8388608 - (baseline[file_nr] - adczero[file_nr]));
+        physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+        physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
         digmax[file_nr] = 8388607;
         digmin[file_nr] = -8388608;
       }
@@ -2029,8 +2036,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
           bdf = 1;
           straightbinary[file_nr] = 0;
           samplesize[file_nr] = 4;
-          physmax[file_nr] *= (8388607 - (baseline[file_nr] - adczero[file_nr]));
-          physmin[file_nr] *= (-8388608 - (baseline[file_nr] - adczero[file_nr]));
+          physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+          physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
           digmax[file_nr] = 8388607;
           digmin[file_nr] = -8388608;
         }
@@ -2040,8 +2047,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
             bdf = 1;
             straightbinary[file_nr] = 1;
             samplesize[file_nr] = 4;
-            physmax[file_nr] *= (8388607 - (baseline[file_nr] - adczero[file_nr]));
-            physmin[file_nr] *= (-8388608 - (baseline[file_nr] - adczero[file_nr]));
+            physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+            physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
             digmax[file_nr] = 8388607;
             digmin[file_nr] = -8388608;
           }
@@ -2050,8 +2057,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
               datatype[file_nr] = US_DATATYPE_INT16_LI;
               straightbinary[file_nr] = 0;
               samplesize[file_nr] = 2;
-              physmax[file_nr] *= (32767 - (baseline[file_nr] - adczero[file_nr]));
-              physmin[file_nr] *= (-32768 - (baseline[file_nr] - adczero[file_nr]));
+              physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
+              physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
               digmax[file_nr] = 32767;
               digmin[file_nr] = -32768;
             }
@@ -2060,8 +2067,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                 datatype[file_nr] = US_DATATYPE_UINT16_LI;
                 straightbinary[file_nr] = 1;
                 samplesize[file_nr] = 2;
-                physmax[file_nr] *= (32767 - (baseline[file_nr] - adczero[file_nr]));
-                physmin[file_nr] *= (-32768 - (baseline[file_nr] - adczero[file_nr]));
+                physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
+                physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
                 digmax[file_nr] = 32767;
                 digmin[file_nr] = -32768;
               }
@@ -2119,8 +2126,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
           datatype[file_nr] = US_DATATYPE_UINT16_LI;
           straightbinary[file_nr] = 1;
           samplesize[file_nr] = 2;
-          physmax[file_nr] *= (32767 - (baseline[file_nr] - adczero[file_nr]));
-          physmin[file_nr] *= (-32768 - (baseline[file_nr] - adczero[file_nr]));
+          physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
+          physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
           digmax[file_nr] = 32767;
           digmin[file_nr] = -32768;
         }
@@ -2129,8 +2136,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
             datatype[file_nr] = US_DATATYPE_INT16_LI;
             straightbinary[file_nr] = 0;
             samplesize[file_nr] = 2;
-            physmax[file_nr] *= (32767 - (baseline[file_nr] - adczero[file_nr]));
-            physmin[file_nr] *= (-32768 - (baseline[file_nr] - adczero[file_nr]));
+            physmax[file_nr] *= (32767LL - (baseline[file_nr] - adczero[file_nr]));
+            physmin[file_nr] *= (-32768LL - (baseline[file_nr] - adczero[file_nr]));
             digmax[file_nr] = 32767;
             digmin[file_nr] = -32768;
           }
@@ -2140,8 +2147,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
               bdf = 1;
               straightbinary[file_nr] = 1;
               samplesize[file_nr] = 3;
-              physmax[file_nr] *= (8388607 - (baseline[file_nr] - adczero[file_nr]));
-              physmin[file_nr] *= (-8388608 - (baseline[file_nr] - adczero[file_nr]));
+              physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+              physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
               digmax[file_nr] = 8388607;
               digmin[file_nr] = -8388608;
             }
@@ -2151,8 +2158,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                 bdf = 1;
                 straightbinary[file_nr] = 0;
                 samplesize[file_nr] = 3;
-                physmax[file_nr] *= (8388607 - (baseline[file_nr] - adczero[file_nr]));
-                physmin[file_nr] *= (-8388608 - (baseline[file_nr] - adczero[file_nr]));
+                physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
                 digmax[file_nr] = 8388607;
                 digmin[file_nr] = -8388608;
               }
@@ -2162,8 +2169,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                   bdf = 1;
                   straightbinary[file_nr] = 1;
                   samplesize[file_nr] = 4;
-                  physmax[file_nr] *= (8388607 - (baseline[file_nr] - adczero[file_nr]));
-                  physmin[file_nr] *= (-8388608 - (baseline[file_nr] - adczero[file_nr]));
+                  physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                  physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
                   digmax[file_nr] = 8388607;
                   digmin[file_nr] = -8388608;
                 }
@@ -2173,8 +2180,8 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                     bdf = 1;
                     straightbinary[file_nr] = 0;
                     samplesize[file_nr] = 4;
-                    physmax[file_nr] *= (8388607 - (baseline[file_nr] - adczero[file_nr]));
-                    physmin[file_nr] *= (-8388608 - (baseline[file_nr] - adczero[file_nr]));
+                    physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                    physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
                     digmax[file_nr] = 8388607;
                     digmin[file_nr] = -8388608;
                   }

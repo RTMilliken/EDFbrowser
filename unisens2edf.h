@@ -103,8 +103,6 @@ int straightbinary[MAXFILES],
     digmax[MAXFILES],
     digmin[MAXFILES],
     adcres[MAXFILES],
-    adczero[MAXFILES],
-    baseline[MAXFILES],
     datablocks[MAXFILES],
     edf_signals[MAXFILES],
     total_edf_signals,
@@ -120,6 +118,10 @@ int straightbinary[MAXFILES],
     evt_sf[MAXFILES],
     total_annotations,
     starttime_fraction;
+
+long long adczero[MAXFILES],
+          baseline[MAXFILES];
+
 
 double physmax[MAXFILES],
        physmin[MAXFILES],

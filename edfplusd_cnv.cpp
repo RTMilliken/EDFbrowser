@@ -461,9 +461,18 @@ void UI_EDFDwindow::SelectFileButton()
              if(annotblock->annotation[i]==0)  break;
 
              fputc(annotblock->annotation[i], outputfile);
+
+             cnt++;
             }
 
             fputc(20, outputfile);
+
+            cnt++;
+
+            for(i = cnt; i < annot_signal_size; i++)
+            {
+              fputc(0, outputfile);
+            }
 
             annots_written++;
           }
@@ -628,9 +637,18 @@ void UI_EDFDwindow::SelectFileButton()
           if(annotblock->annotation[i]==0)  break;
 
           fputc(annotblock->annotation[i], outputfile);
+
+          cnt++;
         }
 
         fputc(20, outputfile);
+
+        cnt++;
+
+        for(i = cnt; i < annot_signal_size; i++)
+        {
+          fputc(0, outputfile);
+        }
 
         annots_written++;
       }
