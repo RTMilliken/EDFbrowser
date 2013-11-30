@@ -152,7 +152,7 @@ void UI_LoadMontagewindow::LoadButtonClicked()
   if(xml_hdl==NULL)
   {
     sprintf(scratchpad, "Can not open montage file:\n%s", mtg_path);
-    QMessageBox messagewindow(QMessageBox::Critical, "Error", scratchpad);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
     messagewindow.exec();
     mainwindow->remove_recent_file_mtg_path(mtg_path);
     return;

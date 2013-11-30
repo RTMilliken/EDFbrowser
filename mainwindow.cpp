@@ -143,6 +143,7 @@ UI_Mainwindow::UI_Mainwindow()
   recent_montagedir[0] = 0;
   recent_savedir[0] = 0;
   recent_opendir[0] = 0;
+  recent_colordir[0] = 0;
   cfg_app_version[0] = 0;
 
   for(i=0; i<MAXSPECTRUMDIALOGS; i++)
@@ -4903,6 +4904,22 @@ void UI_Mainwindow::read_recent_file_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "recent_colordir", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    strncpy(recent_colordir, result, MAX_PATH_LENGTH);
+    recent_opendir[MAX_PATH_LENGTH - 1] = 0;
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "recent_file", 0)))
   {
     result = xml_get_content_of_element(xml_hdl);
@@ -6516,6 +6533,12 @@ void UI_Mainwindow::write_settings()
     xml_fwrite_encode_entity(cfgfile, recent_opendir);
 
     fprintf(cfgfile, "</recent_opendir>\n");
+
+    fprintf(cfgfile, "    <recent_colordir>");
+
+    xml_fwrite_encode_entity(cfgfile, recent_colordir);
+
+    fprintf(cfgfile, "</recent_colordir>\n");
 
     for(i=0; i < MAXPREDEFINEDMONTAGES; i++)
     {

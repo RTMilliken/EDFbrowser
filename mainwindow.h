@@ -220,6 +220,7 @@ public:
        recent_opendir[MAX_PATH_LENGTH],
        predefined_mtg_path[MAXPREDEFINEDMONTAGES][MAX_PATH_LENGTH],
        recent_file_mtg_path[MAX_RECENTFILES][MAX_PATH_LENGTH],
+       recent_colordir[MAX_PATH_LENGTH],
        cfg_app_version[17];
 
   double pixelsizefactor,
@@ -269,6 +270,8 @@ public:
   int file_is_opened(const char *);
 
   void remove_recent_file_mtg_path(const char *);
+
+  void get_rgbcolor_settings(struct xml_handle *, const char *, int, QColor *);
 
   struct signalcompblock * create_signalcomp_copy(struct signalcompblock *);
 
@@ -411,7 +414,6 @@ private:
   void read_recent_file_settings();
   void read_general_settings();
   void write_settings();
-  void get_rgbcolor_settings(struct xml_handle *, const char *, int, QColor *);
 #ifdef Q_WS_WIN
   QString specialFolder(int);
 #endif

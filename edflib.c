@@ -196,6 +196,52 @@ int edflib_fprint_ll_number_nonlocalized(FILE *, long long, int, int);
 
 
 
+int edflib_is_file_used(const char *path)
+{
+  int i, file_used=0;
+
+  for(i=0; i<EDFLIB_MAXFILES; i++)
+  {
+    if(hdrlist[i]!=NULL)
+    {
+      if(!(strcmp(path, hdrlist[i]->path)))
+      {
+        file_used = 1;
+
+        break;
+      }
+    }
+  }
+
+  return(file_used);
+}
+
+
+int edflib_get_number_of_open_files()
+{
+  return(files_open);
+}
+
+
+int edflib_get_handle(int file_number)
+{
+  int i, file_count=0;
+
+  for(i=0; i<EDFLIB_MAXFILES; i++)
+  {
+    if(hdrlist[i]!=NULL)
+    {
+      if(file_count++ == file_number)
+      {
+        return(i);
+      }
+    }
+  }
+
+  return(-1);
+}
+
+
 int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int read_annotations)
 {
   int i, j,
@@ -3861,7 +3907,7 @@ int edf_set_datarecord_duration(int handle, int duration)
     return(-1);
   }
 
-  if((duration < 2500) || (duration > 2000000))
+  if((duration < 100) || (duration > 6000000))
   {
     return(-1);
   }
@@ -4394,8 +4440,10 @@ int edf_blockwrite_digital_short_samples(int handle, short *buf)
 
 int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
 {
-  int  p,
-       error;
+  int  j, p,
+       error,
+       edfsignals,
+       total_samples=0;
 
   FILE *file;
 
@@ -4446,6 +4494,8 @@ int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
 
   file = hdr->file_hdl;
 
+  edfsignals = hdr->edfsignals;
+
   if(!hdr->datarecords)
   {
     error = edflib_write_edf_header(hdr);
@@ -4456,7 +4506,12 @@ int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
     }
   }
 
-  if(fwrite(buf, hdr->edfparam[0].smp_per_record * hdr->edfsignals * 3, 1, file) != 1)
+  for(j=0; j<edfsignals; j++)
+  {
+    total_samples += hdr->edfparam[j].smp_per_record;
+  }
+
+  if(fwrite(buf, total_samples * 3, 1, file) != 1)
   {
     return(-1);
   }

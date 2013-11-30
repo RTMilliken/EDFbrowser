@@ -63,6 +63,7 @@
 #include <QFrame>
 #include <QGridLayout>
 #include <QDesktopWidget>
+#include <QFileDialog>
 
 #include "global.h"
 #include "mainwindow.h"
@@ -109,9 +110,13 @@ QHBoxLayout    *horLayout;
 
 QPushButton    *CloseButton,
                *DefaultButton,
+               *colorSchema_NK_Button,
+               *colorSchema_Dark_Button,
                *ApplyButton,
                *DefaultButton2,
-               *ApplyButton2;
+               *ApplyButton2,
+               *saveColorSchemaButton,
+               *loadColorSchemaButton;
 
 SpecialButton  *BgColorButton,
                *SrColorButton,
@@ -187,6 +192,8 @@ QRadioButton   *radiobutton1,
 
 QLineEdit      *lineEdit3_1;
 
+void update_interface(void);
+
 private slots:
 
 void BgColorButtonClicked(SpecialButton *);
@@ -226,6 +233,10 @@ void combobox4_2IndexChanged(int);
 void combobox4_3IndexChanged(int);
 void spinBox4_2ValueChanged(int);
 void spinBox4_3ValueChanged(int);
+void saveColorSchemaButtonClicked();
+void loadColorSchemaButtonClicked();
+void loadColorSchema_NK();
+void loadColorSchema_Dark();
 
 };
 

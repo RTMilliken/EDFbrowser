@@ -81,59 +81,59 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   tab1 = new QWidget;
 
   label1 = new QLabel(tab1);
-  label1->setGeometry(QRect(20, 20, 200, 25));
+  label1->setGeometry(QRect(20, 15, 200, 25));
   label1->setText("Background color");
 
   BgColorButton = new SpecialButton(tab1);
-  BgColorButton->setGeometry(QRect(240, 20, 100, 25));
+  BgColorButton->setGeometry(QRect(240, 20, 60, 15));
   BgColorButton->setColor(mainwindow->maincurve->backgroundcolor);
 
   label2 = new QLabel(tab1);
-  label2->setGeometry(QRect(20, 65, 200, 25));
+  label2->setGeometry(QRect(20, 55, 200, 25));
   label2->setText("Small ruler color");
 
   SrColorButton = new SpecialButton(tab1);
-  SrColorButton->setGeometry(QRect(240, 65, 100, 25));
+  SrColorButton->setGeometry(QRect(240, 60, 60, 15));
   SrColorButton->setColor(mainwindow->maincurve->small_ruler_color);
 
   label3 = new QLabel(tab1);
-  label3->setGeometry(QRect(20, 110, 200, 25));
+  label3->setGeometry(QRect(20, 95, 200, 25));
   label3->setText("Big ruler color");
 
   BrColorButton = new SpecialButton(tab1);
-  BrColorButton->setGeometry(QRect(240, 110, 100, 25));
+  BrColorButton->setGeometry(QRect(240, 100, 60, 15));
   BrColorButton->setColor(mainwindow->maincurve->big_ruler_color);
 
   label4 = new QLabel(tab1);
-  label4->setGeometry(QRect(20, 155, 200, 25));
+  label4->setGeometry(QRect(20, 135, 200, 25));
   label4->setText("Mouse rectangle color");
 
   MrColorButton = new SpecialButton(tab1);
-  MrColorButton->setGeometry(QRect(240, 155, 100, 25));
+  MrColorButton->setGeometry(QRect(240, 140, 60, 15));
   MrColorButton->setColor(mainwindow->maincurve->mouse_rect_color);
 
   label5 = new QLabel(tab1);
-  label5->setGeometry(QRect(20, 200, 200, 25));
+  label5->setGeometry(QRect(20, 175, 200, 25));
   label5->setText("Text color");
 
   TxtColorButton = new SpecialButton(tab1);
-  TxtColorButton->setGeometry(QRect(240, 200, 100, 25));
+  TxtColorButton->setGeometry(QRect(240, 180, 60, 15));
   TxtColorButton->setColor(mainwindow->maincurve->text_color);
 
   label6 = new QLabel(tab1);
-  label6->setGeometry(QRect(20, 245, 200, 25));
+  label6->setGeometry(QRect(20, 215, 200, 25));
   label6->setText("Signals color");
 
   SigColorButton = new SpecialButton(tab1);
-  SigColorButton->setGeometry(QRect(240, 245, 100, 25));
+  SigColorButton->setGeometry(QRect(240, 220, 60, 15));
   SigColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
 
   label7 = new QLabel(tab1);
-  label7->setGeometry(QRect(20, 290, 200, 25));
+  label7->setGeometry(QRect(20, 255, 200, 25));
   label7->setText("Baseline color");
 
   checkbox3 = new QCheckBox(tab1);
-  checkbox3->setGeometry(QRect(200, 293, 20, 20));
+  checkbox3->setGeometry(QRect(200, 258, 20, 20));
   checkbox3->setTristate(FALSE);
   if(mainwindow->show_baselines)
   {
@@ -145,39 +145,39 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   BaseColorButton = new SpecialButton(tab1);
-  BaseColorButton->setGeometry(QRect(240, 290, 100, 25));
+  BaseColorButton->setGeometry(QRect(240, 260, 60, 15));
   BaseColorButton->setColor(mainwindow->maincurve->baseline_color);
 
   label8 = new QLabel(tab1);
-  label8->setGeometry(QRect(20, 335, 200, 25));
+  label8->setGeometry(QRect(20, 295, 200, 25));
   label8->setText("Crosshair color");
 
   Crh1ColorButton = new SpecialButton(tab1);
-  Crh1ColorButton->setGeometry(QRect(240, 335, 100, 25));
+  Crh1ColorButton->setGeometry(QRect(240, 300, 60, 15));
   Crh1ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_1.color);
 
   label9 = new QLabel(tab1);
-  label9->setGeometry(QRect(20, 380, 200, 25));
+  label9->setGeometry(QRect(20, 335, 200, 25));
   label9->setText("2th Crosshair color");
 
   Crh2ColorButton = new SpecialButton(tab1);
-  Crh2ColorButton->setGeometry(QRect(240, 380, 100, 25));
+  Crh2ColorButton->setGeometry(QRect(240, 340, 60, 15));
   Crh2ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_2.color);
 
   label10 = new QLabel(tab1);
-  label10->setGeometry(QRect(20, 425, 200, 25));
+  label10->setGeometry(QRect(20, 375, 200, 25));
   label10->setText("Floating ruler color");
 
   FrColorButton = new SpecialButton(tab1);
-  FrColorButton->setGeometry(QRect(240, 425, 100, 25));
+  FrColorButton->setGeometry(QRect(240, 380, 60, 15));
   FrColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->floating_ruler_color);
 
   label12 = new QLabel(tab1);
-  label12->setGeometry(QRect(20, 470, 200, 25));
+  label12->setGeometry(QRect(20, 415, 200, 25));
   label12->setText("Annotation marker");
 
   checkbox2 = new QCheckBox(tab1);
-  checkbox2->setGeometry(QRect(200, 473, 20, 20));
+  checkbox2->setGeometry(QRect(200, 418, 20, 20));
   checkbox2->setTristate(FALSE);
   if(mainwindow->show_annot_markers)
   {
@@ -189,15 +189,15 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   AnnotMkrButton = new SpecialButton(tab1);
-  AnnotMkrButton->setGeometry(QRect(240, 470, 100, 25));
+  AnnotMkrButton->setGeometry(QRect(240, 420, 60, 15));
   AnnotMkrButton->setColor(mainwindow->maincurve->annot_marker_color);
 
   label11 = new QLabel(tab1);
-  label11->setGeometry(QRect(20, 515, 200, 25));
+  label11->setGeometry(QRect(20, 455, 200, 25));
   label11->setText("Print in grayscale");
 
   checkbox1 = new QCheckBox(tab1);
-  checkbox1->setGeometry(QRect(200, 518, 20, 20));
+  checkbox1->setGeometry(QRect(200, 458, 20, 20));
   checkbox1->setTristate(FALSE);
   if(mainwindow->maincurve->blackwhite_printing)
   {
@@ -209,11 +209,11 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   }
 
   label13 = new QLabel(tab1);
-  label13->setGeometry(QRect(20, 560, 200, 25));
+  label13->setGeometry(QRect(20, 495, 200, 25));
   label13->setText("Clip signals to pane");
 
   checkbox4 = new QCheckBox(tab1);
-  checkbox4->setGeometry(QRect(200, 563, 20, 20));
+  checkbox4->setGeometry(QRect(200, 498, 20, 20));
   checkbox4->setTristate(FALSE);
   if(mainwindow->clip_to_pane)
   {
@@ -224,26 +224,46 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     checkbox4->setCheckState(Qt::Unchecked);
   }
 
-  DefaultButton = new QPushButton(tab1);
-  DefaultButton->setGeometry(QRect(140, 620, 140, 25));
-  DefaultButton->setText("Restore default");
+  colorSchema_Dark_Button = new QPushButton(tab1);
+  colorSchema_Dark_Button->setGeometry(QRect(140, 540, 140, 20));
+  colorSchema_Dark_Button->setText("Colorschema \"Dark\"");
 
-  QObject::connect(BgColorButton,   SIGNAL(clicked(SpecialButton *)), this,          SLOT(BgColorButtonClicked(SpecialButton *)));
-  QObject::connect(SrColorButton,   SIGNAL(clicked(SpecialButton *)), this,          SLOT(SrColorButtonClicked(SpecialButton *)));
-  QObject::connect(BrColorButton,   SIGNAL(clicked(SpecialButton *)), this,          SLOT(BrColorButtonClicked(SpecialButton *)));
-  QObject::connect(MrColorButton,   SIGNAL(clicked(SpecialButton *)), this,          SLOT(MrColorButtonClicked(SpecialButton *)));
-  QObject::connect(TxtColorButton,  SIGNAL(clicked(SpecialButton *)), this,          SLOT(TxtColorButtonClicked(SpecialButton *)));
-  QObject::connect(SigColorButton,  SIGNAL(clicked(SpecialButton *)), this,          SLOT(SigColorButtonClicked(SpecialButton *)));
-  QObject::connect(BaseColorButton, SIGNAL(clicked(SpecialButton *)), this,          SLOT(BaseColorButtonClicked(SpecialButton *)));
-  QObject::connect(Crh1ColorButton, SIGNAL(clicked(SpecialButton *)), this,          SLOT(Crh1ColorButtonClicked(SpecialButton *)));
-  QObject::connect(Crh2ColorButton, SIGNAL(clicked(SpecialButton *)), this,          SLOT(Crh2ColorButtonClicked(SpecialButton *)));
-  QObject::connect(FrColorButton,   SIGNAL(clicked(SpecialButton *)), this,          SLOT(FrColorButtonClicked(SpecialButton *)));
-  QObject::connect(AnnotMkrButton,  SIGNAL(clicked(SpecialButton *)), this,          SLOT(AnnotMkrButtonClicked(SpecialButton *)));
-  QObject::connect(checkbox1,       SIGNAL(stateChanged(int)),        this,          SLOT(checkbox1Clicked(int)));
-  QObject::connect(checkbox2,       SIGNAL(stateChanged(int)),        this,          SLOT(checkbox2Clicked(int)));
-  QObject::connect(checkbox3,       SIGNAL(stateChanged(int)),        this,          SLOT(checkbox3Clicked(int)));
-  QObject::connect(checkbox4,       SIGNAL(stateChanged(int)),        this,          SLOT(checkbox4Clicked(int)));
-  QObject::connect(DefaultButton,   SIGNAL(clicked()),                this,          SLOT(DefaultButtonClicked()));
+  colorSchema_NK_Button = new QPushButton(tab1);
+  colorSchema_NK_Button->setGeometry(QRect(140, 570, 140, 20));
+  colorSchema_NK_Button->setText("Colorschema \"NK\"");
+
+  DefaultButton = new QPushButton(tab1);
+  DefaultButton->setGeometry(QRect(140, 600, 140, 20));
+  DefaultButton->setText("Default colorschema");
+
+  saveColorSchemaButton = new QPushButton(tab1);
+  saveColorSchemaButton->setGeometry(QRect(140, 630, 140, 20));
+  saveColorSchemaButton->setText("Save colorschema");
+
+  loadColorSchemaButton = new QPushButton(tab1);
+  loadColorSchemaButton->setGeometry(QRect(140, 660, 140, 20));
+  loadColorSchemaButton->setText("Load colorschema");
+
+  QObject::connect(BgColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(BgColorButtonClicked(SpecialButton *)));
+  QObject::connect(SrColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(SrColorButtonClicked(SpecialButton *)));
+  QObject::connect(BrColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(BrColorButtonClicked(SpecialButton *)));
+  QObject::connect(MrColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(MrColorButtonClicked(SpecialButton *)));
+  QObject::connect(TxtColorButton,          SIGNAL(clicked(SpecialButton *)), this, SLOT(TxtColorButtonClicked(SpecialButton *)));
+  QObject::connect(SigColorButton,          SIGNAL(clicked(SpecialButton *)), this, SLOT(SigColorButtonClicked(SpecialButton *)));
+  QObject::connect(BaseColorButton,         SIGNAL(clicked(SpecialButton *)), this, SLOT(BaseColorButtonClicked(SpecialButton *)));
+  QObject::connect(Crh1ColorButton,         SIGNAL(clicked(SpecialButton *)), this, SLOT(Crh1ColorButtonClicked(SpecialButton *)));
+  QObject::connect(Crh2ColorButton,         SIGNAL(clicked(SpecialButton *)), this, SLOT(Crh2ColorButtonClicked(SpecialButton *)));
+  QObject::connect(FrColorButton,           SIGNAL(clicked(SpecialButton *)), this, SLOT(FrColorButtonClicked(SpecialButton *)));
+  QObject::connect(AnnotMkrButton,          SIGNAL(clicked(SpecialButton *)), this, SLOT(AnnotMkrButtonClicked(SpecialButton *)));
+  QObject::connect(checkbox1,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox1Clicked(int)));
+  QObject::connect(checkbox2,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox2Clicked(int)));
+  QObject::connect(checkbox3,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox3Clicked(int)));
+  QObject::connect(checkbox4,               SIGNAL(stateChanged(int)),        this, SLOT(checkbox4Clicked(int)));
+  QObject::connect(saveColorSchemaButton,   SIGNAL(clicked()),                this, SLOT(saveColorSchemaButtonClicked()));
+  QObject::connect(loadColorSchemaButton,   SIGNAL(clicked()),                this, SLOT(loadColorSchemaButtonClicked()));
+  QObject::connect(DefaultButton,           SIGNAL(clicked()),                this, SLOT(DefaultButtonClicked()));
+  QObject::connect(colorSchema_NK_Button,   SIGNAL(clicked()),                this, SLOT(loadColorSchema_NK()));
+  QObject::connect(colorSchema_Dark_Button, SIGNAL(clicked()),                this, SLOT(loadColorSchema_Dark()));
 
   tabholder->addTab(tab1, "Colors");
 
@@ -534,7 +554,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   label4_4 = new QLabel(tab4);
   label4_4->setGeometry(QRect(20, 295, 200, 40));
   label4_4->setText("Mousewheel stepsize\n"
-                    "(0 means no scroll)");
+                    "(0 is no scroll)");
 
   spinbox4_2 = new QSpinBox(tab4);
   spinbox4_2->setGeometry(QRect(200, 298, 140, 20));
@@ -1372,6 +1392,511 @@ void UI_OptionsDialog::AnnotMkrButtonClicked(SpecialButton *)
     mainwindow->maincurve->update();
   }
 }
+
+
+void UI_OptionsDialog::saveColorSchemaButtonClicked()
+{
+  char path[MAX_PATH_LENGTH];
+
+  FILE *colorfile;
+
+  strcpy(path, mainwindow->recent_colordir);
+  strcat(path, "/my_colorschema.color");
+
+  strcpy(path, QFileDialog::getSaveFileName(0, "Save colorschema", QString::fromLocal8Bit(path), "Colorschema files (*.color *.COLOR)").toLocal8Bit().data());
+
+  if(!strcmp(path, ""))
+  {
+    return;
+  }
+
+  if(strlen(path) > 4)
+  {
+    if(strcmp(path + strlen(path) - 6, ".color"))
+    {
+      strcat(path, ".color");
+    }
+  }
+
+  get_directory_from_path(mainwindow->recent_colordir, path, MAX_PATH_LENGTH);
+
+  colorfile = fopen(path, "wb");
+  if(colorfile==NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for writing.");
+    messagewindow.exec();
+
+    return;
+  }
+
+  fprintf(colorfile, "<?xml version=\"1.0\"?>\n<" PROGRAM_NAME "_colorschema>\n");
+
+  fprintf(colorfile, " <backgroundcolor>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  " </backgroundcolor>\n",
+                  mainwindow->maincurve->backgroundcolor.red(),
+                  mainwindow->maincurve->backgroundcolor.green(),
+                  mainwindow->maincurve->backgroundcolor.blue());
+
+  fprintf(colorfile, " <small_ruler_color>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  " </small_ruler_color>\n",
+                  mainwindow->maincurve->small_ruler_color.red(),
+                  mainwindow->maincurve->small_ruler_color.green(),
+                  mainwindow->maincurve->small_ruler_color.blue());
+
+  fprintf(colorfile, " <big_ruler_color>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  " </big_ruler_color>\n",
+                  mainwindow->maincurve->big_ruler_color.red(),
+                  mainwindow->maincurve->big_ruler_color.green(),
+                  mainwindow->maincurve->big_ruler_color.blue());
+
+  fprintf(colorfile, " <mouse_rect_color>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  " </mouse_rect_color>\n",
+                  mainwindow->maincurve->mouse_rect_color.red(),
+                  mainwindow->maincurve->mouse_rect_color.green(),
+                  mainwindow->maincurve->mouse_rect_color.blue());
+
+  fprintf(colorfile, " <text_color>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  " </text_color>\n",
+                  mainwindow->maincurve->text_color.red(),
+                  mainwindow->maincurve->text_color.green(),
+                  mainwindow->maincurve->text_color.blue());
+
+  fprintf(colorfile, " <baseline_color>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  " </baseline_color>\n",
+                  mainwindow->maincurve->baseline_color.red(),
+                  mainwindow->maincurve->baseline_color.green(),
+                  mainwindow->maincurve->baseline_color.blue());
+
+  fprintf(colorfile, " <annot_marker_color>\n"
+                  "  <red>%i</red>\n"
+                  "  <green>%i</green>\n"
+                  "  <blue>%i</blue>\n"
+                  " </annot_marker_color>\n",
+                  mainwindow->maincurve->annot_marker_color.red(),
+                  mainwindow->maincurve->annot_marker_color.green(),
+                  mainwindow->maincurve->annot_marker_color.blue());
+
+  fprintf(colorfile, " <signal_color>%i</signal_color>\n",
+                  mainwindow->maincurve->signal_color);
+
+  fprintf(colorfile, " <crosshair_1_color>%i</crosshair_1_color>\n",
+                  mainwindow->maincurve->crosshair_1.color);
+
+  fprintf(colorfile, " <crosshair_2_color>%i</crosshair_2_color>\n",
+                  mainwindow->maincurve->crosshair_2.color);
+
+  fprintf(colorfile, " <floating_ruler_color>%i</floating_ruler_color>\n",
+                  mainwindow->maincurve->floating_ruler_color);
+
+  fprintf(colorfile, " <blackwhite_printing>%i</blackwhite_printing>\n",
+                  mainwindow->maincurve->blackwhite_printing);
+
+  fprintf(colorfile, " <show_annot_markers>%i</show_annot_markers>\n",
+                  mainwindow->show_annot_markers);
+
+  fprintf(colorfile, " <show_baselines>%i</show_baselines>\n",
+                  mainwindow->show_baselines);
+
+  fprintf(colorfile, " <clip_to_pane>%i</clip_to_pane>\n",
+                  mainwindow->clip_to_pane);
+
+
+
+
+  fprintf(colorfile, "</" PROGRAM_NAME "_colorschema>\n");
+
+  fclose(colorfile);
+}
+
+
+void UI_OptionsDialog::loadColorSchemaButtonClicked()
+{
+  char path[MAX_PATH_LENGTH],
+       scratchpad[2048],
+       *result;
+
+  struct xml_handle *xml_hdl;
+
+
+  strcpy(path, QFileDialog::getOpenFileName(0, "Load colorschema", QString::fromLocal8Bit(mainwindow->recent_colordir), "Montage files (*.color *.COLOR)").toLocal8Bit().data());
+
+  if(!strcmp(path, ""))
+  {
+    return;
+  }
+
+  get_directory_from_path(mainwindow->recent_colordir, path, MAX_PATH_LENGTH);
+
+  xml_hdl = xml_get_handle(path);
+  if(xml_hdl==NULL)
+  {
+    sprintf(scratchpad, "Can not open colorschema:\n%s", path);
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(scratchpad));
+    messagewindow.exec();
+    return;
+  }
+
+  if(strcmp(xml_hdl->elementname, PROGRAM_NAME "_colorschema"))
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "There seems to be an error in this colorschema.");
+    messagewindow.exec();
+    xml_close(xml_hdl);
+    return;
+  }
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "backgroundcolor", 0, &mainwindow->maincurve->backgroundcolor);
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "small_ruler_color", 0, &mainwindow->maincurve->small_ruler_color);
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "big_ruler_color", 0, &mainwindow->maincurve->big_ruler_color);
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "mouse_rect_color", 0, &mainwindow->maincurve->mouse_rect_color);
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "text_color", 0, &mainwindow->maincurve->text_color);
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "baseline_color", 0, &mainwindow->maincurve->baseline_color);
+
+  mainwindow->get_rgbcolor_settings(xml_hdl, "annot_marker_color", 0, &mainwindow->maincurve->annot_marker_color);
+
+  if(xml_goto_nth_element_inside(xml_hdl, "signal_color", 0))
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  result = xml_get_content_of_element(xml_hdl);
+  if(result==NULL)
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  mainwindow->maincurve->signal_color = atoi(result);
+  free(result);
+
+  xml_go_up(xml_hdl);
+
+  if(xml_goto_nth_element_inside(xml_hdl, "floating_ruler_color", 0))
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  result = xml_get_content_of_element(xml_hdl);
+  if(result==NULL)
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  mainwindow->maincurve->floating_ruler_color = atoi(result);
+  free(result);
+
+  xml_go_up(xml_hdl);
+
+  if(xml_goto_nth_element_inside(xml_hdl, "blackwhite_printing", 0))
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  result = xml_get_content_of_element(xml_hdl);
+  if(result==NULL)
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  mainwindow->maincurve->blackwhite_printing = atoi(result);
+  free(result);
+
+  xml_go_up(xml_hdl);
+
+  if(xml_goto_nth_element_inside(xml_hdl, "show_annot_markers", 0))
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  result = xml_get_content_of_element(xml_hdl);
+  if(result==NULL)
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  mainwindow->show_annot_markers = atoi(result);
+  free(result);
+
+  xml_go_up(xml_hdl);
+
+  if(xml_goto_nth_element_inside(xml_hdl, "show_baselines", 0))
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  result = xml_get_content_of_element(xml_hdl);
+  if(result==NULL)
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  mainwindow->show_baselines = atoi(result);
+  free(result);
+
+  xml_go_up(xml_hdl);
+
+  if(xml_goto_nth_element_inside(xml_hdl, "clip_to_pane", 0))
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  result = xml_get_content_of_element(xml_hdl);
+  if(result==NULL)
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  mainwindow->clip_to_pane = atoi(result);
+  free(result);
+
+  xml_go_up(xml_hdl);
+
+  if(xml_goto_nth_element_inside(xml_hdl, "crosshair_1_color", 0))
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  result = xml_get_content_of_element(xml_hdl);
+  if(result==NULL)
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  mainwindow->maincurve->crosshair_1.color = atoi(result);
+  free(result);
+
+  xml_go_up(xml_hdl);
+
+  if(xml_goto_nth_element_inside(xml_hdl, "crosshair_2_color", 0))
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  result = xml_get_content_of_element(xml_hdl);
+  if(result==NULL)
+  {
+    xml_close(xml_hdl);
+    return;
+  }
+  mainwindow->maincurve->crosshair_2.color = atoi(result);
+  free(result);
+
+  xml_close(xml_hdl);
+
+  update_interface();
+}
+
+
+void UI_OptionsDialog::update_interface(void)
+{
+  int i;
+
+  QPalette palette;
+
+
+  BgColorButton->setColor(mainwindow->maincurve->backgroundcolor);
+
+  SrColorButton->setColor(mainwindow->maincurve->small_ruler_color);
+
+  BrColorButton->setColor(mainwindow->maincurve->big_ruler_color);
+
+  MrColorButton->setColor(mainwindow->maincurve->mouse_rect_color);
+
+  TxtColorButton->setColor(mainwindow->maincurve->text_color);
+
+  SigColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->signal_color);
+
+  if(mainwindow->show_baselines)
+  {
+    checkbox3->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox3->setCheckState(Qt::Unchecked);
+  }
+
+  BaseColorButton->setColor(mainwindow->maincurve->baseline_color);
+
+  Crh1ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_1.color);
+
+  Crh2ColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->crosshair_2.color);
+
+  FrColorButton->setColor((Qt::GlobalColor)mainwindow->maincurve->floating_ruler_color);
+
+  if(mainwindow->show_annot_markers)
+  {
+    checkbox2->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox2->setCheckState(Qt::Unchecked);
+  }
+
+  AnnotMkrButton->setColor(mainwindow->maincurve->annot_marker_color);
+
+  if(mainwindow->maincurve->blackwhite_printing)
+  {
+    checkbox1->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox1->setCheckState(Qt::Unchecked);
+  }
+
+  if(mainwindow->clip_to_pane)
+  {
+    checkbox4->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    checkbox4->setCheckState(Qt::Unchecked);
+  }
+
+  palette.setColor(QPalette::Text, mainwindow->maincurve->text_color);
+  palette.setColor(QPalette::Base, mainwindow->maincurve->backgroundcolor);
+
+  for(i=0; i<mainwindow->files_open; i++)
+  {
+    if(mainwindow->annotations_dock[i])
+    {
+      mainwindow->annotations_dock[i]->list->setPalette(palette);
+    }
+  }
+
+  for(i=0; i<mainwindow->signalcomps; i++)
+  {
+    mainwindow->signalcomp[i]->color = mainwindow->maincurve->signal_color;
+  }
+
+  mainwindow->maincurve->update();
+}
+
+
+void UI_OptionsDialog::loadColorSchema_NK()
+{
+  mainwindow->maincurve->backgroundcolor.setRed(255);
+  mainwindow->maincurve->backgroundcolor.setGreen(255);
+  mainwindow->maincurve->backgroundcolor.setBlue(255);
+
+  mainwindow->maincurve->small_ruler_color.setRed(0);
+  mainwindow->maincurve->small_ruler_color.setGreen(0);
+  mainwindow->maincurve->small_ruler_color.setBlue(0);
+
+  mainwindow->maincurve->big_ruler_color.setRed(255);
+  mainwindow->maincurve->big_ruler_color.setGreen(255);
+  mainwindow->maincurve->big_ruler_color.setBlue(0);
+
+  mainwindow->maincurve->mouse_rect_color.setRed(0);
+  mainwindow->maincurve->mouse_rect_color.setGreen(0);
+  mainwindow->maincurve->mouse_rect_color.setBlue(0);
+
+  mainwindow->maincurve->text_color.setRed(0);
+  mainwindow->maincurve->text_color.setGreen(0);
+  mainwindow->maincurve->text_color.setBlue(0);
+
+  mainwindow->maincurve->baseline_color.setRed(128);
+  mainwindow->maincurve->baseline_color.setGreen(128);
+  mainwindow->maincurve->baseline_color.setBlue(128);
+
+  mainwindow->maincurve->annot_marker_color.setRed(0);
+  mainwindow->maincurve->annot_marker_color.setGreen(0);
+  mainwindow->maincurve->annot_marker_color.setBlue(0);
+
+  mainwindow->maincurve->signal_color = 2;
+
+  mainwindow->maincurve->floating_ruler_color = 7;
+
+  mainwindow->maincurve->blackwhite_printing = 1;
+
+  mainwindow->show_annot_markers = 1;
+
+  mainwindow->show_baselines = 1;
+
+  mainwindow->maincurve->crosshair_1.color = 7;
+
+  mainwindow->maincurve->crosshair_2.color = 9;
+
+  mainwindow->clip_to_pane = 0;
+
+  update_interface();
+}
+
+
+void UI_OptionsDialog::loadColorSchema_Dark()
+{
+  mainwindow->maincurve->backgroundcolor.setRed(64);
+  mainwindow->maincurve->backgroundcolor.setGreen(64);
+  mainwindow->maincurve->backgroundcolor.setBlue(64);
+
+  mainwindow->maincurve->small_ruler_color.setRed(255);
+  mainwindow->maincurve->small_ruler_color.setGreen(255);
+  mainwindow->maincurve->small_ruler_color.setBlue(255);
+
+  mainwindow->maincurve->big_ruler_color.setRed(128);
+  mainwindow->maincurve->big_ruler_color.setGreen(128);
+  mainwindow->maincurve->big_ruler_color.setBlue(128);
+
+  mainwindow->maincurve->mouse_rect_color.setRed(255);
+  mainwindow->maincurve->mouse_rect_color.setGreen(255);
+  mainwindow->maincurve->mouse_rect_color.setBlue(255);
+
+  mainwindow->maincurve->text_color.setRed(255);
+  mainwindow->maincurve->text_color.setGreen(255);
+  mainwindow->maincurve->text_color.setBlue(255);
+
+  mainwindow->maincurve->baseline_color.setRed(128);
+  mainwindow->maincurve->baseline_color.setGreen(128);
+  mainwindow->maincurve->baseline_color.setBlue(128);
+
+  mainwindow->maincurve->annot_marker_color.setRed(255);
+  mainwindow->maincurve->annot_marker_color.setGreen(255);
+  mainwindow->maincurve->annot_marker_color.setBlue(255);
+
+  mainwindow->maincurve->signal_color = 12;
+
+  mainwindow->maincurve->floating_ruler_color = 10;
+
+  mainwindow->maincurve->blackwhite_printing = 1;
+
+  mainwindow->show_annot_markers = 1;
+
+  mainwindow->show_baselines = 1;
+
+  mainwindow->maincurve->crosshair_1.color = 7;
+
+  mainwindow->maincurve->crosshair_2.color = 10;
+
+  mainwindow->clip_to_pane = 0;
+
+  update_interface();
+}
+
+
+
+
+
+
 
 
 

@@ -93,7 +93,8 @@ private:
 
   int file_num,
       relative,
-      selected;
+      selected,
+      invert_filter;
 
   QDialog *dialog1;
 
@@ -101,7 +102,8 @@ private:
 
   QVBoxLayout *v_layout;
 
-  QCheckBox *checkbox1;
+  QCheckBox *checkbox1,
+            *checkbox2;
 
   QLabel *label1;
 
@@ -120,6 +122,7 @@ private slots:
   void annotation_selected(QListWidgetItem *, int centered=1);
   void hide_editdock(bool);
   void checkbox1_clicked(int);
+  void checkbox2_clicked(int);
   void show_between(bool);
   void average_annot(bool);
   void hide_annot(bool);

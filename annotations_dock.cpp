@@ -55,18 +55,25 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   selected = -1;
 
+  invert_filter = 0;
+
   dialog1 = new QDialog;
 
-  checkbox1 = new QCheckBox("Relative");
+  checkbox1 = new QCheckBox("Relative ");
   checkbox1->setGeometry(2, 2, 10, 10);
   checkbox1->setTristate(FALSE);
   checkbox1->setCheckState(Qt::Checked);
 
   label1 = new QLabel;
-  label1->setText("Filter:");
+  label1->setText(" Filter:");
 
   lineedit1 = new QLineEdit;
   lineedit1->setMaxLength(16);
+
+  checkbox2 = new QCheckBox("Inv.");
+  checkbox2->setGeometry(2, 2, 10, 10);
+  checkbox2->setTristate(FALSE);
+  checkbox2->setCheckState(Qt::Unchecked);
 
   list = new QListWidget(dialog1);
   list->setFont(*mainwindow->monofont);
@@ -94,6 +101,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   h_layout->addWidget(checkbox1);
   h_layout->addWidget(label1);
   h_layout->addWidget(lineedit1);
+  h_layout->addWidget(checkbox2);
 
   v_layout = new QVBoxLayout(dialog1);
   v_layout->addLayout(h_layout);
@@ -107,6 +115,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   QObject::connect(list,                   SIGNAL(itemPressed(QListWidgetItem *)), this, SLOT(annotation_selected(QListWidgetItem *)));
   QObject::connect(docklist,               SIGNAL(visibilityChanged(bool)),        this, SLOT(hide_editdock(bool)));
   QObject::connect(checkbox1,              SIGNAL(stateChanged(int)),              this, SLOT(checkbox1_clicked(int)));
+  QObject::connect(checkbox2,              SIGNAL(stateChanged(int)),              this, SLOT(checkbox2_clicked(int)));
   QObject::connect(hide_annot_act,         SIGNAL(triggered(bool)),                this, SLOT(hide_annot(bool)));
   QObject::connect(unhide_annot_act,       SIGNAL(triggered(bool)),                this, SLOT(unhide_annot(bool)));
   QObject::connect(hide_same_annots_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_same_annots(bool)));
@@ -154,26 +163,88 @@ void UI_Annotationswindow::filter_edited(const QString text)
 
   len = strlen(filter_str);
 
-  while(annot != NULL)
+  if(invert_filter == 0)
   {
-    annot->hided_in_list = 1;
-
-    n = strlen(annot->annotation) - len + 1;
-
-    for(i=0; i<n; i++)
+    while(annot != NULL)
     {
-      if(!(strncmp(filter_str, annot->annotation + i, len)))
+      annot->hided_in_list = 1;
+
+      n = strlen(annot->annotation) - len + 1;
+
+      for(i=0; i<n; i++)
       {
-        annot->hided_in_list = 0;
+        if(!(strncmp(filter_str, annot->annotation + i, len)))
+        {
+          annot->hided_in_list = 0;
 
-        break;
+          break;
+        }
       }
-    }
 
-    annot = annot->next_annotation;
+      annot = annot->next_annotation;
+    }
+  }
+  else
+  {
+    while(annot != NULL)
+    {
+      annot->hided_in_list = 0;
+
+      n = strlen(annot->annotation) - len + 1;
+
+      for(i=0; i<n; i++)
+      {
+        if(!(strncmp(filter_str, annot->annotation + i, len)))
+        {
+          annot->hided_in_list = 1;
+
+          break;
+        }
+      }
+
+      annot = annot->next_annotation;
+    }
   }
 
   updateList();
+
+  mainwindow->maincurve->update();
+}
+
+
+void UI_Annotationswindow::checkbox2_clicked(int state)
+{
+  int cnt, changed=0;
+
+  struct annotationblock *annot;
+
+
+  annot = mainwindow->annotationlist[file_num];
+
+  cnt = edfplus_annotation_count(&annot);
+
+  if(cnt < 1)
+  {
+    return;
+  }
+
+  if(state==Qt::Checked)
+  {
+    if(invert_filter == 0)  changed = 1;
+
+    invert_filter = 1;
+  }
+
+  if(state==Qt::Unchecked)
+  {
+    if(invert_filter == 1)  changed = 1;
+
+    invert_filter = 0;
+  }
+
+  if(changed == 0)  return;
+
+  filter_edited(lineedit1->text());
 }
 
 
