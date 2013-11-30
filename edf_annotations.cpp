@@ -599,6 +599,8 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
 
               new_annotation->onset += edf_hdr->starttime_offset;
 
+              new_annotation->ident = (1 << ANNOT_ID_NK_TRIGGER);
+
               if(*annotslist!=NULL)
               {
                 temp_annotation = *annotslist;

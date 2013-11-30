@@ -54,6 +54,9 @@
 #define MAXAVERAGECURVEDIALOGS 32
 #define MAXZSCOREDIALOGS 32
 
+#define ANNOT_ID_NK_TRIGGER   0
+#define ANNOT_ID_BS_TRIGGER   1
+
 // #define BK_MRS_project
 // This define activates temporary code for private use in a certain project.
 // Do not use this code, it will be removed in future.
@@ -232,6 +235,7 @@ struct annotationblock{
         int jump;
         int hided;
         int hided_in_list;
+        unsigned int ident;
        };
 
 struct active_markersblock{

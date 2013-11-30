@@ -94,7 +94,9 @@ private:
   int file_num,
       relative,
       selected,
-      invert_filter;
+      invert_filter,
+      hide_nk_triggers,
+      hide_bs_triggers;
 
   QDialog *dialog1;
 
@@ -115,7 +117,11 @@ private:
           *unhide_annot_act,
           *hide_same_annots_act,
           *unhide_same_annots_act,
-          *unhide_all_annots_act;
+          *unhide_all_annots_act,
+          *hide_all_NK_triggers_act,
+          *hide_all_BS_triggers_act,
+          *unhide_all_NK_triggers_act,
+          *unhide_all_BS_triggers_act;
 
 private slots:
 
@@ -131,6 +137,10 @@ private slots:
   void unhide_same_annots(bool);
   void unhide_all_annots(bool);
   void filter_edited(const QString);
+  void hide_all_NK_triggers(bool);
+  void hide_all_BS_triggers(bool);
+  void unhide_all_NK_triggers(bool);
+  void unhide_all_BS_triggers(bool);
 };
 
 

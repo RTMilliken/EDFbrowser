@@ -248,6 +248,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
           annotation->onset = (records_read * TIME_DIMENSION) + ((long long)(i / 3) * status_sample_duration);
           annotation->onset += hdr->starttime_offset;
           sprintf(annotation->annotation, "new epoch");
+          annotation->ident = (1 << ANNOT_ID_BS_TRIGGER);
           edfplus_annotation_add_item(&annotlist, annotation);
 
           trigger_cnt++;
@@ -282,6 +283,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
             annotation->onset = (records_read * TIME_DIMENSION) + ((long long)(i / 3) * status_sample_duration);
             annotation->onset += hdr->starttime_offset;
             sprintf(annotation->annotation, "Trigger Input %i", j + 1);
+            annotation->ident = (1 << ANNOT_ID_BS_TRIGGER);
             edfplus_annotation_add_item(&annotlist, annotation);
 
             trigger_cnt++;

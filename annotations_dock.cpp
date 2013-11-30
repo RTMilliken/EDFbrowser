@@ -57,6 +57,10 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   invert_filter = 0;
 
+  hide_nk_triggers = 0;
+
+  hide_bs_triggers = 0;
+
   dialog1 = new QDialog;
 
   checkbox1 = new QCheckBox("Relative ");
@@ -87,6 +91,10 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   unhide_same_annots_act = new QAction("Unhide similar", list);
   unhide_all_annots_act = new QAction("Unhide all", list);
   average_annot_act = new QAction("Average", list);
+  hide_all_NK_triggers_act = new QAction("Hide all Nihon Kohden triggers", list);
+  hide_all_BS_triggers_act = new QAction("Hide all Biosemi triggers", list);
+  unhide_all_NK_triggers_act = new QAction("Unhide all Nihon Kohden triggers", list);
+  unhide_all_BS_triggers_act = new QAction("Unhide all Biosemi triggers", list);
 
   list->setContextMenuPolicy(Qt::ActionsContextMenu);
   list->insertAction(NULL, show_between_act);
@@ -96,6 +104,10 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
   list->insertAction(NULL, unhide_same_annots_act);
   list->insertAction(NULL, unhide_all_annots_act);
   list->insertAction(NULL, average_annot_act);
+  list->insertAction(NULL, hide_all_NK_triggers_act);
+  list->insertAction(NULL, unhide_all_NK_triggers_act);
+  list->insertAction(NULL, hide_all_BS_triggers_act);
+  list->insertAction(NULL, unhide_all_BS_triggers_act);
 
   h_layout = new QHBoxLayout;
   h_layout->addWidget(checkbox1);
@@ -112,18 +124,126 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   updateList();
 
-  QObject::connect(list,                   SIGNAL(itemPressed(QListWidgetItem *)), this, SLOT(annotation_selected(QListWidgetItem *)));
-  QObject::connect(docklist,               SIGNAL(visibilityChanged(bool)),        this, SLOT(hide_editdock(bool)));
-  QObject::connect(checkbox1,              SIGNAL(stateChanged(int)),              this, SLOT(checkbox1_clicked(int)));
-  QObject::connect(checkbox2,              SIGNAL(stateChanged(int)),              this, SLOT(checkbox2_clicked(int)));
-  QObject::connect(hide_annot_act,         SIGNAL(triggered(bool)),                this, SLOT(hide_annot(bool)));
-  QObject::connect(unhide_annot_act,       SIGNAL(triggered(bool)),                this, SLOT(unhide_annot(bool)));
-  QObject::connect(hide_same_annots_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_same_annots(bool)));
-  QObject::connect(unhide_same_annots_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_same_annots(bool)));
-  QObject::connect(unhide_all_annots_act,  SIGNAL(triggered(bool)),                this, SLOT(unhide_all_annots(bool)));
-  QObject::connect(average_annot_act,      SIGNAL(triggered(bool)),                this, SLOT(average_annot(bool)));
-  QObject::connect(show_between_act,       SIGNAL(triggered(bool)),                this, SLOT(show_between(bool)));
-  QObject::connect(lineedit1,              SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+  QObject::connect(list,                       SIGNAL(itemPressed(QListWidgetItem *)), this, SLOT(annotation_selected(QListWidgetItem *)));
+  QObject::connect(docklist,                   SIGNAL(visibilityChanged(bool)),        this, SLOT(hide_editdock(bool)));
+  QObject::connect(checkbox1,                  SIGNAL(stateChanged(int)),              this, SLOT(checkbox1_clicked(int)));
+  QObject::connect(checkbox2,                  SIGNAL(stateChanged(int)),              this, SLOT(checkbox2_clicked(int)));
+  QObject::connect(hide_annot_act,             SIGNAL(triggered(bool)),                this, SLOT(hide_annot(bool)));
+  QObject::connect(unhide_annot_act,           SIGNAL(triggered(bool)),                this, SLOT(unhide_annot(bool)));
+  QObject::connect(hide_same_annots_act,       SIGNAL(triggered(bool)),                this, SLOT(hide_same_annots(bool)));
+  QObject::connect(unhide_same_annots_act,     SIGNAL(triggered(bool)),                this, SLOT(unhide_same_annots(bool)));
+  QObject::connect(unhide_all_annots_act,      SIGNAL(triggered(bool)),                this, SLOT(unhide_all_annots(bool)));
+  QObject::connect(average_annot_act,          SIGNAL(triggered(bool)),                this, SLOT(average_annot(bool)));
+  QObject::connect(show_between_act,           SIGNAL(triggered(bool)),                this, SLOT(show_between(bool)));
+  QObject::connect(hide_all_NK_triggers_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_all_NK_triggers(bool)));
+  QObject::connect(hide_all_BS_triggers_act,   SIGNAL(triggered(bool)),                this, SLOT(hide_all_BS_triggers(bool)));
+  QObject::connect(unhide_all_NK_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_NK_triggers(bool)));
+  QObject::connect(unhide_all_BS_triggers_act, SIGNAL(triggered(bool)),                this, SLOT(unhide_all_BS_triggers(bool)));
+  QObject::connect(lineedit1,                  SIGNAL(textEdited(const QString)),      this, SLOT(filter_edited(const QString)));
+}
+
+
+void UI_Annotationswindow::hide_all_NK_triggers(bool)
+{
+  struct annotationblock *annot;
+
+  annot = mainwindow->annotationlist[file_num];
+
+  hide_nk_triggers = 1;
+
+  while(annot != NULL)
+  {
+    if(annot->ident & (1 << ANNOT_ID_NK_TRIGGER))
+    {
+      annot->hided = 1;
+
+      annot->hided_in_list = 1;
+    }
+
+    annot = annot->next_annotation;
+  }
+
+  updateList();
+
+  mainwindow->maincurve->update();
+}
+
+
+void UI_Annotationswindow::hide_all_BS_triggers(bool)
+{
+  struct annotationblock *annot;
+
+  annot = mainwindow->annotationlist[file_num];
+
+  hide_bs_triggers = 1;
+
+  while(annot != NULL)
+  {
+    if(annot->ident & (1 << ANNOT_ID_BS_TRIGGER))
+    {
+      annot->hided = 1;
+
+      annot->hided_in_list = 1;
+    }
+
+    annot = annot->next_annotation;
+  }
+
+  updateList();
+
+  mainwindow->maincurve->update();
+}
+
+
+void UI_Annotationswindow::unhide_all_NK_triggers(bool)
+{
+  struct annotationblock *annot;
+
+  annot = mainwindow->annotationlist[file_num];
+
+  hide_nk_triggers = 0;
+
+  while(annot != NULL)
+  {
+    if(annot->ident & (1 << ANNOT_ID_NK_TRIGGER))
+    {
+      annot->hided = 0;
+
+      annot->hided_in_list = 0;
+    }
+
+    annot = annot->next_annotation;
+  }
+
+  updateList();
+
+  mainwindow->maincurve->update();
+}
+
+
+void UI_Annotationswindow::unhide_all_BS_triggers(bool)
+{
+  struct annotationblock *annot;
+
+  annot = mainwindow->annotationlist[file_num];
+
+  hide_bs_triggers = 0;
+
+  while(annot != NULL)
+  {
+    if(annot->ident & (1 << ANNOT_ID_BS_TRIGGER))
+    {
+      annot->hided = 0;
+
+      annot->hided_in_list = 0;
+    }
+
+    annot = annot->next_annotation;
+  }
+
+  updateList();
+
+  mainwindow->maincurve->update();
 }
 
 
@@ -149,12 +269,19 @@ void UI_Annotationswindow::filter_edited(const QString text)
   {
     while(annot != NULL)
     {
-      annot->hided_in_list = 0;
+      if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
+      {
+        annot->hided_in_list = 0;
+
+        annot->hided = 0;
+      }
 
       annot = annot->next_annotation;
     }
 
     updateList();
+
+    mainwindow->maincurve->update();
 
     return;
   }
@@ -167,17 +294,22 @@ void UI_Annotationswindow::filter_edited(const QString text)
   {
     while(annot != NULL)
     {
-      annot->hided_in_list = 1;
-
-      n = strlen(annot->annotation) - len + 1;
-
-      for(i=0; i<n; i++)
+      if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
       {
-        if(!(strncmp(filter_str, annot->annotation + i, len)))
-        {
-          annot->hided_in_list = 0;
+        annot->hided_in_list = 1;
 
-          break;
+        n = strlen(annot->annotation) - len + 1;
+
+        for(i=0; i<n; i++)
+        {
+          if(!(strncmp(filter_str, annot->annotation + i, len)))
+          {
+            annot->hided_in_list = 0;
+
+            annot->hided = 0;
+
+            break;
+          }
         }
       }
 
@@ -188,17 +320,22 @@ void UI_Annotationswindow::filter_edited(const QString text)
   {
     while(annot != NULL)
     {
-      annot->hided_in_list = 0;
-
-      n = strlen(annot->annotation) - len + 1;
-
-      for(i=0; i<n; i++)
+      if(!(((annot->ident & (1 << ANNOT_ID_NK_TRIGGER)) && hide_nk_triggers) || ((annot->ident & (1 << ANNOT_ID_BS_TRIGGER)) && hide_bs_triggers)))
       {
-        if(!(strncmp(filter_str, annot->annotation + i, len)))
-        {
-          annot->hided_in_list = 1;
+        annot->hided_in_list = 0;
 
-          break;
+        n = strlen(annot->annotation) - len + 1;
+
+        for(i=0; i<n; i++)
+        {
+          if(!(strncmp(filter_str, annot->annotation + i, len)))
+          {
+            annot->hided_in_list = 1;
+
+            annot->hided = 1;
+
+            break;
+          }
         }
       }
 
@@ -319,6 +456,8 @@ void UI_Annotationswindow::hide_annot(bool)
     annot = annot->next_annotation;
   }
 
+  annot->hided_in_list = 1;
+
   annot->hided = 1;
 
   mainwindow->maincurve->update();
@@ -345,6 +484,8 @@ void UI_Annotationswindow::unhide_annot(bool)
   {
     annot = annot->next_annotation;
   }
+
+  annot->hided_in_list = 0;
 
   annot->hided = 0;
 
@@ -394,6 +535,8 @@ void UI_Annotationswindow::hide_same_annots(bool)
 
     if(!strcmp(str1, str2))
     {
+      annot->hided_in_list = 1;
+
       annot->hided = 1;
     }
 
@@ -446,6 +589,8 @@ void UI_Annotationswindow::unhide_same_annots(bool)
 
     if(!strcmp(str1, str2))
     {
+      annot->hided_in_list = 0;
+
       annot->hided = 0;
     }
 
@@ -465,6 +610,8 @@ void UI_Annotationswindow::unhide_all_annots(bool)
   while(annot != NULL)
   {
     annot->hided = 0;
+
+    annot->hided_in_list = 0;
 
     annot = annot->next_annotation;
   }
