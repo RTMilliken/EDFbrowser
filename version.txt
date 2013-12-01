@@ -1,5 +1,5 @@
 
- version 1.53 beta
+ version 1.53      December 1, 2013
  ------------
 
  - The activity of the floating ruler will now be stored in the montages as well.
@@ -10,15 +10,19 @@
 
  - Made the viewtime (fileposition) indicator configurable.
    Added the date to the viewtime indicator in the left down corner of the screen.
+   This can be configured in the settings menu.
 
  - Made the window title bar configurable.
+   This can be configured in the settings menu.
 
  - fixed a bug in the EDF+D to EDF+C converter.
 
+ - Added the possibility to save and load different color schemas.
+
  - Added support for the Unisens fileformat. You will find the converter in the Tools menu.
    Limitations of the converter:
-   - the following binary sampletypes are not (yet) supported: int64, uint64, double and float.
-     (double and float are supported in csv-files)
+   - the following binary sampletypes are not (yet) supported: int64, uint64, double (all 8-byte binary samples).
+     (double is supported in csv-files however)
    - XML-file must be encoded in UTF-8 or ISO-8859-1.
    - Broken numbers for samplerate >= 1 Hz will be rounded e.g. 2.5 Hz will be rounded to 2 Hz.
      Samplerates below 1 Hz will be rounded to 1/2, 1/3, 1/4, ..., 1/998, 1/999, 1/1000 Hz.
@@ -26,7 +30,7 @@
    - Output format of the converter is EDF+ (16-bit) when all files have a samplesize of 16-bit or lower.
      When one or more files have a samplesize of more than 16-bit, output format of the converter will be BDF+ (24-bit).
 
-   Added a feature to the converter which is not in the offical data format specification:
+   Added a feature to the converter which is still missing in the offical Unisens data format specification:
    - support for binary sampletypes: int24 and uint24.
 
 

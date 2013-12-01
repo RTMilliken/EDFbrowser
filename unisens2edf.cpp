@@ -78,32 +78,6 @@
 
 
 
-// UI_UNISENS2EDFwindow::UI_UNISENS2EDFwindow(char *recent_dir, char *save_dir)
-// {
-//   recent_opendir = recent_dir;
-//   recent_savedir = save_dir;
-//
-//   myobjectDialog = new QDialog;
-//
-//   myobjectDialog->setMinimumSize(QSize(300, 75));
-//   myobjectDialog->setMaximumSize(QSize(300, 75));
-//   myobjectDialog->setWindowTitle("Unisense to EDF+ converter");
-//   myobjectDialog->setModal(TRUE);
-//   myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
-//
-//   pushButton1 = new QPushButton(myobjectDialog);
-//   pushButton1->setGeometry(20, 30, 100, 25);
-//   pushButton1->setText("Select File");
-//
-//   pushButton2 = new QPushButton(myobjectDialog);
-//   pushButton2->setGeometry(180, 30, 100, 25);
-//   pushButton2->setText("Close");
-//
-//   QObject::connect(pushButton1, SIGNAL(clicked()), this,           SLOT(SelectFileButton()));
-//   QObject::connect(pushButton2, SIGNAL(clicked()), myobjectDialog, SLOT(close()));
-//
-//   myobjectDialog->exec();
-// }
 
 UI_UNISENS2EDFwindow::UI_UNISENS2EDFwindow(char *recent_dir, char *save_dir)
 {
@@ -1140,7 +1114,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
        dec_sep,
        sep;
 
-long long adcz;
+  long long adcz;
 
   union {
           unsigned int one;
@@ -1148,6 +1122,7 @@ long long adcz;
           unsigned short two[2];
           signed short two_signed[2];
           unsigned char four[4];
+          float flp;
         } var;
 
 // for(i=0; i<file_cnt; i++)
@@ -1577,6 +1552,30 @@ long long adcz;
                                           }
                                         }
                                       }
+                                      else if(datatype[k] == US_DATATYPE_FLOAT_LI)
+                                        {
+                                          for(i=0; i<sf_t; i++)
+                                          {
+                                            for(j=0; j<signals_t; j++)
+                                            {
+                                              buf2_t[(j * sf_t) + i] = (*(((float *)buf1_t) + (i * signals_t) + j) - adcz);
+                                            }
+                                          }
+                                        }
+                                        else if(datatype[k] == US_DATATYPE_FLOAT_BI)
+                                          {
+                                            for(i=0; i<sf_t; i++)
+                                            {
+                                              for(j=0; j<signals_t; j++)
+                                              {
+                                                tmp = *(((signed int *)buf1_t) + (i * signals_t) + j);
+
+                                                var.one = ((((unsigned int)tmp & 0xFF000000) >> 24) | (((unsigned int)tmp & 0x00FF0000) >> 8) | (((unsigned int)tmp & 0x0000FF00) << 8) | (((unsigned int)tmp & 0x000000FF) << 24));
+
+                                                buf2_t[(j * sf_t) + i] = var.flp - adcz;
+                                              }
+                                            }
+                                          }
           }
         }
       }
@@ -2095,7 +2094,7 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                   else
                   {
                     snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and csv file\n", str);
-                    textEdit1->append(QString::fromLocal8Bit(scratchpad));
+                    textEdit1->append(scratchpad);
                     return(1);
                   }
   }
@@ -2185,12 +2184,23 @@ int UI_UNISENS2EDFwindow::get_signalparameters_from_BIN_attributes(struct xml_ha
                     digmax[file_nr] = 8388607;
                     digmin[file_nr] = -8388608;
                   }
-                  else
-                  {
-                    snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and binary file\n", str);
-                    textEdit1->append(QString::fromLocal8Bit(scratchpad));
-                    return(1);
-                  }
+                  else if(!strcmp(str, "float"))
+                    {
+                      datatype[file_nr] = US_DATATYPE_FLOAT_LI;
+                      bdf = 1;
+                      straightbinary[file_nr] = 0;
+                      samplesize[file_nr] = 4;
+                      physmax[file_nr] *= (8388607LL - (baseline[file_nr] - adczero[file_nr]));
+                      physmin[file_nr] *= (-8388608LL - (baseline[file_nr] - adczero[file_nr]));
+                      digmax[file_nr] = 8388607;
+                      digmin[file_nr] = -8388608;
+                    }
+                    else
+                    {
+                      snprintf(scratchpad, 2047, "Error, unsupported combination of datatype: %s and binary file\n", str);
+                      textEdit1->append(scratchpad);
+                      return(1);
+                    }
   }
 
   return(0);

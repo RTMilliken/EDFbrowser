@@ -6171,6 +6171,8 @@ int edfwrite_annotation_utf8(int handle, long long onset, long long duration, co
     }
 
     tmp_annot->next_annotation = list_annot;
+
+    list_annot->former_annotation = tmp_annot;
   }
 
   return(0);
@@ -6240,6 +6242,8 @@ int edfwrite_annotation_latin1(int handle, long long onset, long long duration, 
     }
 
     tmp_annot->next_annotation = list_annot;
+
+    list_annot->former_annotation = tmp_annot;
   }
 
   return(0);

@@ -151,31 +151,7 @@ struct edf_hdr_struct{                     /* this structure contains all the re
 
 
 
-int edflib_version(void);
-
-/* Returns the version number of this library, multiplied by hundred. if version is "1.00" than it will return 100 */
-
-
-
 /*****************  the following functions are used to read files **************************/
-
-int edflib_is_file_used(const char *path);
-
-/* returns 1 if the file is used, either for reading or writing */
-/* otherwise returns 0 */
-
-
-int edflib_get_number_of_open_files(void);
-
-/* returns the number of open files, either for reading or writing */
-
-
-int edflib_get_handle(int file_number);
-
-/* returns the handle of an opened file, either for reading or writing */
-/* file_number starts with 0 */
-/* returns -1 if the file is not opened */
-
 
 int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int read_annotations);
 
@@ -609,6 +585,30 @@ int edf_set_number_of_annotation_signals(int handle, int annot_signals);
 /* you want to write is more than the number of seconds of the duration of the recording, you can use */
 /* this function to increase the storage space for annotations */
 /* Minimum is 1, maximum is 64 */
+
+
+
+int edflib_version(void);
+
+/* Returns the version number of this library, multiplied by hundred. if version is "1.00" than it will return 100 */
+
+
+int edflib_is_file_used(const char *path);
+
+/* returns 1 if the file is used, either for reading or writing */
+/* otherwise returns 0 */
+
+
+int edflib_get_number_of_open_files(void);
+
+/* returns the number of open files, either for reading or writing */
+
+
+int edflib_get_handle(int file_number);
+
+/* returns the handle of an opened file, either for reading or writing */
+/* file_number starts with 0 */
+/* returns -1 if the file is not opened */
 
 
 #ifdef __cplusplus
