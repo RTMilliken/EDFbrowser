@@ -95,16 +95,17 @@ extern "C" {
 
 
 
-
+/* For more info about the EDF and EDF+ format, visit: http://edfplus.info/specs/ */
+/* For more info about the BDF and BDF+ format, visit: http://www.teuniz.net/edfbrowser/bdfplus%20format%20description.html */
 
 
 struct edf_param_struct{         /* this structure contains all the relevant EDF-signal parameters of one signal */
   char   label[17];              /* label (name) of the signal, null-terminated string */
   long long smp_in_file;         /* number of samples of this signal in the file */
-  double phys_max;               /* physical maximum */
-  double phys_min;               /* physical minimum */
-  int    dig_max;                /* digital maximum */
-  int    dig_min;                /* digital minimum */
+  double phys_max;               /* physical maximum, usually the maximum input of the ADC */
+  double phys_min;               /* physical minimum, usually the minimum input of the ADC */
+  int    dig_max;                /* digital maximum, usually the maximum output of the ADC, can not not be higher than 32767 for EDF or 8388607 for BDF */
+  int    dig_min;                /* digital minimum, usually the minimum output of the ADC, can not not be lower than -32768 for EDF or -8388608 for BDF */
   int    smp_in_datarecord;      /* number of samples of this signal in a datarecord */
   char   physdimension[9];       /* physical dimension (uV, bpm, mA, etc.), null-terminated string */
   char   prefilter[81];          /* null-terminated string */
@@ -171,15 +172,6 @@ int edfopen_file_readonly(const char *path, struct edf_hdr_struct *edfhdr, int r
 
 
 
-int edfclose_file(int handle);
-
-/* closes and finalizes the file */
-/* returns -1 in case of an error, 0 on success */
-/* this function MUST be called when you are finished reading or writing */
-/* This function is required after reading or writing. Failing to do so will cause */
-/* unnessecary memory usage and in case of writing it will cause a corrupted and incomplete file */
-
-
 int edfread_physical_samples(int handle, int edfsignal, int n, double *buf);
 
 /* reads n samples from edfsignal, starting from the current sample position indicator, into buf (edfsignal starts at 0) */
@@ -227,7 +219,8 @@ void edfrewind(int handle, int edfsignal);
 int edf_get_annotation(int handle, int n, struct edf_annotation_struct *annot);
 
 /* Fills the edf_annotation_struct with the annotation n, returns 0 on success, otherwise -1 */
-/* To obtain the number of annotations in a file, check edf_hdr_struct -> annotations_in_file */
+/* The string that describes the annotation/event is encoded in UTF-8 */
+/* To obtain the number of annotations in a file, check edf_hdr_struct -> annotations_in_file. */
 
 /*
 Notes:
@@ -252,6 +245,39 @@ This will limit the timeresolution to 100 nanoSeconds. To calculate the amount o
 the timevalue by 10000000 or use the macro EDFLIB_TIME_DIMENSION which is declared in edflib.h.
 The following variables do use this when you open a file in read mode: "file_duration", "starttime_subsecond" and "onset".
 */
+
+/*****************  the following functions are used to read or write files **************************/
+
+int edfclose_file(int handle);
+
+/* closes (and in case of writing, finalizes) the file */
+/* returns -1 in case of an error, 0 on success */
+/* this function MUST be called when you are finished reading or writing */
+/* This function is required after reading or writing. Failing to do so will cause */
+/* unnessecary memory usage and in case of writing it will cause a corrupted and incomplete file */
+
+
+int edflib_version(void);
+
+/* Returns the version number of this library, multiplied by hundred. if version is "1.00" than it will return 100 */
+
+
+int edflib_is_file_used(const char *path);
+
+/* returns 1 if the file is used, either for reading or writing */
+/* otherwise returns 0 */
+
+
+int edflib_get_number_of_open_files(void);
+
+/* returns the number of open files, either for reading or writing */
+
+
+int edflib_get_handle(int file_number);
+
+/* returns the handle of an opened file, either for reading or writing */
+/* file_number starts with 0 */
+/* returns -1 if the file is not opened */
 
 
 /*****************  the following functions are used to write files **************************/
@@ -474,7 +500,7 @@ int edfwrite_digital_short_samples(int handle, short *buf);
 /* The samples will be written to the file without any conversion. */
 /* Because the size of a short is 16-bit, do not use this function with BDF (24-bit) */
 /* The number of samples written is equal to the samplefrequency of the signal */
-/* Size of buf should be equal to or bigger than sizeof(int[samplefrequency]) */
+/* Size of buf should be equal to or bigger than sizeof(short[samplefrequency]) */
 /* Call this function for every signal in the file. The order is important! */
 /* When there are 4 signals in the file,  the order of calling this function */
 /* must be: signal 0, signal 1, signal 2, signal 3, signal 0, signal 1, signal 2, etc. */
@@ -503,9 +529,9 @@ int edf_blockwrite_digital_3byte_samples(int handle, void *buf);
 /* One block equals one second. One sample equals 3 bytes, order is little endian (least significant byte first) */
 /* Encoding is second's complement, most significant bit of most significant byte is the sign-bit */
 /* The samples will be written to the file without any conversion. */
-/* Because the size of a 3-byte sample is 24-bit, do not use this function with EDF (16-bit). */
+/* Because the size of a 3-byte sample is 24-bit, this function can only be used when writing a BDF file */
 /* The number of samples written is equal to the sum of the samplefrequencies of all signals. */
-/* Size of buf should be equal to or bigger than: samplefrequency x number of signals x 3 bytes */
+/* Size of buf should be equal to or bigger than: the sum of the samplefrequencies of all signals x 3 bytes */
 /* Returns 0 on success, otherwise -1 */
 
 
@@ -518,7 +544,7 @@ int edf_blockwrite_digital_short_samples(int handle, short *buf);
 /* The samples will be written to the file without any conversion. */
 /* Because the size of a short is 16-bit, do not use this function with BDF (24-bit) */
 /* The number of samples written is equal to the sum of the samplefrequencies of all signals. */
-/* Size of buf should be equal to or bigger than sizeof(int) multiplied by the sum of the samplefrequencies of all signals */
+/* Size of buf should be equal to or bigger than sizeof(short) multiplied by the sum of the samplefrequencies of all signals */
 /* Returns 0 on success, otherwise -1 */
 
 
@@ -585,30 +611,6 @@ int edf_set_number_of_annotation_signals(int handle, int annot_signals);
 /* you want to write is more than the number of seconds of the duration of the recording, you can use */
 /* this function to increase the storage space for annotations */
 /* Minimum is 1, maximum is 64 */
-
-
-
-int edflib_version(void);
-
-/* Returns the version number of this library, multiplied by hundred. if version is "1.00" than it will return 100 */
-
-
-int edflib_is_file_used(const char *path);
-
-/* returns 1 if the file is used, either for reading or writing */
-/* otherwise returns 0 */
-
-
-int edflib_get_number_of_open_files(void);
-
-/* returns the number of open files, either for reading or writing */
-
-
-int edflib_get_handle(int file_number);
-
-/* returns the handle of an opened file, either for reading or writing */
-/* file_number starts with 0 */
-/* returns -1 if the file is not opened */
 
 
 #ifdef __cplusplus

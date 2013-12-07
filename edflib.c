@@ -4480,12 +4480,7 @@ int edf_blockwrite_digital_3byte_samples(int handle, void *buf)
     return(-1);
   }
 
-  if(hdrlist[handle]->bdf == 1)
-  {
-    return(-1);
-  }
-
-  if(hdrlist[handle]->eq_sf != 1)
+  if(hdrlist[handle]->bdf != 1)
   {
     return(-1);
   }
