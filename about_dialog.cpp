@@ -3,7 +3,7 @@
 *
 * Author: Teunis van Beelen
 *
-* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen
+* Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen
 *
 * teuniz@gmail.com
 *
@@ -71,7 +71,7 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
   textedit1->setPlainText(
         "\n " PROGRAM_NAME " " PROGRAM_VERSION "\n"
         "\n This program is made by Teunis van Beelen.\n"
-        "\n Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 Teunis van Beelen.\n"
+        "\n Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Teunis van Beelen.\n"
         "\n Email: teuniz@gmail.com\n"
         "\n Disclaimer:\n"
         " Despite this software is intend to be useful, there is no warranty, use this software at your own risk!\n"
