@@ -1,5 +1,13 @@
 
- version 1.53      December 8, 2013
+ version 1.54
+ ------------
+
+ - The Unisens to EDF converter now supports also files with binary format
+   double, int64 or uint64.
+
+
+
+ version 1.53      December 10, 2013
  ------------
 
  - The activity of the floating ruler will now be stored in the montages as well.
