@@ -113,6 +113,7 @@ private:
          *amplitudeLabel;
 
   QCheckBox *sqrtCheckBox,
+            *VlogCheckBox,
             *BWCheckBox;
 
   UI_Flywheel *flywheel1;
@@ -129,9 +130,15 @@ private:
          freqstep,
          maxvalue,
          maxvalue_sqrt,
+         maxvalue_vlog,
+         maxvalue_sqrt_vlog,
+         minvalue_vlog,
+         minvalue_sqrt_vlog,
          *buf1,
          *buf2,
-         *buf3;
+         *buf3,
+         *buf4,
+         *buf5;
 
   char *viewbuf,
        signallabel[512],

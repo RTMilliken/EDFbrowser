@@ -214,6 +214,12 @@ UI_Mainwindow::UI_Mainwindow()
 
   spectrum_sqrt = 0;
 
+  spectrum_vlog = 0;
+
+  spectrumdock_sqrt = 0;
+
+  spectrumdock_vlog = 0;
+
   z_score_var.crossoverfreq = 7.5;
   z_score_var.z_threshold = 0.0;
   z_score_var.zscore_page_len = 30;
@@ -5973,6 +5979,75 @@ void UI_Mainwindow::read_general_settings()
     xml_go_up(xml_hdl);
   }
 
+  if(!(xml_goto_nth_element_inside(xml_hdl, "spectrum_vlog", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    if(atoi(result) == 1)
+    {
+      spectrum_vlog = 1;
+    }
+    else
+    {
+      spectrum_vlog = 0;
+    }
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "spectrumdock_sqrt", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    if(atoi(result) == 1)
+    {
+      spectrumdock_sqrt = 1;
+    }
+    else
+    {
+      spectrumdock_sqrt = 0;
+    }
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
+  if(!(xml_goto_nth_element_inside(xml_hdl, "spectrumdock_vlog", 0)))
+  {
+    result = xml_get_content_of_element(xml_hdl);
+    if(result==NULL)
+    {
+      xml_close(xml_hdl);
+      return;
+    }
+
+    if(atoi(result) == 1)
+    {
+      spectrumdock_vlog = 1;
+    }
+    else
+    {
+      spectrumdock_vlog = 0;
+    }
+
+    free(result);
+
+    xml_go_up(xml_hdl);
+  }
+
   if(!(xml_goto_nth_element_inside(xml_hdl, "z_score_var.zscore_page_len", 0)))
   {
     result = xml_get_content_of_element(xml_hdl);
@@ -6640,6 +6715,12 @@ void UI_Mainwindow::write_settings()
 
     fprintf(cfgfile, "    <spectrum_sqrt>%i</spectrum_sqrt>\n", spectrum_sqrt);
 
+    fprintf(cfgfile, "    <spectrum_vlog>%i</spectrum_vlog>\n", spectrum_vlog);
+
+    fprintf(cfgfile, "    <spectrumdock_sqrt>%i</spectrumdock_sqrt>\n", spectrumdock_sqrt);
+
+    fprintf(cfgfile, "    <spectrumdock_vlog>%i</spectrumdock_vlog>\n", spectrumdock_vlog);
+
     fprintf(cfgfile, "    <z_score_var.crossoverfreq>%f</z_score_var.crossoverfreq>\n", z_score_var.crossoverfreq);
 
     fprintf(cfgfile, "    <z_score_var.z_threshold>%f</z_score_var.z_threshold>\n", z_score_var.z_threshold);
@@ -6876,6 +6957,12 @@ void UI_Mainwindow::edfplus_annotation_remove_duplicates()
 
   struct annotationblock **list, *annot, *annot_cmp;
 
+  if(!files_open)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "You have to open a file first.");
+    messagewindow.exec();
+    return;
+  }
 
   QProgressDialog progress("Checking for duplicates...", "Abort", 0, 10, this);
   progress.setWindowModality(Qt::WindowModal);

@@ -5,6 +5,8 @@
  - The Unisens to EDF converter now supports also files with binary format
    double, int64 or uint64.
 
+ - The spectrumanalyzer now can plot a logarithmic vertical scale.
+
 
 
  version 1.53      December 10, 2013

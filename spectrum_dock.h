@@ -120,11 +120,13 @@ private:
          *amplitudeLabel;
 
   QRadioButton *sqrtButton,
+               *vlogButton,
                *colorBarButton;
 
   int samples,
       steps,
-      sqrt_powerspectrum,
+      spectrumdock_sqrt,
+      spectrumdock_vlog,
       dashboard;
 
   volatile int busy;
@@ -133,9 +135,15 @@ private:
          freqstep,
          maxvalue,
          maxvalue_sqrt,
+         maxvalue_vlog,
+         maxvalue_sqrt_vlog,
+         minvalue_vlog,
+         minvalue_sqrt_vlog,
          *buf1,
          *buf2,
-         *buf3;
+         *buf3,
+         *buf4,
+         *buf5;
 
   char *viewbuf,
        signallabel[512],
@@ -147,6 +155,7 @@ private slots:
 void update_curve();
 void sliderMoved(int);
 void sqrtButtonClicked(bool);
+void vlogButtonClicked(bool);
 void colorBarButtonClicked(bool);
 void print_to_txt();
 void setdashboard();

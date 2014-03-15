@@ -220,7 +220,7 @@ private:
       *ibuf;
 
   char h_label[32],
-       v_label[16],
+       v_label[21],
        upperlabel1[64],
        upperlabel2[64],
        lowerlabel[64],

@@ -34,6 +34,11 @@
 #include "spectrumanalyzer.h"
 
 
+#define SPECT_LOG_MINIMUM (0.000001)
+#define SPECT_LOG_MINIMUM_LOG (-5)
+
+
+
 
 UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp, char *view_buf, UI_FreqSpectrumWindow **spectrdialog, int number, QWidget *w_parent)
 {
@@ -46,6 +51,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   buf1 = NULL;
   buf2 = NULL;
   buf3 = NULL;
+  buf4 = NULL;
+  buf5 = NULL;
 
   busy = 0;
 
@@ -149,11 +156,28 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   curve1->setLowerLabel("Frequency");
   if(mainwindow->spectrum_sqrt)
   {
-    curve1->setV_label(physdimension);
+    if(mainwindow->spectrum_vlog)
+    {
+      sprintf(str, "log10(%s)", physdimension);
+
+      curve1->setV_label(str);
+    }
+    else
+    {
+      curve1->setV_label(physdimension);
+    }
   }
   else
   {
-    snprintf(str, 512, "(%s)^2/Hz", physdimension);
+    if(mainwindow->spectrum_vlog)
+    {
+      sprintf(str, "log10((%s)^2/Hz)", physdimension);
+    }
+    else
+    {
+      sprintf(str, "(%s)^2/Hz", physdimension);
+    }
+
     curve1->setV_label(str);
   }
   curve1->create_button("to Text");
@@ -187,6 +211,18 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     sqrtCheckBox->setCheckState(Qt::Unchecked);
   }
 
+  VlogCheckBox = new QCheckBox("Log");
+  VlogCheckBox->setMinimumSize(70, 25);
+  VlogCheckBox->setTristate(FALSE);
+  if(mainwindow->spectrum_vlog)
+  {
+    VlogCheckBox->setCheckState(Qt::Checked);
+  }
+  else
+  {
+    VlogCheckBox->setCheckState(Qt::Unchecked);
+  }
+
   BWCheckBox = new QCheckBox("B/W");
   BWCheckBox->setMinimumSize(70, 25);
   BWCheckBox->setTristate(FALSE);
@@ -211,11 +247,12 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   hlayout4->addWidget(amplitudeSlider, 300);
 
   vlayout2 = new QVBoxLayout;
-  vlayout2->setSpacing(20);
+  vlayout2->setSpacing(10);
   vlayout2->addStretch(100);
   vlayout2->addWidget(amplitudeLabel, 0, Qt::AlignHCenter);
   vlayout2->addLayout(hlayout4, 200);
   vlayout2->addWidget(sqrtCheckBox);
+  vlayout2->addWidget(VlogCheckBox);
   vlayout2->addWidget(BWCheckBox);
 
   spanSlider = new QSlider;
@@ -276,6 +313,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   QObject::connect(spanSlider,        SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(centerSlider,      SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(sqrtCheckBox,      SIGNAL(stateChanged(int)),      this, SLOT(sliderMoved(int)));
+  QObject::connect(VlogCheckBox,      SIGNAL(stateChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(BWCheckBox,        SIGNAL(stateChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(SpectrumDialog,    SIGNAL(destroyed(QObject *)),   this, SLOT(SpectrumDialogDestroyed(QObject *)));
   QObject::connect(curve1,            SIGNAL(extra_button_clicked()), this, SLOT(print_to_txt()));
@@ -339,7 +377,7 @@ void UI_FreqSpectrumWindow::print_to_txt()
     return;
   }
 
-  sprintf(str, "FFT Power Spectral Density (Power/%fHz)\n", freqstep);
+  sprintf(str, "FFT Power Spectral Density log10(Power/%fHz)\n", freqstep);
   remove_trailing_zeros(str);
   fprintf(outputfile, "%s", str);
   if(signalcomp->alias[0] != 0)
@@ -380,6 +418,15 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
   char str[1024];
 
 
+  if(VlogCheckBox->checkState() == Qt::Checked)
+  {
+    mainwindow->spectrum_vlog = 1;
+  }
+  else
+  {
+    mainwindow->spectrum_vlog = 0;
+  }
+
   if(sqrtCheckBox->checkState() == Qt::Checked)
   {
     mainwindow->spectrum_sqrt = 1;
@@ -388,7 +435,16 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
     SpectrumDialog->setWindowTitle(str);
 
-    curve1->setV_label(physdimension);
+    if(mainwindow->spectrum_vlog)
+    {
+      sprintf(str, "log10(%s)", physdimension);
+
+      curve1->setV_label(str);
+    }
+    else
+    {
+      curve1->setV_label(physdimension);
+    }
   }
   else
   {
@@ -398,7 +454,14 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
     SpectrumDialog->setWindowTitle(str);
 
-    sprintf(str, "(%s)^2/Hz", physdimension);
+    if(mainwindow->spectrum_vlog)
+    {
+      sprintf(str, "log10((%s)^2/Hz)", physdimension);
+    }
+    else
+    {
+      sprintf(str, "(%s)^2/Hz", physdimension);
+    }
 
     curve1->setV_label(str);
   }
@@ -436,11 +499,25 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
 
   if(mainwindow->spectrum_sqrt)
   {
-    curve1->drawCurve(buf3 + startstep, stopstep - startstep, (maxvalue_sqrt * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+    if(mainwindow->spectrum_vlog)
+    {
+      curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, minvalue_sqrt_vlog);
+    }
+    else
+    {
+      curve1->drawCurve(buf3 + startstep, stopstep - startstep, (maxvalue_sqrt * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+    }
   }
   else
   {
-    curve1->drawCurve(buf2 + startstep, stopstep - startstep, (maxvalue * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+    if(mainwindow->spectrum_vlog)
+    {
+      curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, minvalue_vlog);
+    }
+    else
+    {
+      curve1->drawCurve(buf2 + startstep, stopstep - startstep, (maxvalue * ((double)flywheel_value / 1000.0) * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+    }
   }
 
   max_freq = ((double)samplefreq / 2.0) * stopstep / steps;
@@ -715,8 +792,50 @@ void UI_FreqSpectrumWindow::update_curve()
     return;
   }
 
+  if(buf4 != NULL)
+  {
+    free(buf4);
+  }
+  buf4 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  if(buf4 == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+    messagewindow.exec();
+    free(buf1);
+    free(buf2);
+    free(buf3);
+    buf1 = NULL;
+    buf2 = NULL;
+    buf3 = NULL;
+    return;
+  }
+
+  if(buf5 != NULL)
+  {
+    free(buf5);
+  }
+  buf5 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  if(buf5 == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+    messagewindow.exec();
+    free(buf1);
+    free(buf2);
+    free(buf3);
+    free(buf4);
+    buf1 = NULL;
+    buf2 = NULL;
+    buf3 = NULL;
+    buf4 = NULL;
+    return;
+  }
+
   maxvalue = 0.000001;
   maxvalue_sqrt = 0.000001;
+  maxvalue_vlog = 0.000001;
+  maxvalue_sqrt_vlog = 0.000001;
+  minvalue_vlog = 0.0;
+  minvalue_sqrt_vlog = 0.0;
 
 #ifdef CHECK_POWERSPECTRUM
   printf("samples is %i   dftblocksize is %i   dftblocks is %i    samplesleft is %i   fft_outputbufsize is %i    steps is %i\n", samples, dftblocksize, dftblocks, samplesleft, fft_outputbufsize, steps);
@@ -741,9 +860,13 @@ void UI_FreqSpectrumWindow::update_curve()
     free(buf1);
     free(buf2);
     free(buf3);
+    free(buf4);
+    free(buf5);
     buf1 = NULL;
     buf2 = NULL;
     buf3 = NULL;
+    buf4 = NULL;
+    buf5 = NULL;
     return;
   }
 
@@ -801,6 +924,24 @@ void UI_FreqSpectrumWindow::update_curve()
 
     buf3[i] = sqrt(buf2[i] * freqstep);
 
+    if(buf2[i] <= SPECT_LOG_MINIMUM)
+    {
+      buf4[i] = log10(SPECT_LOG_MINIMUM);
+    }
+    else
+    {
+      buf4[i] = log10(buf2[i]);
+    }
+
+    if(buf3[i] <= SPECT_LOG_MINIMUM)
+    {
+      buf5[i] = log10(SPECT_LOG_MINIMUM);
+    }
+    else
+    {
+      buf5[i] = log10(buf3[i]);
+    }
+
     if(i)  // don't use the dc-bin for the autogain of the screen
     {
       if(buf2[i] > maxvalue)
@@ -812,8 +953,34 @@ void UI_FreqSpectrumWindow::update_curve()
       {
         maxvalue_sqrt = buf3[i];
       }
+
+      if(buf4[i] > maxvalue_vlog)
+      {
+        maxvalue_vlog = buf4[i];
+      }
+
+      if(buf5[i] > maxvalue_sqrt_vlog)
+      {
+        maxvalue_sqrt_vlog = buf5[i];
+      }
+
+      if((buf4[i] < minvalue_vlog) && (buf4[i] >= SPECT_LOG_MINIMUM_LOG))
+      {
+        minvalue_vlog = buf4[i];
+      }
+
+      if((buf5[i] < minvalue_sqrt_vlog) && (buf5[i] >= SPECT_LOG_MINIMUM_LOG))
+      {
+        minvalue_sqrt_vlog = buf5[i];
+      }
     }
   }
+
+  if(minvalue_vlog < SPECT_LOG_MINIMUM_LOG)
+    minvalue_vlog = SPECT_LOG_MINIMUM_LOG;
+
+  if(minvalue_sqrt_vlog < SPECT_LOG_MINIMUM_LOG)
+    minvalue_sqrt_vlog = SPECT_LOG_MINIMUM_LOG;
 
   if(samplesleft)
   {
@@ -875,6 +1042,16 @@ UI_FreqSpectrumWindow::~UI_FreqSpectrumWindow()
   if(buf3 != NULL)
   {
     free(buf3);
+  }
+
+  if(buf4 != NULL)
+  {
+    free(buf4);
+  }
+
+  if(buf5 != NULL)
+  {
+    free(buf5);
   }
 
   spectrumdialog[spectrumdialognumber] = NULL;

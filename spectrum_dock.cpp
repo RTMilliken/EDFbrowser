@@ -34,6 +34,10 @@
 #include "spectrum_dock.h"
 
 
+#define SPECT_LOG_MINIMUM 0.000001
+#define SPECT_LOG_MINIMUM_LOG (-5)
+
+
 
 UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 {
@@ -42,6 +46,8 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   buf1 = NULL;
   buf2 = NULL;
   buf3 = NULL;
+  buf4 = NULL;
+  buf5 = NULL;
 
   busy = 0;
 
@@ -53,11 +59,17 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
 
   spectrum_color = mainwindow->spectrum_colorbar;
 
-  sqrt_powerspectrum = 0;
-
   SpectrumDialog = new QDialog;
 
-  dock = new QDockWidget("Power Spectral Density", w_parent);
+  if(mainwindow->spectrumdock_sqrt)
+  {
+    dock = new QDockWidget("Amplitude Spectrum", w_parent);
+  }
+  else
+  {
+    dock = new QDockWidget("Power Spectral Density", w_parent);
+  }
+
   dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   dock->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
   dock->setMinimumHeight(300);
@@ -73,13 +85,29 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   curve1->setTraceWidth(0);
   curve1->setH_label("Hz");
   curve1->setLowerLabel("Frequency");
-  if(sqrt_powerspectrum)
+  if(mainwindow->spectrumdock_sqrt)
   {
-    curve1->setV_label(physdimension);
+    if(mainwindow->spectrumdock_vlog)
+    {
+      snprintf(str, 512, "log10(%s)", physdimension);
+      curve1->setV_label(str);
+    }
+    else
+    {
+      curve1->setV_label(physdimension);
+    }
   }
   else
   {
-    snprintf(str, 512, "(%s)^2/Hz", physdimension);
+    if(mainwindow->spectrumdock_vlog)
+    {
+      snprintf(str, 512, "log((%s)^2/Hz)", physdimension);
+    }
+    else
+    {
+      snprintf(str, 512, "(%s)^2/Hz", physdimension);
+    }
+
     curve1->setV_label(str);
   }
   curve1->create_button("to Text");
@@ -106,6 +134,27 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   sqrtButton->setMinimumSize(50, 20);
   sqrtButton->setText("Amplitude");
   sqrtButton->setAutoExclusive(FALSE);
+  if(mainwindow->spectrumdock_sqrt)
+  {
+    sqrtButton->setChecked(TRUE);
+  }
+  else
+  {
+    sqrtButton->setChecked(FALSE);
+  }
+
+  vlogButton = new QRadioButton;
+  vlogButton->setMinimumSize(50, 20);
+  vlogButton->setText("Log");
+  vlogButton->setAutoExclusive(FALSE);
+  if(mainwindow->spectrumdock_vlog)
+  {
+    vlogButton->setChecked(TRUE);
+  }
+  else
+  {
+    vlogButton->setChecked(FALSE);
+  }
 
   colorBarButton = new QRadioButton;
   colorBarButton->setMinimumSize(50, 20);
@@ -113,11 +162,12 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   colorBarButton->setAutoExclusive(FALSE);
 
   vlayout2 = new QVBoxLayout;
-  vlayout2->setSpacing(20);
+  vlayout2->setSpacing(10);
   vlayout2->addStretch(100);
   vlayout2->addWidget(amplitudeLabel, 0, Qt::AlignHCenter);
   vlayout2->addWidget(amplitudeSlider, 0, Qt::AlignHCenter);
   vlayout2->addWidget(sqrtButton);
+  vlayout2->addWidget(vlogButton);
   vlayout2->addWidget(colorBarButton);
 
   spanSlider = new QSlider;
@@ -180,6 +230,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   QObject::connect(spanSlider,      SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(centerSlider,    SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
   QObject::connect(sqrtButton,      SIGNAL(toggled(bool)),          this, SLOT(sqrtButtonClicked(bool)));
+  QObject::connect(vlogButton,      SIGNAL(toggled(bool)),          this, SLOT(vlogButtonClicked(bool)));
   QObject::connect(colorBarButton,  SIGNAL(toggled(bool)),          this, SLOT(colorBarButtonClicked(bool)));
   QObject::connect(curve1,          SIGNAL(extra_button_clicked()), this, SLOT(print_to_txt()));
   QObject::connect(curve1,          SIGNAL(dashBoardClicked()),     this, SLOT(setdashboard()));
@@ -278,25 +329,80 @@ void UI_SpectrumDockWindow::sqrtButtonClicked(bool value)
 
   if(value == FALSE)
   {
-    sqrt_powerspectrum = 0;
+    mainwindow->spectrumdock_sqrt = 0;
 
     sprintf(str, "Power Spectral Density %s", signallabel);
 
     dock->setWindowTitle(str);
 
-    sprintf(str, "(%s)^2/Hz", physdimension);
+    if(mainwindow->spectrumdock_vlog)
+    {
+      sprintf(str, "log10((%s)^2/Hz)", physdimension);
+    }
+    else
+    {
+      sprintf(str, "(%s)^2/Hz", physdimension);
+    }
 
     curve1->setV_label(str);
   }
   else
   {
-    sqrt_powerspectrum = 1;
+    mainwindow->spectrumdock_sqrt = 1;
 
     sprintf(str, "Amplitude Spectrum %s", signallabel);
 
-    curve1->setV_label(physdimension);
-
     dock->setWindowTitle(str);
+
+    if(mainwindow->spectrumdock_vlog)
+    {
+      sprintf(str, "log(%s)", physdimension);
+    }
+    else
+    {
+      sprintf(str, "%s", physdimension);
+    }
+
+    curve1->setV_label(str);
+  }
+
+  sliderMoved(0);
+}
+
+
+void UI_SpectrumDockWindow::vlogButtonClicked(bool value)
+{
+  char str[600];
+
+  if(value == FALSE)
+  {
+    mainwindow->spectrumdock_vlog = 0;
+
+    if(mainwindow->spectrumdock_sqrt)
+    {
+      sprintf(str, "%s", physdimension);
+    }
+    else
+    {
+      sprintf(str, "(%s)^2/Hz", physdimension);
+    }
+
+    curve1->setV_label(str);
+  }
+  else
+  {
+    mainwindow->spectrumdock_vlog = 1;
+
+    if(mainwindow->spectrumdock_sqrt)
+    {
+      sprintf(str, "log10(%s)", physdimension);
+    }
+    else
+    {
+      sprintf(str, "log10((%s)^2/Hz)", physdimension);
+    }
+
+    curve1->setV_label(str);
   }
 
   sliderMoved(0);
@@ -320,13 +426,27 @@ void UI_SpectrumDockWindow::sliderMoved(int)
 
   stopstep = startstep + spanstep;
 
-  if(sqrt_powerspectrum)
+  if(mainwindow->spectrumdock_sqrt)
   {
-    curve1->drawCurve(buf3 + startstep, stopstep - startstep, (maxvalue_sqrt * 1.05 * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+    if(mainwindow->spectrumdock_vlog)
+    {
+      curve1->drawCurve(buf5 + startstep, stopstep - startstep, (maxvalue_sqrt_vlog * 1.05 * (double)amplitudeSlider->value()) / 1000.0, minvalue_sqrt_vlog);
+    }
+    else
+    {
+      curve1->drawCurve(buf3 + startstep, stopstep - startstep, (maxvalue_sqrt * 1.05 * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+    }
   }
   else
   {
-    curve1->drawCurve(buf2 + startstep, stopstep - startstep, (maxvalue * 1.05 * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+    if(mainwindow->spectrumdock_vlog)
+    {
+      curve1->drawCurve(buf4 + startstep, stopstep - startstep, (maxvalue_vlog * 1.05 * (double)amplitudeSlider->value()) / 1000.0, minvalue_vlog);
+    }
+    else
+    {
+      curve1->drawCurve(buf2 + startstep, stopstep - startstep, (maxvalue * 1.05 * (double)amplitudeSlider->value()) / 1000.0, 0.0);
+    }
   }
 
   max_freq = ((double)samplefreq / 2.0) * stopstep / steps;
@@ -380,13 +500,29 @@ void UI_SpectrumDockWindow::init(int signal_nr)
 
     strcpy(physdimension, signalcomp->physdimension);
 
-    if(sqrt_powerspectrum)
+    if(mainwindow->spectrumdock_sqrt)
     {
-      curve1->setV_label(physdimension);
+      if(mainwindow->spectrumdock_vlog)
+      {
+        snprintf(str, 512, "log10(%s)", physdimension);
+        curve1->setV_label(str);
+      }
+      else
+      {
+        curve1->setV_label(physdimension);
+      }
     }
     else
     {
-      snprintf(str, 512, "(%s)^2/Hz", physdimension);
+      if(mainwindow->spectrumdock_vlog)
+      {
+        snprintf(str, 512, "log((%s)^2/Hz)", physdimension);
+      }
+      else
+      {
+        snprintf(str, 512, "(%s)^2/Hz", physdimension);
+      }
+
       curve1->setV_label(str);
     }
 
@@ -427,6 +563,18 @@ void UI_SpectrumDockWindow::clear()
   {
     free(buf3);
     buf3 = NULL;
+  }
+
+  if(buf4 != NULL)
+  {
+    free(buf4);
+    buf4 = NULL;
+  }
+
+  if(buf5 != NULL)
+  {
+    free(buf5);
+    buf5 = NULL;
   }
 
   if(spectrum_color != NULL)
@@ -691,8 +839,50 @@ void UI_SpectrumDockWindow::update_curve()
     return;
   }
 
+  if(buf4 != NULL)
+  {
+    free(buf4);
+  }
+  buf4 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  if(buf4 == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+    messagewindow.exec();
+    free(buf1);
+    free(buf2);
+    free(buf3);
+    buf1 = NULL;
+    buf2 = NULL;
+    buf3 = NULL;
+    return;
+  }
+
+  if(buf5 != NULL)
+  {
+    free(buf5);
+  }
+  buf5 = (double *)malloc(sizeof(double) * fft_outputbufsize);
+  if(buf5 == NULL)
+  {
+    QMessageBox messagewindow(QMessageBox::Critical, "Error", "The system was not able to provide enough resources (memory) to perform the requested action.");
+    messagewindow.exec();
+    free(buf1);
+    free(buf2);
+    free(buf3);
+    free(buf4);
+    buf1 = NULL;
+    buf2 = NULL;
+    buf3 = NULL;
+    buf4 = NULL;
+    return;
+  }
+
   maxvalue = 0.000001;
   maxvalue_sqrt = 0.000001;
+  maxvalue_vlog = 0.000001;
+  maxvalue_sqrt_vlog = 0.000001;
+  minvalue_vlog = 0.0;
+  minvalue_sqrt_vlog = 0.0;
 
   kiss_fftr_cfg cfg;
 
@@ -706,9 +896,13 @@ void UI_SpectrumDockWindow::update_curve()
     free(buf1);
     free(buf2);
     free(buf3);
+    free(buf4);
+    free(buf5);
     buf1 = NULL;
     buf2 = NULL;
     buf3 = NULL;
+    buf4 = NULL;
+    buf5 = NULL;
     return;
   }
 
@@ -752,7 +946,6 @@ void UI_SpectrumDockWindow::update_curve()
     buf2[0] = 0.0;  // Remove DC because heart rate is always a positive value
   }
 
-
   free(cfg);
 
   free(kiss_fftbuf);
@@ -762,6 +955,24 @@ void UI_SpectrumDockWindow::update_curve()
     buf2[i] /= samplefreq;
 
     buf3[i] = sqrt(buf2[i] * freqstep);
+
+    if(buf2[i] <= SPECT_LOG_MINIMUM)
+    {
+      buf4[i] = log10(SPECT_LOG_MINIMUM);
+    }
+    else
+    {
+      buf4[i] = log10(buf2[i]);
+    }
+
+    if(buf3[i] <= SPECT_LOG_MINIMUM)
+    {
+      buf5[i] = log10(SPECT_LOG_MINIMUM);
+    }
+    else
+    {
+      buf5[i] = log10(buf3[i]);
+    }
 
     if(i)  // don't use the dc-bin for the autogain of the screen
     {
@@ -774,8 +985,34 @@ void UI_SpectrumDockWindow::update_curve()
       {
         maxvalue_sqrt = buf3[i];
       }
+
+      if(buf4[i] > maxvalue_vlog)
+      {
+        maxvalue_vlog = buf4[i];
+      }
+
+      if(buf5[i] > maxvalue_sqrt_vlog)
+      {
+        maxvalue_sqrt_vlog = buf5[i];
+      }
+
+      if((buf4[i] < minvalue_vlog) && (buf4[i] >= SPECT_LOG_MINIMUM_LOG))
+      {
+        minvalue_vlog = buf4[i];
+      }
+
+      if((buf5[i] < minvalue_sqrt_vlog) && (buf5[i] >= SPECT_LOG_MINIMUM_LOG))
+      {
+        minvalue_sqrt_vlog = buf5[i];
+      }
     }
   }
+
+  if(minvalue_vlog < SPECT_LOG_MINIMUM_LOG)
+    minvalue_vlog = SPECT_LOG_MINIMUM_LOG;
+
+  if(minvalue_sqrt_vlog < SPECT_LOG_MINIMUM_LOG)
+    minvalue_sqrt_vlog = SPECT_LOG_MINIMUM_LOG;
 
   if(samplesleft)
   {
@@ -882,7 +1119,7 @@ void UI_SpectrumDockWindow::update_curve()
     }
   }
 
-  if(sqrt_powerspectrum)
+  if(mainwindow->spectrumdock_sqrt)
   {
     snprintf(str, 512, "Amplitude Spectrum %s", signallabel);
   }
@@ -912,6 +1149,16 @@ UI_SpectrumDockWindow::~UI_SpectrumDockWindow()
   if(buf3 != NULL)
   {
     free(buf3);
+  }
+
+  if(buf4 != NULL)
+  {
+    free(buf4);
+  }
+
+  if(buf5 != NULL)
+  {
+    free(buf5);
   }
 
   delete SpectrumDialog;
