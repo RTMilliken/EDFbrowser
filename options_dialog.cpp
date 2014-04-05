@@ -68,8 +68,8 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     optionsdialog->setMaximumSize(440, 780);
   }
   optionsdialog->setWindowTitle("Settings");
-  optionsdialog->setModal(TRUE);
-  optionsdialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  optionsdialog->setModal(true);
+  optionsdialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   tabholder = new QTabWidget;
 
@@ -134,7 +134,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox3 = new QCheckBox(tab1);
   checkbox3->setGeometry(QRect(200, 258, 20, 20));
-  checkbox3->setTristate(FALSE);
+  checkbox3->setTristate(false);
   if(mainwindow->show_baselines)
   {
     checkbox3->setCheckState(Qt::Checked);
@@ -178,7 +178,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox2 = new QCheckBox(tab1);
   checkbox2->setGeometry(QRect(200, 418, 20, 20));
-  checkbox2->setTristate(FALSE);
+  checkbox2->setTristate(false);
   if(mainwindow->show_annot_markers)
   {
     checkbox2->setCheckState(Qt::Checked);
@@ -198,7 +198,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox1 = new QCheckBox(tab1);
   checkbox1->setGeometry(QRect(200, 458, 20, 20));
-  checkbox1->setTristate(FALSE);
+  checkbox1->setTristate(false);
   if(mainwindow->maincurve->blackwhite_printing)
   {
     checkbox1->setCheckState(Qt::Checked);
@@ -214,7 +214,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox4 = new QCheckBox(tab1);
   checkbox4->setGeometry(QRect(200, 498, 20, 20));
-  checkbox4->setTristate(FALSE);
+  checkbox4->setTristate(false);
   if(mainwindow->clip_to_pane)
   {
     checkbox4->setCheckState(Qt::Checked);
@@ -273,7 +273,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox2_1 = new QCheckBox("Manually override automatic DPI settings", tab2);
   checkbox2_1->setGeometry(85, 560, 300, 20);
-  checkbox2_1->setTristate(FALSE);
+  checkbox2_1->setTristate(false);
   if(mainwindow->auto_dpi)
   {
     checkbox2_1->setCheckState(Qt::Unchecked);
@@ -315,9 +315,9 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   if(checkbox2_1->checkState() == Qt::Unchecked)
   {
-    spinbox2_1->setEnabled(FALSE);
-    spinbox2_2->setEnabled(FALSE);
-    ApplyButton->setEnabled(FALSE);
+    spinbox2_1->setEnabled(false);
+    spinbox2_2->setEnabled(false);
+    ApplyButton->setEnabled(false);
   }
 
   QObject::connect(ApplyButton, SIGNAL(clicked()),         this, SLOT(ApplyButtonClicked()));
@@ -347,7 +347,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
     colorBarTable->setRowHeight(i, 20);
 
     colorBarTable->setCellWidget(i, 0, new QCheckBox);
-   ((QCheckBox *)(colorBarTable->cellWidget(i, 0)))->setTristate(FALSE);
+   ((QCheckBox *)(colorBarTable->cellWidget(i, 0)))->setTristate(false);
     if(i < mainwindow->spectrum_colorbar->items)
     {
       ((QCheckBox *)(colorBarTable->cellWidget(i, 0)))->setCheckState(Qt::Checked);
@@ -391,7 +391,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   radiobutton1->setText("sum");
   if(mainwindow->spectrum_colorbar->method == 0)
   {
-    radiobutton1->setChecked(TRUE);  // sum
+    radiobutton1->setChecked(true);  // sum
   }
 
   radiobutton2 = new QRadioButton(tab3);
@@ -399,7 +399,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   radiobutton2->setText("peak");
   if(mainwindow->spectrum_colorbar->method == 1)
   {
-    radiobutton2->setChecked(TRUE);  // peak
+    radiobutton2->setChecked(true);  // peak
   }
 
   radiobutton3 = new QRadioButton(tab3);
@@ -407,7 +407,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   radiobutton3->setText("average");
   if(mainwindow->spectrum_colorbar->method == 2)
   {
-    radiobutton3->setChecked(TRUE);  // average
+    radiobutton3->setChecked(true);  // average
   }
 
   label3_3 = new QLabel(tab3);
@@ -433,7 +433,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
   ApplyButton2 = new QPushButton(tab3);
   ApplyButton2->setGeometry(QRect(20, 605, 100, 25));
   ApplyButton2->setText("Apply");
-  ApplyButton2->setEnabled(FALSE);
+  ApplyButton2->setEnabled(false);
 
   QObject::connect(radiobutton1,   SIGNAL(toggled(bool)),     this, SLOT(radioButtonToggled(bool)));
   QObject::connect(radiobutton2,   SIGNAL(toggled(bool)),     this, SLOT(radioButtonToggled(bool)));
@@ -454,7 +454,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox4_1 = new QCheckBox(tab4);
   checkbox4_1->setGeometry(QRect(325, 23, 20, 20));
-  checkbox4_1->setTristate(FALSE);
+  checkbox4_1->setTristate(false);
   if(mainwindow->auto_reload_mtg)
   {
     checkbox4_1->setCheckState(Qt::Checked);
@@ -488,7 +488,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox4_2 = new QCheckBox(tab4);
   checkbox4_2->setGeometry(QRect(325, 138, 20, 20));
-  checkbox4_2->setTristate(FALSE);
+  checkbox4_2->setTristate(false);
   if(mainwindow->read_biosemi_status_signal)
   {
     checkbox4_2->setCheckState(Qt::Checked);
@@ -506,7 +506,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox4_3 = new QCheckBox(tab4);
   checkbox4_3->setGeometry(QRect(325, 178, 20, 20));
-  checkbox4_3->setTristate(FALSE);
+  checkbox4_3->setTristate(false);
   if(mainwindow->read_nk_trigger_signal)
   {
     checkbox4_3->setCheckState(Qt::Checked);
@@ -572,7 +572,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox4_4 = new QCheckBox(tab4);
   checkbox4_4->setGeometry(QRect(325, 338, 20, 20));
-  checkbox4_4->setTristate(FALSE);
+  checkbox4_4->setTristate(false);
   if(mainwindow->use_threads)
   {
     checkbox4_4->setCheckState(Qt::Checked);
@@ -590,7 +590,7 @@ UI_OptionsDialog::UI_OptionsDialog(QWidget *w_parent)
 
   checkbox4_5 = new QCheckBox(tab4);
   checkbox4_5->setGeometry(QRect(325, 378, 20, 20));
-  checkbox4_5->setTristate(FALSE);
+  checkbox4_5->setTristate(false);
   if(mainwindow->check_for_updates)
   {
     checkbox4_5->setCheckState(Qt::Checked);
@@ -714,16 +714,16 @@ void UI_OptionsDialog::calibrate_checkbox_stateChanged(int state)
 {
   if(state == Qt::Checked)
   {
-    spinbox2_1->setEnabled(TRUE);
-    spinbox2_2->setEnabled(TRUE);
-    ApplyButton->setEnabled(TRUE);
+    spinbox2_1->setEnabled(true);
+    spinbox2_2->setEnabled(true);
+    ApplyButton->setEnabled(true);
     mainwindow->auto_dpi = 0;
   }
   else
   {
-    spinbox2_1->setEnabled(FALSE);
-    spinbox2_2->setEnabled(FALSE);
-    ApplyButton->setEnabled(FALSE);
+    spinbox2_1->setEnabled(false);
+    spinbox2_2->setEnabled(false);
+    ApplyButton->setEnabled(false);
     mainwindow->auto_dpi = 1;
     mainwindow->pixelsizefactor = 1.0 / ((double)mainwindow->dpiy / 2.54);
     mainwindow->x_pixelsizefactor = 1.0 / ((double)mainwindow->dpix / 2.54);
@@ -759,25 +759,25 @@ void UI_OptionsDialog::ApplyButtonClicked()
 
 void UI_OptionsDialog::labelEdited(const QString  &)
 {
-  ApplyButton2->setEnabled(TRUE);
+  ApplyButton2->setEnabled(true);
 }
 
 
 void UI_OptionsDialog::spinBox3_3ValueChanged(int)
 {
-  ApplyButton2->setEnabled(TRUE);
+  ApplyButton2->setEnabled(true);
 }
 
 
 void UI_OptionsDialog::radioButtonToggled(bool)
 {
-  ApplyButton2->setEnabled(TRUE);
+  ApplyButton2->setEnabled(true);
 }
 
 
 void UI_OptionsDialog::spinBoxValueChanged(double)
 {
-  ApplyButton2->setEnabled(TRUE);
+  ApplyButton2->setEnabled(true);
 }
 
 
@@ -851,7 +851,7 @@ void UI_OptionsDialog::ApplyButton2Clicked()
     mainwindow->maxdftblocksize--;
   }
 
-  ApplyButton2->setEnabled(FALSE);
+  ApplyButton2->setEnabled(false);
 }
 
 
@@ -907,7 +907,7 @@ void UI_OptionsDialog::checkBoxChanged(int state)
     }
   }
 
-  ApplyButton2->setEnabled(TRUE);
+  ApplyButton2->setEnabled(true);
 }
 
 
@@ -946,9 +946,9 @@ void UI_OptionsDialog::DefaultButton2Clicked()
 
   spinbox3_1->setValue(1000);
 
-  radiobutton2->setChecked(TRUE);
+  radiobutton2->setChecked(true);
 
-  ApplyButton2->setEnabled(TRUE);
+  ApplyButton2->setEnabled(true);
 }
 
 
@@ -962,7 +962,7 @@ void UI_OptionsDialog::colorBarButtonClicked(SpecialButton *button)
 
   button->setGlobalColor(color);
 
-  ApplyButton2->setEnabled(TRUE);
+  ApplyButton2->setEnabled(true);
 }
 
 

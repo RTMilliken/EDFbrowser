@@ -49,8 +49,8 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   EDFhdrDialog->setMaximumSize(QSize(690, 480));
 
   EDFhdrDialog->setWindowTitle("File Info");
-  EDFhdrDialog->setModal(TRUE);
-  EDFhdrDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  EDFhdrDialog->setModal(true);
+  EDFhdrDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   filelist = new QListWidget(EDFhdrDialog);
   filelist->setGeometry(QRect(10, 10, 670, 75));
@@ -102,82 +102,82 @@ UI_EDFhdrwindow::UI_EDFhdrwindow(QWidget *w_parent)
   label6 = new QLabel(EDFhdrDialog);
   label6->setGeometry(QRect(10, 190, 130, 25));
   label6->setText("Birthdate");
-  label6->setVisible(FALSE);
+  label6->setVisible(false);
 
   label6a = new SpecialButton(EDFhdrDialog);
   label6a->setGeometry(QRect(150, 190, 530, 25));
   label6a->setColor(Qt::white);
-  label6a->setVisible(FALSE);
+  label6a->setVisible(false);
 
   label7 = new QLabel(EDFhdrDialog);
   label7->setGeometry(QRect(10, 225, 130, 25));
   label7->setText("Subject name");
-  label7->setVisible(FALSE);
+  label7->setVisible(false);
 
   label7a = new SpecialButton(EDFhdrDialog);
   label7a->setGeometry(QRect(150, 225, 530, 25));
   label7a->setColor(Qt::white);
-  label7a->setVisible(FALSE);
+  label7a->setVisible(false);
 
   label8 = new QLabel(EDFhdrDialog);
   label8->setGeometry(QRect(10, 260, 130, 25));
   label8->setText("Additional info");
-  label8->setVisible(FALSE);
+  label8->setVisible(false);
 
   label8a = new SpecialButton(EDFhdrDialog);
   label8a->setGeometry(QRect(150, 260, 530, 25));
   label8a->setColor(Qt::white);
-  label8a->setVisible(FALSE);
+  label8a->setVisible(false);
 
   label9 = new QLabel(EDFhdrDialog);
   label9->setGeometry(QRect(10, 290, 130, 25));
   label9->setText("Startdate");
-  label9->setVisible(FALSE);
+  label9->setVisible(false);
 
   label9a = new SpecialButton(EDFhdrDialog);
   label9a->setGeometry(QRect(150, 290, 530, 25));
   label9a->setColor(Qt::white);
-  label9a->setVisible(FALSE);
+  label9a->setVisible(false);
 
   label10 = new QLabel(EDFhdrDialog);
   label10->setGeometry(QRect(10, 325, 130, 25));
   label10->setText("Administr. code");
-  label10->setVisible(FALSE);
+  label10->setVisible(false);
 
   label10a = new SpecialButton(EDFhdrDialog);
   label10a->setGeometry(QRect(150, 325, 530, 25));
   label10a->setColor(Qt::white);
-  label10a->setVisible(FALSE);
+  label10a->setVisible(false);
 
   label11 = new QLabel(EDFhdrDialog);
   label11->setGeometry(QRect(10, 360, 130, 25));
   label11->setText("Technician");
-  label11->setVisible(FALSE);
+  label11->setVisible(false);
 
   label11a = new SpecialButton(EDFhdrDialog);
   label11a->setGeometry(QRect(150, 360, 530, 25));
   label11a->setColor(Qt::white);
-  label11a->setVisible(FALSE);
+  label11a->setVisible(false);
 
   label12 = new QLabel(EDFhdrDialog);
   label12->setGeometry(QRect(10, 395, 130, 25));
   label12->setText("Device");
-  label12->setVisible(FALSE);
+  label12->setVisible(false);
 
   label12a = new SpecialButton(EDFhdrDialog);
   label12a->setGeometry(QRect(150, 395, 530, 25));
   label12a->setColor(Qt::white);
-  label12a->setVisible(FALSE);
+  label12a->setVisible(false);
 
   label13 = new QLabel(EDFhdrDialog);
   label13->setGeometry(QRect(10, 430, 130, 25));
   label13->setText("Additional info");
-  label13->setVisible(FALSE);
+  label13->setVisible(false);
 
   label13a = new SpecialButton(EDFhdrDialog);
   label13a->setGeometry(QRect(150, 430, 530, 25));
   label13a->setColor(Qt::white);
-  label13a->setVisible(FALSE);
+  label13a->setVisible(false);
 
   label20 = new QLabel(EDFhdrDialog);
   label20->setGeometry(QRect(10, 260, 130, 25));
@@ -271,56 +271,56 @@ void UI_EDFhdrwindow::show_params(int row)
     label2->setGeometry(QRect(10, 155, 130, 25));
     label2->setText("Sex");
 
-    label6->setVisible(TRUE);
-    label6a->setVisible(TRUE);
+    label6->setVisible(true);
+    label6a->setVisible(true);
     label6a->setText(mainwindow->edfheaderlist[row]->plus_birthdate);
 
-    label7->setVisible(TRUE);
-    label7a->setVisible(TRUE);
+    label7->setVisible(true);
+    label7a->setVisible(true);
     label7a->setText(mainwindow->edfheaderlist[row]->plus_patient_name);
 
-    label8->setVisible(TRUE);
-    label8a->setVisible(TRUE);
+    label8->setVisible(true);
+    label8a->setVisible(true);
     label8a->setText(mainwindow->edfheaderlist[row]->plus_patient_additional);
 
-    label9->setVisible(TRUE);
-    label9a->setVisible(TRUE);
+    label9->setVisible(true);
+    label9a->setVisible(true);
     label9a->setText(mainwindow->edfheaderlist[row]->plus_startdate);
 
-    label10->setVisible(TRUE);
-    label10a->setVisible(TRUE);
+    label10->setVisible(true);
+    label10a->setVisible(true);
     label10a->setText(mainwindow->edfheaderlist[row]->plus_admincode);
 
-    label11->setVisible(TRUE);
-    label11a->setVisible(TRUE);
+    label11->setVisible(true);
+    label11a->setVisible(true);
     label11a->setText(mainwindow->edfheaderlist[row]->plus_technician);
 
-    label12->setVisible(TRUE);
-    label12a->setVisible(TRUE);
+    label12->setVisible(true);
+    label12a->setVisible(true);
     label12a->setText(mainwindow->edfheaderlist[row]->plus_equipment);
 
-    label13->setVisible(TRUE);
-    label13a->setVisible(TRUE);
+    label13->setVisible(true);
+    label13a->setVisible(true);
     label13a->setText(mainwindow->edfheaderlist[row]->plus_recording_additional);
   }
   else
   {
-    label6->setVisible(FALSE);
-    label6a->setVisible(FALSE);
-    label7->setVisible(FALSE);
-    label7a->setVisible(FALSE);
-    label8->setVisible(FALSE);
-    label8a->setVisible(FALSE);
-    label9->setVisible(FALSE);
-    label9a->setVisible(FALSE);
-    label10->setVisible(FALSE);
-    label10a->setVisible(FALSE);
-    label11->setVisible(FALSE);
-    label11a->setVisible(FALSE);
-    label12->setVisible(FALSE);
-    label12a->setVisible(FALSE);
-    label13->setVisible(FALSE);
-    label13a->setVisible(FALSE);
+    label6->setVisible(false);
+    label6a->setVisible(false);
+    label7->setVisible(false);
+    label7a->setVisible(false);
+    label8->setVisible(false);
+    label8a->setVisible(false);
+    label9->setVisible(false);
+    label9a->setVisible(false);
+    label10->setVisible(false);
+    label10a->setVisible(false);
+    label11->setVisible(false);
+    label11a->setVisible(false);
+    label12->setVisible(false);
+    label12a->setVisible(false);
+    label13->setVisible(false);
+    label13a->setVisible(false);
 
     EDFhdrDialog->setMinimumSize(QSize(690, 480));
     EDFhdrDialog->setMaximumSize(QSize(690, 480));
@@ -363,7 +363,7 @@ void UI_EDFhdrwindow::show_params(int row)
 
   if(mainwindow->edfheaderlist[row]->starttime_offset != 0LL)
   {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
     snprintf(str + strlen(str), 100, ".%07I64d", mainwindow->edfheaderlist[row]->starttime_offset);
 #else
     snprintf(str + strlen(str), 100, ".%07lli", mainwindow->edfheaderlist[row]->starttime_offset);

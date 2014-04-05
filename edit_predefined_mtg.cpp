@@ -48,8 +48,8 @@ UI_edit_predefined_mtg_window::UI_edit_predefined_mtg_window(QWidget *w_parent)
   edit_predefined_mtg_Dialog->setMinimumSize(800, 265);
   edit_predefined_mtg_Dialog->setMaximumSize(800, 265);
   edit_predefined_mtg_Dialog->setWindowTitle("Edit key-bindings for montages");
-  edit_predefined_mtg_Dialog->setModal(TRUE);
-  edit_predefined_mtg_Dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  edit_predefined_mtg_Dialog->setModal(true);
+  edit_predefined_mtg_Dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   mtg_path_list = new QListWidget(edit_predefined_mtg_Dialog);
   mtg_path_list->setGeometry(10, 10, 780, 210);
@@ -89,8 +89,8 @@ void UI_edit_predefined_mtg_window::rowClicked(QListWidgetItem *item)
   dialog->setMinimumSize(QSize(140, 135));
   dialog->setMaximumSize(QSize(140, 135));
   dialog->setWindowTitle("Entry");
-  dialog->setModal(TRUE);
-  dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  dialog->setModal(true);
+  dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   button1 = new QPushButton(dialog);
   button1->setGeometry(20, 20, 100, 25);

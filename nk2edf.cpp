@@ -69,8 +69,8 @@ UI_NK2EDFwindow::UI_NK2EDFwindow(char *recent_dir)
   myobjectDialog->setMinimumSize(QSize(600, 480));
   myobjectDialog->setMaximumSize(QSize(600, 480));
   myobjectDialog->setWindowTitle("Nihon Kohden to EDF(+) converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(QRect(20, 430, 100, 26));
@@ -88,7 +88,7 @@ UI_NK2EDFwindow::UI_NK2EDFwindow(char *recent_dir)
   textEdit1 = new QTextEdit(myobjectDialog);
   textEdit1->setGeometry(QRect(20, 20, 560, 380));
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textEdit1->setReadOnly(TRUE);
+  textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   sprintf(txt_string, "Nihon Kohden to EDF(+) converter.\n");
   textEdit1->append(txt_string);
@@ -133,7 +133,7 @@ void UI_NK2EDFwindow::SelectFileButton()
        scratchpad[256];
 
 
-  pushButton1->setEnabled(FALSE);
+  pushButton1->setEnabled(false);
 
   edfplus = checkBox1->checkState();
 
@@ -143,7 +143,7 @@ void UI_NK2EDFwindow::SelectFileButton()
 
   if(!strcmp(path, ""))
   {
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -154,7 +154,7 @@ void UI_NK2EDFwindow::SelectFileButton()
   {
     snprintf(txt_string, 2048, "can not open file %s for reading.\n", path);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -165,7 +165,7 @@ void UI_NK2EDFwindow::SelectFileButton()
   {
     textEdit1->append("error reading .eeg file.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   scratchpad[16] = 0;
@@ -174,7 +174,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     snprintf(txt_string, 2048, "error, deviceblock has unknown signature: \"%s\"\n", scratchpad);
     textEdit1->append(txt_string);
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   fseeko(inputfile, 0x0081LL, SEEK_SET);
@@ -182,7 +182,7 @@ void UI_NK2EDFwindow::SelectFileButton()
   {
     textEdit1->append("error reading .eeg file.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   scratchpad[16] = 0;
@@ -191,7 +191,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     snprintf(txt_string, 2048, "error, controlblock has unknown signature: \"%s\"\n", scratchpad);
     textEdit1->append(txt_string);
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   fseeko(inputfile, 0x17feLL, SEEK_SET);
@@ -200,7 +200,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     snprintf(txt_string, 2048, "error, waveformdatablock has wrong signature.\n");
     textEdit1->append(txt_string);
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -224,7 +224,7 @@ void UI_NK2EDFwindow::SelectFileButton()
                             logfilepath);
         textEdit1->append(QString::fromLocal8Bit(txt_string));
         fclose(inputfile);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -235,7 +235,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       textEdit1->append("error reading .log file.\n");
       fclose(logfile);
       fclose(inputfile);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
     scratchpad[16] = 0;
@@ -245,7 +245,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       textEdit1->append(QString::fromLocal8Bit(txt_string));
       fclose(logfile);
       fclose(inputfile);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -257,7 +257,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       textEdit1->append("malloc error\n");
       fclose(logfile);
       fclose(inputfile);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
     sublog_buf = (char *)calloc(1, n_logblocks * 11521);
@@ -267,7 +267,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       fclose(logfile);
       fclose(inputfile);
       free(log_buf);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -285,7 +285,7 @@ void UI_NK2EDFwindow::SelectFileButton()
         fclose(logfile);
         free(log_buf);
         free(sublog_buf);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
       fseeko(logfile, (long long)(logblock_address + 0x0012), SEEK_SET);
@@ -298,7 +298,7 @@ void UI_NK2EDFwindow::SelectFileButton()
         fclose(logfile);
         free(log_buf);
         free(sublog_buf);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
 
@@ -385,7 +385,7 @@ void UI_NK2EDFwindow::SelectFileButton()
         fclose(inputfile);
         free(log_buf);
         free(sublog_buf);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -399,7 +399,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       fclose(inputfile);
       free(log_buf);
       free(sublog_buf);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
     scratchpad[16] = 0;
@@ -412,7 +412,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       fclose(inputfile);
       free(log_buf);
       free(sublog_buf);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
   }
@@ -492,7 +492,7 @@ void UI_NK2EDFwindow::SelectFileButton()
   if(ctl_block_cnt==EOF)
   {
     textEdit1->append("error reading inputfile.\n");
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     fclose(inputfile);
     if(edfplus)
     {
@@ -510,7 +510,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     if(fread((char *)(&ctlblock_address), 4, 1, inputfile)!=1)
     {
       textEdit1->append("error reading inputfile.\n");
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       fclose(inputfile);
       if(edfplus)
       {
@@ -526,7 +526,7 @@ void UI_NK2EDFwindow::SelectFileButton()
     if(datablock_cnt==EOF)
     {
       textEdit1->append("error reading inputfile.\n");
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       fclose(inputfile);
       if(edfplus)
       {
@@ -544,7 +544,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       if(fread((char *)(&wfmblock_address), 4, 1, inputfile)!=1)
       {
         textEdit1->append("error reading inputfile.\n");
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         fclose(inputfile);
         if(edfplus)
         {
@@ -567,7 +567,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       {
         snprintf(txt_string, 2048, "can not open file %s for writing.\n", outputpath);
         textEdit1->append(QString::fromLocal8Bit(txt_string));
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         fclose(inputfile);
         if(edfplus)
         {
@@ -597,7 +597,7 @@ void UI_NK2EDFwindow::SelectFileButton()
       if(fclose(outputfile))
       {
         textEdit1->append("error closing outputfile.\n");
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         fclose(inputfile);
         if(edfplus)
         {
@@ -618,7 +618,7 @@ void UI_NK2EDFwindow::SelectFileButton()
           free(log_buf);
           free(sublog_buf);
         }
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
 
@@ -641,7 +641,7 @@ void UI_NK2EDFwindow::SelectFileButton()
   else  snprintf(txt_string, 2048, "Converted %u waveformblock(s) successfully to EDF.\n", total_blocks);
   textEdit1->append(txt_string);
 
-  pushButton1->setEnabled(TRUE);
+  pushButton1->setEnabled(true);
 }
 
 

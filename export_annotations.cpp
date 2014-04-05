@@ -59,8 +59,8 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   ExportAnnotsDialog->setMinimumSize(QSize(800, 570));
   ExportAnnotsDialog->setMaximumSize(QSize(800, 570));
   ExportAnnotsDialog->setWindowTitle("Export annotations");
-  ExportAnnotsDialog->setModal(TRUE);
-  ExportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  ExportAnnotsDialog->setModal(true);
+  ExportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   filelist = new QListWidget(ExportAnnotsDialog);
   filelist->setGeometry(QRect(10, 10, 780, 75));
@@ -90,7 +90,7 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   fileGroupBox->setGeometry(320, 120, 200, 90);
 
   selectRadioButton = new QRadioButton("from selected file");
-  selectRadioButton->setChecked(TRUE);
+  selectRadioButton->setChecked(true);
 
   mergeRadioButton = new QRadioButton("from all files (merge)");
 
@@ -110,7 +110,7 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   separatorBox->addItem("tab");
 
   asciiSecondsRadioButton = new QRadioButton("seconds relative to start of file");
-  asciiSecondsRadioButton->setChecked(TRUE);
+  asciiSecondsRadioButton->setChecked(true);
 
   asciiISOtimeRadioButton = new QRadioButton("ISO timestamp hh:mm:ss");
 
@@ -121,7 +121,7 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
   asciiISOtimedateFractionRadioButton = new QRadioButton("ISO datetimestamp yyyy-mm-ddThh:mm:ss.xxx");
 
   durationCheckBox = new QCheckBox("include duration", ExportAnnotsDialog);
-  durationCheckBox->setTristate(FALSE);
+  durationCheckBox->setTristate(false);
   durationCheckBox->setCheckState(Qt::Unchecked);
 
   asciiSettingsHBoxLayout = new QHBoxLayout;
@@ -150,47 +150,47 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
 
   switch(mainwindow->export_annotations_var->format)
   {
-    case 0 : EDFplusRadioButton->setChecked(TRUE);
-             asciiSettingsGroupBox->setEnabled(FALSE);
+    case 0 : EDFplusRadioButton->setChecked(true);
+             asciiSettingsGroupBox->setEnabled(false);
              break;
 
-    case 8 : XMLRadioButton->setChecked(TRUE);
-             asciiSettingsGroupBox->setEnabled(FALSE);
+    case 8 : XMLRadioButton->setChecked(true);
+             asciiSettingsGroupBox->setEnabled(false);
              break;
 
-    case 1 : CSVRadioButton->setChecked(TRUE);
-             asciiSettingsGroupBox->setEnabled(TRUE);
-             asciiSecondsRadioButton->setChecked(TRUE);
+    case 1 : CSVRadioButton->setChecked(true);
+             asciiSettingsGroupBox->setEnabled(true);
+             asciiSecondsRadioButton->setChecked(true);
              break;
 
-    case 2 : CSVRadioButton->setChecked(TRUE);
-             asciiSettingsGroupBox->setEnabled(TRUE);
-             asciiISOtimeRadioButton->setChecked(TRUE);
+    case 2 : CSVRadioButton->setChecked(true);
+             asciiSettingsGroupBox->setEnabled(true);
+             asciiISOtimeRadioButton->setChecked(true);
              break;
 
-    case 3 : CSVRadioButton->setChecked(TRUE);
-             asciiSettingsGroupBox->setEnabled(TRUE);
-             asciiISOtimedateRadioButton->setChecked(TRUE);
+    case 3 : CSVRadioButton->setChecked(true);
+             asciiSettingsGroupBox->setEnabled(true);
+             asciiISOtimedateRadioButton->setChecked(true);
              break;
 
-    case 4 : CSVRadioButton->setChecked(TRUE);
-             asciiSettingsGroupBox->setEnabled(TRUE);
-             asciiISOtimeFractionRadioButton->setChecked(TRUE);
+    case 4 : CSVRadioButton->setChecked(true);
+             asciiSettingsGroupBox->setEnabled(true);
+             asciiISOtimeFractionRadioButton->setChecked(true);
              break;
 
-    case 5 : CSVRadioButton->setChecked(TRUE);
-             asciiSettingsGroupBox->setEnabled(TRUE);
-             asciiISOtimedateFractionRadioButton->setChecked(TRUE);
+    case 5 : CSVRadioButton->setChecked(true);
+             asciiSettingsGroupBox->setEnabled(true);
+             asciiISOtimedateFractionRadioButton->setChecked(true);
              break;
   }
 
   if(mainwindow->export_annotations_var->duration)
   {
-    durationCheckBox->setChecked(TRUE);
+    durationCheckBox->setChecked(true);
   }
   else
   {
-    durationCheckBox->setChecked(FALSE);
+    durationCheckBox->setChecked(false);
   }
 
   QObject::connect(CloseButton,    SIGNAL(clicked()),     ExportAnnotsDialog, SLOT(close()));
@@ -206,13 +206,13 @@ UI_ExportAnnotationswindow::UI_ExportAnnotationswindow(QWidget *w_parent)
 
 void UI_ExportAnnotationswindow::outputformatRadioButtonClicked(bool checked)
 {
-  if(checked == TRUE)
+  if(checked == true)
   {
-    asciiSettingsGroupBox->setEnabled(TRUE);
+    asciiSettingsGroupBox->setEnabled(true);
   }
   else
   {
-    asciiSettingsGroupBox->setEnabled(FALSE);
+    asciiSettingsGroupBox->setEnabled(false);
   }
 }
 
@@ -241,40 +241,40 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
   struct date_time_struct tm;
 
 
-  if(CSVRadioButton->isChecked() == TRUE)
+  if(CSVRadioButton->isChecked() == true)
   {
-    if(asciiSecondsRadioButton->isChecked() == TRUE)
+    if(asciiSecondsRadioButton->isChecked() == true)
     {
       csv_format = 1;
     }
 
-    if(asciiISOtimeRadioButton->isChecked() == TRUE)
+    if(asciiISOtimeRadioButton->isChecked() == true)
     {
       csv_format = 2;
     }
 
-    if(asciiISOtimedateRadioButton->isChecked() == TRUE)
+    if(asciiISOtimedateRadioButton->isChecked() == true)
     {
       csv_format = 3;
     }
 
-    if(asciiISOtimeFractionRadioButton->isChecked() == TRUE)
+    if(asciiISOtimeFractionRadioButton->isChecked() == true)
     {
       csv_format = 4;
     }
 
-    if(asciiISOtimedateFractionRadioButton->isChecked() == TRUE)
+    if(asciiISOtimedateFractionRadioButton->isChecked() == true)
     {
       csv_format = 5;
     }
   }
 
-  if(EDFplusRadioButton->isChecked() == TRUE)
+  if(EDFplusRadioButton->isChecked() == true)
   {
     csv_format = 0;
   }
 
-  if(XMLRadioButton->isChecked() == TRUE)
+  if(XMLRadioButton->isChecked() == true)
   {
     csv_format = 8;
   }
@@ -315,8 +315,8 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
     return;
   }
 
-  ExportButton->setEnabled(FALSE);
-  CloseButton->setEnabled(FALSE);
+  ExportButton->setEnabled(false);
+  CloseButton->setEnabled(false);
 
   for(i=0; i<mainwindow->files_open; i++)
   {
@@ -334,7 +334,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
   n = i;
 
-  if(mergeRadioButton->isChecked() == TRUE)
+  if(mergeRadioButton->isChecked() == true)
   {
     n = mainwindow->sel_viewtime;
   }
@@ -388,7 +388,7 @@ void UI_ExportAnnotationswindow::ExportButtonClicked()
 
   annot_list = edfplus_annotation_copy_list(&mainwindow->annotationlist[n]);
 
-  if(mergeRadioButton->isChecked() == TRUE)
+  if(mergeRadioButton->isChecked() == true)
   {
     for(i=0; i < mainwindow->files_open; i++)
     {

@@ -55,8 +55,8 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
   myobjectDialog->setMinimumSize(600, 630);
   myobjectDialog->setMaximumSize(600, 630);
   myobjectDialog->setWindowTitle("Biosemi to BDF+ converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   label2 = new QLabel(myobjectDialog);
   label2->setGeometry(20, 20, 200, 26);
@@ -87,7 +87,7 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
   radioButton1 = new QRadioButton(myobjectDialog);
   radioButton1->setGeometry(290, 385, 150, 20);
   radioButton1->setText("rising edge");
-  radioButton1->setChecked(TRUE);
+  radioButton1->setChecked(true);
 
   radioButton2 = new QRadioButton(myobjectDialog);
   radioButton2->setGeometry(290, 415, 150, 20);
@@ -96,8 +96,8 @@ UI_BIOSEMI2BDFPLUSwindow::UI_BIOSEMI2BDFPLUSwindow(QWidget *w_parent)
   checkBox1 = new QCheckBox(myobjectDialog);
   checkBox1->setGeometry(290, 500, 200, 20);
   checkBox1->setText("measure event duration");
-  checkBox1->setTristate(FALSE);
-  checkBox1->setChecked(FALSE);
+  checkBox1->setTristate(false);
+  checkBox1->setChecked(false);
 
   selectButton = new QPushButton(myobjectDialog);
   selectButton->setGeometry(20, 584, 100, 26);
@@ -357,7 +357,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
   strcpy(&triggerlabel[16][0], "new epoch");
 
-  if(radioButton1->isChecked() == TRUE)
+  if(radioButton1->isChecked() == true)
   {
     rising_edge = 1;
 
@@ -376,7 +376,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
     }
   }
 
-  if(checkBox1->isChecked() == TRUE)
+  if(checkBox1->isChecked() == true)
   {
     set_duration = 1;
   }
@@ -796,7 +796,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
 
   progress.reset();
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   snprintf(str, 2048, "Done. Converted %I64d input trigger events to BDF+ annotations.\n"
                       "\nBDF+ file is located at %s", trigger_cnt, outputpath);
 #else

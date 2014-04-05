@@ -61,12 +61,12 @@ UI_Aboutwindow::UI_Aboutwindow(UI_Mainwindow *mainwindow)
   AboutDialog->setMinimumSize(QSize(640, 480));
   AboutDialog->setGeometry(300, 250, 640, 480);
   AboutDialog->setWindowTitle("About");
-  AboutDialog->setModal(TRUE);
-  AboutDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  AboutDialog->setModal(true);
+  AboutDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   textedit1 = new QTextEdit;
   textedit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textedit1->setReadOnly(TRUE);
+  textedit1->setReadOnly(true);
   textedit1->setLineWrapMode(QTextEdit::NoWrap);
   textedit1->setPlainText(
         "\n " PROGRAM_NAME " " PROGRAM_VERSION "\n"

@@ -199,7 +199,7 @@ int BDF_triggers::get_triggers(struct edfhdrblock *hdr, struct annotationblock *
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         break;
       }

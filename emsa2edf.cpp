@@ -61,8 +61,8 @@ UI_EMSA2EDFwindow::UI_EMSA2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(600, 480));
   myobjectDialog->setMaximumSize(QSize(600, 480));
   myobjectDialog->setWindowTitle("Emsa to EDF+ converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(QRect(20, 430, 100, 26));
@@ -75,7 +75,7 @@ UI_EMSA2EDFwindow::UI_EMSA2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1 = new QTextEdit(myobjectDialog);
   textEdit1->setGeometry(QRect(20, 20, 560, 380));
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textEdit1->setReadOnly(TRUE);
+  textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   sprintf(txt_string, "Emsa to EDF+ converter.\n");
   textEdit1->append(txt_string);
@@ -150,13 +150,13 @@ void UI_EMSA2EDFwindow::SelectFileButton()
        } var;
 
 
-  pushButton1->setEnabled(FALSE);
+  pushButton1->setEnabled(false);
 
   strcpy(path, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "PLG files (*.plg *.PLG)").toLocal8Bit().data());
 
   if(!strcmp(path, ""))
   {
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -169,7 +169,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     snprintf(txt_string, 2048, "Can not open file %s for reading.\n", path);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -179,7 +179,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, filesize is too small.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -188,14 +188,14 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Read error.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   if((strncmp(scratchpad, "PBJ", 3))&&(strncmp(scratchpad, "BPC", 3)))
   {
     textEdit1->append("Error, file id does not match.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -205,14 +205,14 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Read error.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   if(!channels)
   {
     textEdit1->append("Error, number of channels is 0.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -222,7 +222,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, filesize is too small.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -234,7 +234,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, samplefrequency is 0 Hz.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -242,7 +242,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, filesize is too small.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -250,7 +250,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, can not read startdate.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   error = 0;
@@ -278,7 +278,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, can not read starttime.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   strcpy(time, scratchpad);
@@ -302,7 +302,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, can not read startdate or starttime.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
   date[2] = '.';
@@ -421,7 +421,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Read error.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -431,7 +431,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Read error.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -529,7 +529,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
         textEdit1->append("Malloc error. (logbuf)\n");
         fclose(inputfile);
         fclose(logfile);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
 
@@ -704,7 +704,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   {
     fclose(inputfile);
     free(logbuf);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -717,7 +717,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     textEdit1->append(QString::fromLocal8Bit(txt_string));
     fclose(inputfile);
     free(logbuf);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -753,7 +753,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     fclose(inputfile);
     fclose(outputfile);
     free(logbuf);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -763,7 +763,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     fclose(inputfile);
     fclose(outputfile);
     free(logbuf);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -802,7 +802,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
         fclose(inputfile);
         fclose(outputfile);
         free(logbuf);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -814,7 +814,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
         fclose(inputfile);
         fclose(outputfile);
         free(logbuf);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -826,7 +826,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     fclose(inputfile);
     fclose(outputfile);
     free(logbuf);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -901,7 +901,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
     fclose(inputfile);
     fclose(outputfile);
     free(logbuf);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -969,7 +969,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
       fclose(outputfile);
       free(buf);
       free(logbuf);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -984,7 +984,7 @@ void UI_EMSA2EDFwindow::SelectFileButton()
   snprintf(txt_string, 2048, "Done, your EDF+ file is %s\n", path);
   textEdit1->append(QString::fromLocal8Bit(txt_string));
 
-  pushButton1->setEnabled(TRUE);
+  pushButton1->setEnabled(true);
 }
 
 

@@ -60,8 +60,8 @@ UI_EDFCompatwindow::UI_EDFCompatwindow(QWidget *w_parent)
   EDFCompatDialog->setMinimumSize(QSize(800, 180));
   EDFCompatDialog->setMaximumSize(QSize(800, 180));
   EDFCompatDialog->setWindowTitle("Check EDF(+) / BDF(+) compatibility");
-  EDFCompatDialog->setModal(TRUE);
-  EDFCompatDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  EDFCompatDialog->setModal(true);
+  EDFCompatDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   filelist = new QListWidget(EDFCompatDialog);
   filelist->setGeometry(QRect(10, 10, 780, 75));
@@ -148,8 +148,8 @@ void UI_EDFCompatwindow::CheckButtonClicked()
     return;
   }
 
-  CheckButton->setEnabled(FALSE);
-  CloseButton->setEnabled(FALSE);
+  CheckButton->setEnabled(false);
+  CloseButton->setEnabled(false);
 
   for(i=0; i<mainwindow->files_open; i++)
   {
@@ -240,7 +240,7 @@ void UI_EDFCompatwindow::CheckButtonClicked()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         free(cnv_buf);
         free(scratchpad);

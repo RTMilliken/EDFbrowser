@@ -65,7 +65,7 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   checkbox1 = new QCheckBox("Relative ");
   checkbox1->setGeometry(2, 2, 10, 10);
-  checkbox1->setTristate(FALSE);
+  checkbox1->setTristate(false);
   checkbox1->setCheckState(Qt::Checked);
 
   label1 = new QLabel;
@@ -76,12 +76,12 @@ UI_Annotationswindow::UI_Annotationswindow(int file_number, QWidget *w_parent)
 
   checkbox2 = new QCheckBox("Inv.");
   checkbox2->setGeometry(2, 2, 10, 10);
-  checkbox2->setTristate(FALSE);
+  checkbox2->setTristate(false);
   checkbox2->setCheckState(Qt::Unchecked);
 
   list = new QListWidget(dialog1);
   list->setFont(*mainwindow->monofont);
-  list->setAutoFillBackground(TRUE);
+  list->setAutoFillBackground(true);
   list->setPalette(palette);
 
   show_between_act = new QAction("Set timescale from here to next annotation", list);
@@ -670,7 +670,7 @@ void UI_Annotationswindow::checkbox1_clicked(int state)
 
 void UI_Annotationswindow::hide_editdock(bool visible)
 {
-  if(visible==FALSE)
+  if(visible==false)
   {
     mainwindow->annotationEditDock->dockedit->hide();
   }
@@ -699,20 +699,20 @@ void UI_Annotationswindow::updateList(void)
   selected = -1;
 
 
-#ifdef Q_WS_X11
-  QFont specialfont("andale mono", 12, QFont::Normal, TRUE);
+#ifdef Q_OS_LINUX
+  QFont specialfont("andale mono", 12, QFont::Normal, true);
 
   specialfont.setPixelSize(12);
 #endif
 
-#ifdef Q_WS_MAC
-  QFont specialfont("andale mono", 12, QFont::Normal, TRUE);
+#ifdef Q_OS_MAC
+  QFont specialfont("andale mono", 12, QFont::Normal, true);
 
   specialfont.setPixelSize(12);
 #endif
 
-#ifdef Q_WS_WIN
-  QFont specialfont("courier", 11, QFont::Normal, TRUE);
+#ifdef Q_OS_WIN32
+  QFont specialfont("courier", 11, QFont::Normal, true);
 
   specialfont.setPixelSize(12);
 #endif
@@ -876,7 +876,7 @@ void UI_Annotationswindow::updateList(void)
     {
       mainwindow->annotations_edited = 1;
 
-      mainwindow->save_act->setEnabled(TRUE);
+      mainwindow->save_act->setEnabled(true);
     }
   }
 }
@@ -948,7 +948,7 @@ void UI_Annotationswindow::annotation_selected(QListWidgetItem * item, int cente
     }
   }
 
-  if(mainwindow->annotationEditDock->dockedit->isVisible()==TRUE)
+  if(mainwindow->annotationEditDock->dockedit->isVisible()==true)
   {
     mainwindow->maincurve->setCrosshair_1_center();
   }

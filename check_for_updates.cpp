@@ -47,14 +47,14 @@ Check_for_updates::Check_for_updates()
 
   request.setUrl(QUrl("http://www.teuniz.net/edfbrowser/latest_version.txt"));
   request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " OS_UNKNOWN");
-#ifdef Q_WS_X11
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_WS_X11");
+#ifdef Q_OS_LINUX
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_LINUX");
 #endif
-#ifdef Q_WS_MAC
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_WS_MAC");
+#ifdef Q_OS_MAC
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_MAC");
 #endif
-#ifdef Q_WS_WIN
-  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_WS_WIN");
+#ifdef Q_OS_WIN32
+  request.setRawHeader("User-Agent", PROGRAM_NAME " " PROGRAM_VERSION " Q_OS_WIN32");
 #endif
   request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
 

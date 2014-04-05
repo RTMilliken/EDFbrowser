@@ -61,8 +61,8 @@ UI_BI98002EDFwindow::UI_BI98002EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(300, 75));
   myobjectDialog->setMaximumSize(QSize(300, 75));
   myobjectDialog->setWindowTitle("BI9800 to EDF+ converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(20, 30, 100, 25);
@@ -424,7 +424,7 @@ void UI_BI98002EDFwindow::SelectFileButton()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         break;
       }

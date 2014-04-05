@@ -65,7 +65,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(int file_number, QWidget *w_par
 
   posNegTimebox = new QComboBox(annot_edit_dialog);
   posNegTimebox->setGeometry(300, 10, 35, 25);
-  posNegTimebox->setEditable(FALSE);
+  posNegTimebox->setEditable(false);
   posNegTimebox->addItem("+");
   posNegTimebox->addItem("-");
 
@@ -95,12 +95,12 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(int file_number, QWidget *w_par
   modifybutton = new QPushButton(annot_edit_dialog);
   modifybutton->setGeometry(720, 10, 100, 25);
   modifybutton->setText("Modify");
-  modifybutton->setEnabled(FALSE);
+  modifybutton->setEnabled(false);
 
   deletebutton = new QPushButton(annot_edit_dialog);
   deletebutton->setGeometry(840, 10, 100, 25);
   deletebutton->setText("Delete");
-  deletebutton->setEnabled(FALSE);
+  deletebutton->setEnabled(false);
 
   createbutton = new QPushButton(annot_edit_dialog);
   createbutton->setGeometry(960, 10, 100, 25);
@@ -116,7 +116,7 @@ UI_AnnotationEditwindow::UI_AnnotationEditwindow(int file_number, QWidget *w_par
 
 void UI_AnnotationEditwindow::open_close_dock(bool visible)
 {
-  if(visible==TRUE)
+  if(visible==true)
   {
     mainwindow->annot_editor_active = 1;
 
@@ -129,9 +129,9 @@ void UI_AnnotationEditwindow::open_close_dock(bool visible)
   }
   else
   {
-    modifybutton->setEnabled(FALSE);
+    modifybutton->setEnabled(false);
 
-    deletebutton->setEnabled(FALSE);
+    deletebutton->setEnabled(false);
 
     mainwindow->annot_editor_active = 0;
   }
@@ -195,13 +195,13 @@ void UI_AnnotationEditwindow::deleteButtonClicked()
     annotation->jump = 1;
   }
 
-  modifybutton->setEnabled(FALSE);
+  modifybutton->setEnabled(false);
 
-  deletebutton->setEnabled(FALSE);
+  deletebutton->setEnabled(false);
 
   mainwindow->annotations_edited = 1;
 
-  mainwindow->save_act->setEnabled(TRUE);
+  mainwindow->save_act->setEnabled(true);
 
   mainwindow->annotations_dock[file_num]->updateList();
 
@@ -349,9 +349,9 @@ void UI_AnnotationEditwindow::set_selected_annotation(int file_nr, int annot_nr)
     duration_spinbox->setValue(-1);
   }
 
-  modifybutton->setEnabled(TRUE);
+  modifybutton->setEnabled(true);
 
-  deletebutton->setEnabled(TRUE);
+  deletebutton->setEnabled(true);
 }
 
 
@@ -404,9 +404,9 @@ void UI_AnnotationEditwindow::set_selected_annotation(struct annotationblock *an
     duration_spinbox->setValue(-1);
   }
 
-  modifybutton->setEnabled(FALSE);
+  modifybutton->setEnabled(false);
 
-  deletebutton->setEnabled(FALSE);
+  deletebutton->setEnabled(false);
 }
 
 

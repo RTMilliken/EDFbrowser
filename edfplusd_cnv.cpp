@@ -63,8 +63,8 @@ UI_EDFDwindow::UI_EDFDwindow(char *recent_ope_dir, char *recent_sav_dir)
   myobjectDialog->setMinimumSize(QSize(600, 480));
   myobjectDialog->setMaximumSize(QSize(600, 480));
   myobjectDialog->setWindowTitle("EDF+D/BDF+D to EDF+C/BDF+C converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(QRect(20, 430, 100, 26));
@@ -77,7 +77,7 @@ UI_EDFDwindow::UI_EDFDwindow(char *recent_ope_dir, char *recent_sav_dir)
   textEdit1 = new QTextEdit(myobjectDialog);
   textEdit1->setGeometry(QRect(20, 20, 560, 380));
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textEdit1->setReadOnly(TRUE);
+  textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   sprintf(txt_string, "EDF+D/BDF+D to EDF+C/BDF+C converter.\n");
   textEdit1->append(txt_string);
@@ -130,13 +130,13 @@ void UI_EDFDwindow::SelectFileButton()
   struct edfhdrblock *edfhdr=NULL;
 
 
-  pushButton1->setEnabled(FALSE);
+  pushButton1->setEnabled(false);
 
   strcpy(inputpath, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "EDF/BDF files (*.edf *.EDF *.bdf *.BDF *.rec *.REC)").toLocal8Bit().data());
 
   if(!strcmp(inputpath, ""))
   {
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -147,7 +147,7 @@ void UI_EDFDwindow::SelectFileButton()
   {
     snprintf(txt_string, 2048, "Error, can not open file %s for reading.\n", inputpath);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -163,7 +163,7 @@ void UI_EDFDwindow::SelectFileButton()
   {
     fclose(inputfile);
     textEdit1->append("Error, file is not a valid EDF or BDF file.\n");
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -173,7 +173,7 @@ void UI_EDFDwindow::SelectFileButton()
     free(edfhdr);
     fclose(inputfile);
     textEdit1->append("Error, file is not an EDF+D or BDF+D file.\n");
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -192,7 +192,7 @@ void UI_EDFDwindow::SelectFileButton()
     free(edfhdr);
     fclose(inputfile);
     textEdit1->append("Error, there is an incompatibility with the annotations.\n");
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -203,7 +203,7 @@ void UI_EDFDwindow::SelectFileButton()
     free(edfhdr);
     fclose(inputfile);
     textEdit1->append("Aborted.\n");
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -234,7 +234,7 @@ void UI_EDFDwindow::SelectFileButton()
     free(edfhdr->edfparam);
     free(edfhdr);
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -247,7 +247,7 @@ void UI_EDFDwindow::SelectFileButton()
     free(edfhdr);
     free(fileheader);
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -261,7 +261,7 @@ void UI_EDFDwindow::SelectFileButton()
     free(fileheader);
     free(readbuf);
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -295,7 +295,7 @@ void UI_EDFDwindow::SelectFileButton()
     free(fileheader);
     free(readbuf);
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -309,7 +309,7 @@ void UI_EDFDwindow::SelectFileButton()
     free(readbuf);
     fclose(inputfile);
     fclose(outputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -347,7 +347,7 @@ void UI_EDFDwindow::SelectFileButton()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         textEdit1->append("Aborted.\n");
 
@@ -366,7 +366,7 @@ void UI_EDFDwindow::SelectFileButton()
       free(readbuf);
       fclose(inputfile);
       fclose(outputfile);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -519,7 +519,7 @@ void UI_EDFDwindow::SelectFileButton()
         free(fileheader);
         free(readbuf);
         fclose(inputfile);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
 
@@ -533,7 +533,7 @@ void UI_EDFDwindow::SelectFileButton()
         free(readbuf);
         fclose(inputfile);
         fclose(outputfile);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -571,7 +571,7 @@ void UI_EDFDwindow::SelectFileButton()
       free(readbuf);
       fclose(inputfile);
       fclose(outputfile);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -668,7 +668,7 @@ void UI_EDFDwindow::SelectFileButton()
   progress.reset();
   textEdit1->append("Done\n");
 
-  pushButton1->setEnabled(TRUE);
+  pushButton1->setEnabled(true);
 }
 
 

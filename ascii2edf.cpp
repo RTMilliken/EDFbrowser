@@ -65,8 +65,8 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
   ascii2edfDialog->setMinimumSize(QSize(600, 440));
   ascii2edfDialog->setMaximumSize(QSize(600, 440));
   ascii2edfDialog->setWindowTitle("ASCII to EDF/BDF converter");
-  ascii2edfDialog->setModal(TRUE);
-  ascii2edfDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  ascii2edfDialog->setModal(true);
+  ascii2edfDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   SeparatorLabel = new QLabel(ascii2edfDialog);
   SeparatorLabel->setGeometry(QRect(20, 20, 140, 16));
@@ -110,7 +110,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
 
   edfButton = new QRadioButton("EDF (16-bit)");
   bdfButton = new QRadioButton("BDF (24-bit)");
-  edfButton->setChecked(TRUE);
+  edfButton->setChecked(true);
 
   vbox1 = new QVBoxLayout;
   vbox1->addWidget(edfButton);
@@ -156,7 +156,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
 
   autoPhysicalMaximumCheckbox = new QCheckBox(ascii2edfDialog);
   autoPhysicalMaximumCheckbox->setGeometry(QRect(560, 200, 20, 20));
-  autoPhysicalMaximumCheckbox->setTristate(FALSE);
+  autoPhysicalMaximumCheckbox->setTristate(false);
   autoPhysicalMaximumCheckbox->setCheckState(Qt::Checked);
 
   SignalsTablewidget = new QTableWidget(ascii2edfDialog);
@@ -176,7 +176,7 @@ UI_ASCII2EDFapp::UI_ASCII2EDFapp(char *recent_dir, char *save_dir)
   ((QLineEdit *)SignalsTablewidget->cellWidget(0, 1))->setMaxLength(16);
   SignalsTablewidget->setCellWidget(0, 2, new QLineEdit);
   ((QLineEdit *)SignalsTablewidget->cellWidget(0, 2))->setMaxLength(7);
-  ((QLineEdit *)SignalsTablewidget->cellWidget(0, 2))->setEnabled(FALSE);
+  ((QLineEdit *)SignalsTablewidget->cellWidget(0, 2))->setEnabled(false);
   SignalsTablewidget->setCellWidget(0, 3, new QLineEdit);
   ((QLineEdit *)SignalsTablewidget->cellWidget(0, 3))->setMaxLength(8);
   SignalsTablewidget->setCellWidget(0, 4, new QDoubleSpinBox);
@@ -234,7 +234,7 @@ void UI_ASCII2EDFapp::autoPhysicalMaximumCheckboxChanged(int state)
 
     for(i=0; i< columns; i++)
     {
-      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(FALSE);
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(false);
     }
   }
   else
@@ -243,7 +243,7 @@ void UI_ASCII2EDFapp::autoPhysicalMaximumCheckboxChanged(int state)
 
     for(i=0; i< columns; i++)
     {
-      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(TRUE);
+      ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(true);
     }
   }
 }
@@ -270,11 +270,11 @@ void UI_ASCII2EDFapp::numofcolumnschanged(int cnt)
       ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setMaxLength(7);
       if(autoPhysicalMaximum)
       {
-        ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(FALSE);
+        ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(false);
       }
       else
       {
-        ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(TRUE);
+        ((QLineEdit *)SignalsTablewidget->cellWidget(i, 2))->setEnabled(true);
       }
       SignalsTablewidget->setCellWidget(i, 3, new QLineEdit);
       ((QLineEdit *)SignalsTablewidget->cellWidget(i, 3))->setMaxLength(8);
@@ -336,9 +336,9 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
 
 
-  ascii2edfDialog->setEnabled(FALSE);
+  ascii2edfDialog->setEnabled(false);
 
-  if(edfButton->isChecked() == TRUE)
+  if(edfButton->isChecked() == true)
   {
     edf_format = 1;
   }
@@ -349,7 +349,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
   if(check_input())
   {
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -357,7 +357,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Please enter a subjectname.");
     messagewindow.exec();
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -365,7 +365,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Please enter a recording description.");
     messagewindow.exec();
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -373,7 +373,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
 
   if(!strcmp(path, ""))
   {
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -384,7 +384,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
     messagewindow.exec();
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -403,7 +403,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "File does not contain enough lines.");
       messagewindow.exec();
       fclose(inputfile);
-      ascii2edfDialog->setEnabled(TRUE);
+      ascii2edfDialog->setEnabled(true);
       return;
     }
 
@@ -430,7 +430,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "File does not contain enough lines.");
       messagewindow.exec();
       fclose(inputfile);
-      ascii2edfDialog->setEnabled(TRUE);
+      ascii2edfDialog->setEnabled(true);
       return;
     }
 
@@ -462,7 +462,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
           QMessageBox messagewindow(QMessageBox::Critical, "Error", "Number of columns does not match.");
           messagewindow.exec();
           fclose(inputfile);
-          ascii2edfDialog->setEnabled(TRUE);
+          ascii2edfDialog->setEnabled(true);
           return;
         }
 
@@ -478,7 +478,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many characters in a line.");
     messagewindow.exec();
     fclose(inputfile);
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -598,7 +598,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
           QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
           messagewindow.exec();
           fclose(inputfile);
-          ascii2edfDialog->setEnabled(TRUE);
+          ascii2edfDialog->setEnabled(true);
           return;
         }
 
@@ -641,7 +641,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
         messagewindow.exec();
         fclose(inputfile);
-        ascii2edfDialog->setEnabled(TRUE);
+        ascii2edfDialog->setEnabled(true);
         return;
       }
     }
@@ -704,7 +704,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   if(!strcmp(outputfilename, ""))
   {
     fclose(inputfile);
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -717,7 +717,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
     messagewindow.exec();
     fclose(inputfile);
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -770,7 +770,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
       messagewindow.exec();
       fclose(inputfile);
       fclose(outputfile);
-      ascii2edfDialog->setEnabled(TRUE);
+      ascii2edfDialog->setEnabled(true);
       return;
     }
   }
@@ -963,7 +963,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     messagewindow.exec();
     fclose(inputfile);
     fclose(outputfile);
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -1076,7 +1076,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
         fclose(inputfile);
         fclose(outputfile);
         free(buf);
-        ascii2edfDialog->setEnabled(TRUE);
+        ascii2edfDialog->setEnabled(true);
         return;
       }
 
@@ -1120,7 +1120,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
           fclose(inputfile);
           fclose(outputfile);
           free(buf);
-          ascii2edfDialog->setEnabled(TRUE);
+          ascii2edfDialog->setEnabled(true);
           return;
         }
 
@@ -1155,7 +1155,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
       fclose(inputfile);
       fclose(outputfile);
       free(buf);
-      ascii2edfDialog->setEnabled(TRUE);
+      ascii2edfDialog->setEnabled(true);
       return;
     }
   }
@@ -1173,7 +1173,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred when closing outputfile.");
     messagewindow.exec();
     fclose(inputfile);
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -1181,7 +1181,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred when closing inputfile.");
     messagewindow.exec();
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -1190,7 +1190,7 @@ void UI_ASCII2EDFapp::gobuttonpressed()
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
 
-  ascii2edfDialog->setEnabled(TRUE);
+  ascii2edfDialog->setEnabled(true);
 }
 
 
@@ -1205,11 +1205,11 @@ void UI_ASCII2EDFapp::savebuttonpressed()
   FILE *outputfile;
 
 
-  ascii2edfDialog->setEnabled(FALSE);
+  ascii2edfDialog->setEnabled(false);
 
   if(check_input())
   {
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -1225,7 +1225,7 @@ void UI_ASCII2EDFapp::savebuttonpressed()
 
   if(!strcmp(path, ""))
   {
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -1236,7 +1236,7 @@ void UI_ASCII2EDFapp::savebuttonpressed()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for writing.");
     messagewindow.exec();
-    ascii2edfDialog->setEnabled(TRUE);
+    ascii2edfDialog->setEnabled(true);
     return;
   }
 
@@ -1252,7 +1252,7 @@ void UI_ASCII2EDFapp::savebuttonpressed()
 
   fprintf(outputfile, "  <autophysicalmaximum>%i</autophysicalmaximum>\n", autoPhysicalMaximum);
 
-  if(edfButton->isChecked() == TRUE)
+  if(edfButton->isChecked() == true)
   {
     fprintf(outputfile, "  <edf_format>1</edf_format>\n");
   }
@@ -1316,7 +1316,7 @@ void UI_ASCII2EDFapp::savebuttonpressed()
 
   fclose(outputfile);
 
-  ascii2edfDialog->setEnabled(TRUE);
+  ascii2edfDialog->setEnabled(true);
 }
 
 
@@ -1493,11 +1493,11 @@ void UI_ASCII2EDFapp::loadbuttonpressed()
     }
     if(edf_format)
     {
-      edfButton->setChecked(TRUE);
+      edfButton->setChecked(true);
     }
     else
     {
-      bdfButton->setChecked(TRUE);
+      bdfButton->setChecked(true);
     }
     xml_go_up(xml_hdl);
   }

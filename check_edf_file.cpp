@@ -539,7 +539,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
   {
     if(edfhdr->datarecords<1)
     {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
       sprintf(txt_string, "Error, number of datarecords is %I64d, expected >0.\n"
                           "You can fix this problem with the header editor, check the manual for details.",
             edfhdr->datarecords);
@@ -1632,7 +1632,7 @@ struct edfhdrblock * EDFfileCheck::check_edf_file(FILE *inputfile, char *txt_str
 
     if(l_tmp != l_tmp2)
     {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
       sprintf(txt_string, "Error, filesize does not match with the calculated filesize based on the parameters\n"
                           "in the header. Filesize is %I64i and filesize according to header is %I64i.\n"
                           "You can fix this problem with the header editor, check the manual for details.",

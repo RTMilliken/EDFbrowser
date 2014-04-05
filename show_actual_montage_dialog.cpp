@@ -61,15 +61,15 @@ UI_ShowActualMontagewindow::UI_ShowActualMontagewindow(QWidget *w_parent)
   ShowMontageDialog->setMinimumSize(QSize(500, 300));
   ShowMontageDialog->resize(500, 440);
   ShowMontageDialog->setWindowTitle("Show montage");
-  ShowMontageDialog->setModal(TRUE);
-  ShowMontageDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  ShowMontageDialog->setModal(true);
+  ShowMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   tree = new QTreeView;
-  tree->setHeaderHidden(TRUE);
+  tree->setHeaderHidden(true);
   tree->setIndentation(30);
   tree->setSelectionMode(QAbstractItemView::NoSelection);
   tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
-  tree->setSortingEnabled(FALSE);
+  tree->setSortingEnabled(false);
   tree->setDragDropMode(QAbstractItemView::NoDragDrop);
 
   CloseButton = new QPushButton;

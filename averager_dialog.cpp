@@ -51,8 +51,8 @@ UI_AveragerWindow::UI_AveragerWindow(QWidget *w_parent, int annot_nr)
   averager_dialog->setMinimumSize(QSize(600, 400));
   averager_dialog->setMaximumSize(QSize(600, 400));
   averager_dialog->setWindowTitle("Average waveforms");
-  averager_dialog->setModal(TRUE);
-  averager_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  averager_dialog->setModal(true);
+  averager_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   annotLabel = new QLabel(averager_dialog);
   annotLabel->setGeometry(20, 20, 100, 25);
@@ -218,7 +218,7 @@ void UI_AveragerWindow::startButtonClicked()
   time1 = timeEdit1->time();
   time2 = timeEdit2->time();
 
-  if(time2.operator<=(time1) == TRUE)
+  if(time2.operator<=(time1) == true)
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Starttime is higher or equal to stoptime.");
     messagewindow.exec();
@@ -361,7 +361,7 @@ void UI_AveragerWindow::startButtonClicked()
 
             qApp->processEvents();
 
-            if(progress.wasCanceled() == TRUE)
+            if(progress.wasCanceled() == true)
             {
               free(avgbuf);
 

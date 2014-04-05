@@ -42,8 +42,10 @@
 #include <QFileDialog>
 #include <QCursor>
 #include <QStyle>
+#if QT_VERSION < 0x050000
 #include <QPlastiqueStyle>
 #include <QWindowsStyle>
+#endif
 #include <QProgressDialog>
 #include <QString>
 #include <QByteArray>

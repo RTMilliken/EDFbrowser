@@ -80,10 +80,10 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   flywheel_value = 1000;
 
   averager_curve_dialog = new QDialog;
-  averager_curve_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  averager_curve_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
   averager_curve_dialog->setMinimumSize(QSize(650, 480));
-  averager_curve_dialog->setSizeGripEnabled(TRUE);
-  averager_curve_dialog->setModal(FALSE);
+  averager_curve_dialog->setSizeGripEnabled(true);
+  averager_curve_dialog->setModal(false);
   averager_curve_dialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   averager_curve_dialog->setWindowIcon(QIcon(":/images/edf.png"));
 
@@ -100,7 +100,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   curve1->setH_label("sec");
   curve1->setLowerLabel("Time");
   curve1->setV_label(signalcomp->physdimension);
-  curve1->setDashBoardEnabled(FALSE);
+  curve1->setDashBoardEnabled(false);
   curve1->setMarker1Color(Qt::yellow);
   curve1->create_button("to EDF/BDF");
 
@@ -115,7 +115,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
   amplitudeSlider->setMinimum(1);
   amplitudeSlider->setMaximum(2000);
   amplitudeSlider->setValue(1100);
-  amplitudeSlider->setInvertedAppearance(TRUE);
+  amplitudeSlider->setInvertedAppearance(true);
   amplitudeSlider->setMinimumSize(15, 280);
 
   amplitudeLabel = new QLabel;
@@ -125,7 +125,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
 
   inversionCheckBox = new QCheckBox("Invert");
   inversionCheckBox->setMinimumSize(70, 25);
-  inversionCheckBox->setTristate(FALSE);
+  inversionCheckBox->setTristate(false);
   if(mainwindow->average_upsidedown == 1)
   {
     inversionCheckBox->setCheckState(Qt::Checked);
@@ -137,7 +137,7 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
 
   BWCheckBox = new QCheckBox("B/W");
   BWCheckBox->setMinimumSize(70, 25);
-  BWCheckBox->setTristate(FALSE);
+  BWCheckBox->setTristate(false);
   if(mainwindow->average_bw == 1)
   {
     BWCheckBox->setCheckState(Qt::Checked);
@@ -509,20 +509,20 @@ void UI_AverageCurveWindow::sliderMoved(int)
 
   dtmp2 = avg_mid_value - avg_peak_value;
 
-  if(inversionCheckBox->isChecked() == TRUE)
+  if(inversionCheckBox->isChecked() == true)
   {
-    curve1->setUpsidedownEnabled(TRUE);
+    curve1->setUpsidedownEnabled(true);
 
     mainwindow->average_upsidedown = 1;
   }
   else
   {
-    curve1->setUpsidedownEnabled(FALSE);
+    curve1->setUpsidedownEnabled(false);
 
     mainwindow->average_upsidedown = 0;
   }
 
-  if(BWCheckBox->isChecked() == TRUE)
+  if(BWCheckBox->isChecked() == true)
   {
     curve1->setSignalColor(Qt::black);
     curve1->setBackgroundColor(Qt::white);
@@ -583,18 +583,18 @@ void UI_AverageCurveWindow::sliderMoved(int)
 
     if((markerstep > startstep) && (markerstep < stopstep))
     {
-      curve1->setMarker1Enabled(TRUE);
+      curve1->setMarker1Enabled(true);
 
       curve1->setMarker1Position((((double)steps / (double)avg_trigger_position_ratio) - (double)startstep) / (double)spanstep);
     }
     else
     {
-      curve1->setMarker1Enabled(FALSE);
+      curve1->setMarker1Enabled(false);
     }
   }
   else
   {
-    curve1->setMarker1Enabled(FALSE);
+    curve1->setMarker1Enabled(false);
   }
 }
 

@@ -379,7 +379,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     ruler_moving = 0;
 
     use_move_events = 1;
-    setMouseTracking(TRUE);
+    setMouseTracking(true);
 
     mouse_old_x = m_x;
     mouse_old_y = m_y;
@@ -501,7 +501,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
     crosshair_1.moving = 0;
     crosshair_2.moving = 0;
     use_move_events = 0;
-    setMouseTracking(FALSE);
+    setMouseTracking(false);
 
     for(i=0; i<signalcomps; i++)
     {
@@ -517,7 +517,7 @@ void ViewCurve::mousePressEvent(QMouseEvent *press_event)
         original_screen_offset = signalcomp[i]->screen_offset;
         signalcomp[i]->hasgaintracking = 1;
         use_move_events = 1;
-        setMouseTracking(TRUE);
+        setMouseTracking(true);
         signal_nr = i;
 
         break;
@@ -597,7 +597,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
     crosshair_2.moving = 0;
     annot_marker_moving = 0;
     use_move_events = 0;
-    setMouseTracking(FALSE);
+    setMouseTracking(false);
 
     if(draw_zoom_rectangle)
     {
@@ -663,7 +663,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
       {
         signalcomp[i]->hasoffsettracking = 0;
         use_move_events = 0;
-        setMouseTracking(FALSE);
+        setMouseTracking(false);
         update();
       }
     }
@@ -678,7 +678,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
         if(pressed_on_label == (i + 1))
         {
           use_move_events = 0;
-          setMouseTracking(FALSE);
+          setMouseTracking(false);
           update();
 
           signal_nr = i;
@@ -698,7 +698,7 @@ void ViewCurve::mouseReleaseEvent(QMouseEvent *release_event)
       {
         signalcomp[i]->hasgaintracking = 0;
         use_move_events = 0;
-        setMouseTracking(FALSE);
+        setMouseTracking(false);
         update();
       }
     }
@@ -961,6 +961,7 @@ void ViewCurve::print_to_printer()
 }
 
 
+#if QT_VERSION < 0x050000
 void ViewCurve::print_to_postscript()
 {
   double height_factor;
@@ -1078,6 +1079,7 @@ void ViewCurve::print_to_postscript()
 
   drawCurve_stage_1();
 }
+#endif
 
 
 void ViewCurve::print_to_pdf()
@@ -1346,7 +1348,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     h = height();
 
     paintersfont = *mainwindow->myfont;
-    paintersfont.setBold(TRUE);
+    paintersfont.setBold(true);
     paintersfont.setWeight(QFont::Black);
     painter->setFont(paintersfont);
 
@@ -1357,15 +1359,15 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     w = w_width;
     h = w_height;
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
     printfont->setPixelSize((int)((double)w / 104.0));
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     printfont->setPixelSize((int)((double)w / 104.0));
 #endif
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
     printfont->setPixelSize((int)((double)w / 104.0));
 #endif
 
@@ -1882,7 +1884,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
 
   if(mainwindow->clip_to_pane)
   {
-    painter->setClipping(TRUE);
+    painter->setClipping(true);
 
     vertical_distance = h / (signalcomps + 1);
   }
@@ -1914,7 +1916,7 @@ void ViewCurve::drawCurve_stage_2(QPainter *painter, int w_width, int w_height, 
     }
   }
 
-  painter->setClipping(FALSE);
+  painter->setClipping(false);
 
   for(i=0; i<signalcomps; i++)
   {
@@ -3111,8 +3113,8 @@ void ViewCurve::exec_sidemenu(int signal_nr_intern)
   sidemenu->setMinimumSize(QSize(190, 460));
   sidemenu->setMaximumSize(QSize(190, 460));
   sidemenu->setWindowTitle("Signal");
-  sidemenu->setModal(TRUE);
-  sidemenu->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  sidemenu->setModal(true);
+  sidemenu->setAttribute(Qt::WA_DeleteOnClose, true);
 
   SidemenuLabel = new QLabel(sidemenu);
   SidemenuLabel->setGeometry(QRect(45, 5, 100, 20));
@@ -3854,7 +3856,7 @@ void ViewCurve::RulerButton()
   ruler_active = 0;
   ruler_moving = 0;
   use_move_events = 0;
-  setMouseTracking(FALSE);
+  setMouseTracking(false);
 
   for(i=0; i<mainwindow->signalcomps; i++)
   {
@@ -3931,7 +3933,7 @@ void ViewCurve::CrosshairButton()
     crosshair_2.value = 0.0;
     mainwindow->signalcomp[signal_nr]->hascursor1 = 1;
     use_move_events = 0;
-    setMouseTracking(TRUE);
+    setMouseTracking(true);
     crosshair_1.active = 1;
     crosshair_2.active = 0;
     crosshair_1.moving = 0;
@@ -3954,7 +3956,7 @@ void ViewCurve::CrosshairButton()
       crosshair_2.value = 0.0;
       mainwindow->signalcomp[signal_nr]->hascursor2 = 1;
       use_move_events = 0;
-      setMouseTracking(TRUE);
+      setMouseTracking(true);
       crosshair_2.active = 1;
       crosshair_1.moving = 0;
       crosshair_2.moving = 0;

@@ -94,8 +94,8 @@ UI_MANSCAN2EDFwindow::UI_MANSCAN2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(600, 480));
   myobjectDialog->setMaximumSize(QSize(600, 480));
   myobjectDialog->setWindowTitle("Manscan to EDF+ converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(QRect(20, 430, 100, 26));
@@ -108,7 +108,7 @@ UI_MANSCAN2EDFwindow::UI_MANSCAN2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1 = new QTextEdit(myobjectDialog);
   textEdit1->setGeometry(QRect(20, 20, 560, 380));
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textEdit1->setReadOnly(TRUE);
+  textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   sprintf(txt_string, "Manscan MICROAMPS binary data to EDF+ converter.\n");
   textEdit1->append(txt_string);
@@ -146,13 +146,13 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
   struct date_time_struct dtm_struct;
 
-  pushButton1->setEnabled(FALSE);
+  pushButton1->setEnabled(false);
 
   strcpy(header_filename, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "MBI files (*.mbi *.MBI)").toLocal8Bit().data());
 
   if(!strcmp(header_filename, ""))
   {
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -163,7 +163,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   {
     snprintf(txt_string, 2048, "Can not open file %s for reading.\n", header_filename);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -178,7 +178,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, filesize is too small.\n");
     fclose(header_inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -187,7 +187,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Malloc error (struct segment_prop_struct)");
     fclose(header_inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -212,7 +212,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Error, can not find or process item \"WordDataFile\".\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -221,7 +221,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Error, can not find or process item \"Channel gain\".\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -230,7 +230,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Error, can not find or process item \"Startdate\".\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -239,7 +239,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Error, can not find or process item \"SampleRate\".\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -248,7 +248,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Error, can not find or process item \"Filtersettings\".\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -257,7 +257,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Error, can not find or process item \"Filtersettings\".\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -266,7 +266,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Error, can not find or process item \"Starttime offset\".\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -275,7 +275,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Error, can not find or process item \"Events\".\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -322,7 +322,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       textEdit1->append("Malloc() error (buf)\n");
       fclose(header_inputfile);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -351,7 +351,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       fclose(header_inputfile);
       free(buf);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -364,7 +364,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       fclose(data_inputfile);
       free(buf);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -392,7 +392,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       fclose(data_inputfile);
       free(buf);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -406,7 +406,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -421,7 +421,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -436,7 +436,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -451,7 +451,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -479,7 +479,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
 
@@ -491,7 +491,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
 
@@ -503,7 +503,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -529,7 +529,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -541,7 +541,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -553,7 +553,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -587,7 +587,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -614,7 +614,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
         qApp->processEvents();
 
-        if(progress.wasCanceled() == TRUE)
+        if(progress.wasCanceled() == true)
         {
           textEdit1->append("Conversion aborted by user.\n");
           fclose(header_inputfile);
@@ -622,7 +622,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
           edfclose_file(hdl);
           free(buf);
           free(segment_properties);
-          pushButton1->setEnabled(TRUE);
+          pushButton1->setEnabled(true);
           return;
         }
       }
@@ -642,7 +642,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
             edfclose_file(hdl);
             free(buf);
             free(segment_properties);
-            pushButton1->setEnabled(TRUE);
+            pushButton1->setEnabled(true);
             return;
           }
           var.four[3] = tmp;
@@ -660,7 +660,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -675,7 +675,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -689,7 +689,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
         edfclose_file(hdl);
         free(buf);
         free(segment_properties);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -702,7 +702,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(segment_properties);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -723,7 +723,7 @@ void UI_MANSCAN2EDFwindow::SelectFileButton()
 
   textEdit1->append("Ready.\n");
 
-  pushButton1->setEnabled(TRUE);
+  pushButton1->setEnabled(true);
 }
 
 

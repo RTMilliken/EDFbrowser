@@ -122,7 +122,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   amplitudeSlider->setMinimum(1);
   amplitudeSlider->setMaximum(2000);
   amplitudeSlider->setValue(1000);
-  amplitudeSlider->setInvertedAppearance(TRUE);
+  amplitudeSlider->setInvertedAppearance(true);
   amplitudeSlider->setMinimumSize(15, 110);
 
   amplitudeLabel = new QLabel;
@@ -133,33 +133,33 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   sqrtButton = new QRadioButton;
   sqrtButton->setMinimumSize(50, 20);
   sqrtButton->setText("Amplitude");
-  sqrtButton->setAutoExclusive(FALSE);
+  sqrtButton->setAutoExclusive(false);
   if(mainwindow->spectrumdock_sqrt)
   {
-    sqrtButton->setChecked(TRUE);
+    sqrtButton->setChecked(true);
   }
   else
   {
-    sqrtButton->setChecked(FALSE);
+    sqrtButton->setChecked(false);
   }
 
   vlogButton = new QRadioButton;
   vlogButton->setMinimumSize(50, 20);
   vlogButton->setText("Log");
-  vlogButton->setAutoExclusive(FALSE);
+  vlogButton->setAutoExclusive(false);
   if(mainwindow->spectrumdock_vlog)
   {
-    vlogButton->setChecked(TRUE);
+    vlogButton->setChecked(true);
   }
   else
   {
-    vlogButton->setChecked(FALSE);
+    vlogButton->setChecked(false);
   }
 
   colorBarButton = new QRadioButton;
   colorBarButton->setMinimumSize(50, 20);
   colorBarButton->setText("Colorbar");
-  colorBarButton->setAutoExclusive(FALSE);
+  colorBarButton->setAutoExclusive(false);
 
   vlayout2 = new QVBoxLayout;
   vlayout2->setSpacing(10);
@@ -223,7 +223,7 @@ UI_SpectrumDockWindow::UI_SpectrumDockWindow(QWidget *w_parent)
   SpectrumDialog->setLayout(vlayout1);
 
   t1 = new QTimer(this);
-  t1->setSingleShot(TRUE);
+  t1->setSingleShot(true);
 
   QObject::connect(t1,              SIGNAL(timeout()),              this, SLOT(update_curve()));
   QObject::connect(amplitudeSlider, SIGNAL(valueChanged(int)),      this, SLOT(sliderMoved(int)));
@@ -312,7 +312,7 @@ void UI_SpectrumDockWindow::print_to_txt()
 
 void UI_SpectrumDockWindow::colorBarButtonClicked(bool value)
 {
-  if(value == TRUE)
+  if(value == true)
   {
     curve1->enableSpectrumColors(spectrum_color);
   }
@@ -327,7 +327,7 @@ void UI_SpectrumDockWindow::sqrtButtonClicked(bool value)
 {
   char str[600];
 
-  if(value == FALSE)
+  if(value == false)
   {
     mainwindow->spectrumdock_sqrt = 0;
 
@@ -374,7 +374,7 @@ void UI_SpectrumDockWindow::vlogButtonClicked(bool value)
 {
   char str[600];
 
-  if(value == FALSE)
+  if(value == false)
   {
     mainwindow->spectrumdock_vlog = 0;
 
@@ -631,7 +631,7 @@ void UI_SpectrumDockWindow::update_curve()
 
   busy = 1;
 
-  curve1->setUpdatesEnabled(FALSE);
+  curve1->setUpdatesEnabled(false);
 
   samples = signalcomp->samples_on_screen;
 
@@ -644,7 +644,7 @@ void UI_SpectrumDockWindow::update_curve()
 
   if((samples < 10) || (viewbuf == NULL))
   {
-    curve1->setUpdatesEnabled(TRUE);
+    curve1->setUpdatesEnabled(true);
 
     busy = 0;
 
@@ -1132,7 +1132,7 @@ void UI_SpectrumDockWindow::update_curve()
 
   sliderMoved(0);
 
-  curve1->setUpdatesEnabled(TRUE);
+  curve1->setUpdatesEnabled(true);
 
   busy = 0;
 }

@@ -60,8 +60,8 @@ UI_FINO2EDFwindow::UI_FINO2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(600, 240));
   myobjectDialog->setMaximumSize(QSize(600, 240));
   myobjectDialog->setWindowTitle("Finometer to EDF converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   PatientnameLabel = new QLabel(myobjectDialog);
   PatientnameLabel->setGeometry(QRect(20, 20, 140, 16));
@@ -152,13 +152,13 @@ void UI_FINO2EDFwindow::SelectFileButton()
     old_value[j] = 0.0;
   }
 
-  enable_widgets(FALSE);
+  enable_widgets(false);
 
   if(!(strlen(PatientnameLineEdit->text().toLatin1().data())))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Please enter a subjectname.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -166,7 +166,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Please enter a recordingdescription.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -174,7 +174,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
 
   if(!strcmp(path, ""))
   {
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -186,7 +186,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     snprintf(txt_string, 2048, "Can not open file %s for reading.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -199,7 +199,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading the inputfile.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -208,7 +208,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown data in file (1).");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -221,7 +221,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (2).");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -233,7 +233,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading inputfile (3).");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -242,7 +242,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown data in file (4).");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -259,7 +259,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (5).");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -280,7 +280,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (6).");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -296,7 +296,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many labels/signals (7).");
         messagewindow.exec();
         fclose(inputfile);
-        enable_widgets(TRUE);
+        enable_widgets(true);
         return;
       }
 
@@ -470,7 +470,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
         messagewindow.exec();
         fclose(inputfile);
-        enable_widgets(TRUE);
+        enable_widgets(true);
         return;
       }
 
@@ -492,7 +492,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "There are no labels/signals.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -541,7 +541,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
 
   if(!strcmp(path, ""))
   {
-    enable_widgets(TRUE);
+    enable_widgets(true);
     fclose(inputfile);
     return;
   }
@@ -554,7 +554,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
     snprintf(txt_string, 2048, "Can not open file %s for writing.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     fclose(inputfile);
     return;
   }
@@ -633,7 +633,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
       messagewindow.exec();
       fclose(inputfile);
       fclose(outputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -715,7 +715,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
           messagewindow.exec();
           fclose(inputfile);
           fclose(outputfile);
-          enable_widgets(TRUE);
+          enable_widgets(true);
           return;
         }
 
@@ -729,7 +729,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
           messagewindow.exec();
           fclose(inputfile);
           fclose(outputfile);
-          enable_widgets(TRUE);
+          enable_widgets(true);
           return;
         }
 
@@ -785,7 +785,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
       messagewindow.exec();
       fclose(inputfile);
       fclose(outputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
   }
@@ -800,7 +800,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while closing outputfile.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     fclose(inputfile);
     return;
   }
@@ -816,7 +816,7 @@ void UI_FINO2EDFwindow::SelectFileButton()
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
 
-  enable_widgets(TRUE);
+  enable_widgets(true);
 }
 
 

@@ -40,24 +40,27 @@
 #include <QFont>
 #include <QToolBar>
 #include <QSlider>
+#include <QStyle>
+#if QT_VERSION < 0x050000
 #include <QPlastiqueStyle>
 #include <QGtkStyle>
 #include <QWindowsStyle>
+#endif
 #include <QtGlobal>
 #include <QCloseEvent>
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
   #include <sys/types.h>
   #include <sys/stat.h>
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   #include <QMacStyle>
   #include <sys/types.h>
   #include <sys/stat.h>
 #endif
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   #include <windows.h>
   #include <io.h>
   #ifndef CSIDL_COMMON_APPDATA
@@ -417,7 +420,7 @@ private:
   void read_recent_file_settings();
   void read_general_settings();
   void write_settings();
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   QString specialFolder(int);
 #endif
   long long check_edf_file_datarecords(struct edfhdrblock *);

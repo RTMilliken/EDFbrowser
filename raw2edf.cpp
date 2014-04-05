@@ -65,8 +65,8 @@ UI_RAW2EDFapp::UI_RAW2EDFapp(struct raw2edf_var_struct *raw2edf_var_p, char *rec
   raw2edfDialog->setMinimumSize(600, 480);
   raw2edfDialog->setMaximumSize(600, 480);
   raw2edfDialog->setWindowTitle("Binary/raw data to EDF converter");
-  raw2edfDialog->setModal(TRUE);
-  raw2edfDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  raw2edfDialog->setModal(true);
+  raw2edfDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   SamplefreqLabel = new QLabel(raw2edfDialog);
   SamplefreqLabel->setGeometry(20, 20, 140, 20);

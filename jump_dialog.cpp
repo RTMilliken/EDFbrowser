@@ -45,8 +45,8 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
   jump_dialog->setMinimumSize(QSize(435, 200));
   jump_dialog->setMaximumSize(QSize(435, 200));
   jump_dialog->setWindowTitle("Jump to");
-  jump_dialog->setModal(TRUE);
-  jump_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  jump_dialog->setModal(true);
+  jump_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   label1 = new QLabel(jump_dialog);
   label1->setGeometry(QRect(10, 10, 155, 25));
@@ -55,24 +55,24 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
   daybox1 = new QSpinBox(jump_dialog);
   daybox1->setGeometry(QRect(10, 45, 45, 25));
   daybox1->setRange(0, 30);
-  daybox1->setEnabled(FALSE);
+  daybox1->setEnabled(false);
 
   daybox2 = new QSpinBox(jump_dialog);
   daybox2->setGeometry(QRect(10, 80, 45, 25));
   daybox2->setRange(0, 30);
-  daybox2->setEnabled(FALSE);
+  daybox2->setEnabled(false);
 
   timeEdit1 = new QTimeEdit(jump_dialog);
   timeEdit1->setGeometry(QRect(65, 45, 110, 25));
   timeEdit1->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit1->setMinimumTime(QTime(0, 0, 0, 0));
-  timeEdit1->setEnabled(FALSE);
+  timeEdit1->setEnabled(false);
 
   timeEdit2 = new QTimeEdit(jump_dialog);
   timeEdit2->setGeometry(QRect(65, 80, 110, 25));
   timeEdit2->setDisplayFormat("hh:mm:ss.zzz");
   timeEdit2->setMinimumTime(QTime(0, 0, 0, 0));
-  timeEdit2->setEnabled(FALSE);
+  timeEdit2->setEnabled(false);
 
   label2 = new QLabel("Offset from start of recording", jump_dialog);
   label2->setGeometry(QRect(185, 45, 250, 25));
@@ -83,7 +83,7 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
   jumpButton = new QPushButton(jump_dialog);
   jumpButton->setGeometry(QRect(10, 165, 100, 25));
   jumpButton->setText("Jump");
-  jumpButton->setEnabled(FALSE);
+  jumpButton->setEnabled(false);
 
   CloseButton = new QPushButton(jump_dialog);
   CloseButton->setGeometry(QRect(325, 165, 100, 25));
@@ -91,10 +91,10 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
 
   if(mainwindow->files_open)
   {
-    daybox1->setEnabled(TRUE);
-    daybox2->setEnabled(TRUE);
-    timeEdit1->setEnabled(TRUE);
-    timeEdit2->setEnabled(TRUE);
+    daybox1->setEnabled(true);
+    daybox2->setEnabled(true);
+    timeEdit1->setEnabled(true);
+    timeEdit2->setEnabled(true);
 
     starttime = mainwindow->edfheaderlist[mainwindow->sel_viewtime]->l_starttime
                 + mainwindow->edfheaderlist[mainwindow->sel_viewtime]->starttime_offset;
@@ -110,7 +110,7 @@ UI_JumpMenuDialog::UI_JumpMenuDialog(QWidget *w_parent)
     recording_duration = mainwindow->edfheaderlist[0]->datarecords * mainwindow->edfheaderlist[0]->long_data_record_duration;
     recording_duration /= (TIME_DIMENSION / 1000LL);
 
-    jumpButton->setEnabled(TRUE);
+    jumpButton->setEnabled(true);
   }
 
   QObject::connect(CloseButton, SIGNAL(clicked()),                  jump_dialog, SLOT(close()));

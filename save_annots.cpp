@@ -445,7 +445,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         free(readbuf);
         free(annot_buf);
@@ -484,7 +484,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
       }
     }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
     switch(timestamp_decimals)
     {
       case 0 : p = snprintf(annot_buf, 16, "+%I64d", time / TIME_DIMENSION);
@@ -537,7 +537,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
         {
           if(annot->onset<0)
           {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
             p += snprintf(annot_buf + p, 20, "-%I64d.%07I64d", -(annot->onset / TIME_DIMENSION), -(annot->onset % TIME_DIMENSION));
 #else
             p += snprintf(annot_buf + p, 20, "-%lli.%07lli", -(annot->onset / TIME_DIMENSION), -(annot->onset % TIME_DIMENSION));
@@ -545,7 +545,7 @@ int save_annotations(UI_Mainwindow *mainwindow, FILE *outputfile, struct edfhdrb
           }
           else
           {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
             p += snprintf(annot_buf + p, 20, "+%I64d.%07I64d", annot->onset / TIME_DIMENSION, annot->onset % TIME_DIMENSION);
 #else
             p += snprintf(annot_buf + p, 20, "+%lli.%07lli", annot->onset / TIME_DIMENSION, annot->onset % TIME_DIMENSION);

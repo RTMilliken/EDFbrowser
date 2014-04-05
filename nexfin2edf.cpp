@@ -59,8 +59,8 @@ UI_NEXFIN2EDFwindow::UI_NEXFIN2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(600, 280));
   myobjectDialog->setMaximumSize(QSize(600, 280));
   myobjectDialog->setWindowTitle("Nexfin to EDF converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   PatientnameLabel = new QLabel(myobjectDialog);
   PatientnameLabel->setGeometry(QRect(20, 20, 140, 16));
@@ -99,7 +99,7 @@ UI_NEXFIN2EDFwindow::UI_NEXFIN2EDFwindow(char *recent_dir, char *save_dir)
   radio100button = new QRadioButton(myobjectDialog);
   radio100button->setGeometry(QRect(160, 130, 200, 20));
   radio100button->setText("Beat-to-beat data");
-  radio100button->setChecked(TRUE);
+  radio100button->setChecked(true);
 
   radio103button = new QRadioButton(myobjectDialog);
   radio103button->setGeometry(QRect(160, 160, 200, 20));
@@ -114,7 +114,7 @@ UI_NEXFIN2EDFwindow::UI_NEXFIN2EDFwindow(char *recent_dir, char *save_dir)
   analoginputscombobox->addItem("1 input");
   analoginputscombobox->addItem("4 inputs");
   analoginputscombobox->setCurrentIndex(1);
-  analoginputscombobox->setEnabled(FALSE);
+  analoginputscombobox->setEnabled(false);
 
   QObject::connect(pushButton1,    SIGNAL(clicked()),     this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2,    SIGNAL(clicked()),     myobjectDialog, SLOT(close()));
@@ -168,17 +168,17 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
        } var;
 
 
-  if(radio100button->isChecked()==TRUE)
+  if(radio100button->isChecked()==true)
   {
     file_type = 100;
   }
 
-  if(radio103button->isChecked()==TRUE)
+  if(radio103button->isChecked()==true)
   {
     file_type = 103;
   }
 
-  if(radio032button->isChecked()==TRUE)
+  if(radio032button->isChecked()==true)
   {
     file_type = 32;
   }
@@ -188,13 +188,13 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
     old_value[j] = 0.0;
   }
 
-  enable_widgets(FALSE);
+  enable_widgets(false);
 
   if(!(strlen(PatientnameLineEdit->text().toLatin1().data())))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Please enter a subject name.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -202,7 +202,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Please enter a recordingdescription.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -223,7 +223,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
   if(!strcmp(path, ""))
   {
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -235,7 +235,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
     snprintf(txt_string, 2048, "Can not open file %s for reading.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", QString::fromLocal8Bit(txt_string));
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -250,7 +250,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not read from file.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -259,7 +259,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Unknown data in file (1).");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -276,7 +276,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (5).");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -297,7 +297,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Reached end of file unexpectedly (6).");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -313,7 +313,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
         QMessageBox messagewindow(QMessageBox::Critical, "Error", "Too many labels/signals (7).");
         messagewindow.exec();
         fclose(inputfile);
-        enable_widgets(TRUE);
+        enable_widgets(true);
         return;
       }
 
@@ -397,7 +397,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
         QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
         messagewindow.exec();
         fclose(inputfile);
-        enable_widgets(TRUE);
+        enable_widgets(true);
         return;
       }
 
@@ -419,7 +419,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "There are no labels/signals.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -487,7 +487,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
   if(!strcmp(path, ""))
   {
-    enable_widgets(TRUE);
+    enable_widgets(true);
     fclose(inputfile);
     return;
   }
@@ -500,7 +500,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
     snprintf(txt_string, 2048, "Can not open file %s for writing.", path);
     QMessageBox messagewindow(QMessageBox::Critical, "Error", txt_string);
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     fclose(inputfile);
     return;
   }
@@ -689,7 +689,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
       messagewindow.exec();
       fclose(inputfile);
       fclose(outputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -771,7 +771,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
           messagewindow.exec();
           fclose(inputfile);
           fclose(outputfile);
-          enable_widgets(TRUE);
+          enable_widgets(true);
           return;
         }
 
@@ -785,7 +785,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
           messagewindow.exec();
           fclose(inputfile);
           fclose(outputfile);
-          enable_widgets(TRUE);
+          enable_widgets(true);
           return;
         }
 
@@ -841,7 +841,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
       messagewindow.exec();
       fclose(inputfile);
       fclose(outputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
   }
@@ -879,7 +879,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
           messagewindow.exec();
           fclose(inputfile);
           fclose(outputfile);
-          enable_widgets(TRUE);
+          enable_widgets(true);
           return;
         }
         fputc(temp, outputfile);
@@ -906,7 +906,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
           messagewindow.exec();
           fclose(inputfile);
           fclose(outputfile);
-          enable_widgets(TRUE);
+          enable_widgets(true);
           return;
         }
         fputc(temp, outputfile);
@@ -918,7 +918,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
 
   fseeko(outputfile, 236LL, SEEK_SET);
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   fprintf(outputfile, "%-8I64d", datarecords);
 #else
   fprintf(outputfile, "%-8lli", datarecords);
@@ -928,7 +928,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while closing outputfile.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     fclose(inputfile);
     return;
   }
@@ -944,7 +944,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   messagewindow.setIconPixmap(QPixmap(":/images/ok.png"));
   messagewindow.exec();
 
-  enable_widgets(TRUE);
+  enable_widgets(true);
 }
 
 
@@ -961,13 +961,13 @@ void UI_NEXFIN2EDFwindow::enable_widgets(bool toggle)
 
 void UI_NEXFIN2EDFwindow::radiobuttonchecked(bool checked)
 {
-  if(checked==TRUE)
+  if(checked==true)
   {
-    analoginputscombobox->setEnabled(TRUE);
+    analoginputscombobox->setEnabled(true);
   }
   else
   {
-    analoginputscombobox->setEnabled(FALSE);
+    analoginputscombobox->setEnabled(false);
   }
 }
 

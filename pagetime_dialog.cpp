@@ -45,8 +45,8 @@ UI_Userdefined_timepage_Dialog::UI_Userdefined_timepage_Dialog(QWidget *w_parent
   set_diplaytime_dialog->setMinimumSize(QSize(335, 200));
   set_diplaytime_dialog->setMaximumSize(QSize(335, 200));
   set_diplaytime_dialog->setWindowTitle("Set timescale");
-  set_diplaytime_dialog->setModal(TRUE);
-  set_diplaytime_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  set_diplaytime_dialog->setModal(true);
+  set_diplaytime_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   label1 = new QLabel(set_diplaytime_dialog);
   label1->setGeometry(QRect(70, 25, 110, 25));

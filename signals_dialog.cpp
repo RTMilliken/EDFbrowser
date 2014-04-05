@@ -46,8 +46,8 @@ UI_Signalswindow::UI_Signalswindow(QWidget *w_parent)
   SignalsDialog->setMinimumSize(800, 500);
   SignalsDialog->setMaximumSize(800, 500);
   SignalsDialog->setWindowTitle("Signals");
-  SignalsDialog->setModal(TRUE);
-  SignalsDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  SignalsDialog->setModal(true);
+  SignalsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   filelist = new QListWidget(SignalsDialog);
   filelist->setGeometry(10, 10, 780, 75);
@@ -748,7 +748,7 @@ void UI_Signalswindow::SelectAllButtonClicked()
   for(i=0; i<row; i++)
   {
     item = signallist->item(i);
-    item->setSelected(TRUE);
+    item->setSelected(true);
   }
 }
 

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
   QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 
   QTimer t1;
-  t1.setSingleShot(TRUE);
+  t1.setSingleShot(true);
   QObject::connect(&t1, SIGNAL(timeout()), &splash, SLOT(close()));
 
   splash.show();

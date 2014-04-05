@@ -60,8 +60,8 @@ UI_LoadMontagewindow::UI_LoadMontagewindow(QWidget *w_parent, char *path)
   LoadMontageDialog->setMinimumSize(QSize(800, 180));
   LoadMontageDialog->setMaximumSize(QSize(800, 180));
   LoadMontageDialog->setWindowTitle("Load montage");
-  LoadMontageDialog->setModal(TRUE);
-  LoadMontageDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  LoadMontageDialog->setModal(true);
+  LoadMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   label1 = new QLabel(LoadMontageDialog);
   label1->setGeometry(QRect(10, 10, 780, 25));

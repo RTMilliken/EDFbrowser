@@ -65,8 +65,8 @@ UI_SCPECG2EDFwindow::UI_SCPECG2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(600, 480));
   myobjectDialog->setMaximumSize(QSize(600, 480));
   myobjectDialog->setWindowTitle("SCP ECG to EDF+ converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(QRect(20, 430, 100, 26));
@@ -79,7 +79,7 @@ UI_SCPECG2EDFwindow::UI_SCPECG2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1 = new QTextEdit(myobjectDialog);
   textEdit1->setGeometry(QRect(20, 20, 560, 380));
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textEdit1->setReadOnly(TRUE);
+  textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   sprintf(txt_string, "SCP ECG to EDF+ converter.\n");
   textEdit1->append(txt_string);
@@ -120,7 +120,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
          unsigned char four[8];
        } var;
 
-  pushButton1->setEnabled(FALSE);
+  pushButton1->setEnabled(false);
 
   for(i=0; i<256; i++)
   {
@@ -132,7 +132,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   if(!strcmp(input_filename, ""))
   {
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -143,7 +143,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     snprintf(txt_string, 2048, "Can not open file %s for reading.\n", input_filename);
     textEdit1->append(QString::fromLocal8Bit(txt_string));
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -158,7 +158,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, filesize is too small.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -170,7 +170,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     textEdit1->append("A read-error occurred (1)\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -178,7 +178,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Error, filesize does not match with header.\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -187,7 +187,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Malloc error (block 1)\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -198,7 +198,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("A read-error occurred (2)\n");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -206,7 +206,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -216,7 +216,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -225,7 +225,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("Error, reserved field of section header 0 does not contain string \"SCPECG\".\n");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -248,7 +248,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -259,7 +259,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("A read-error occurred\n");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -276,7 +276,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("File contains bimodal compressed data which is not supported by this converter.\n ");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -287,7 +287,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("A read-error occurred (40)\n");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -298,7 +298,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("Error, number of signals is less than one.\n ");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -307,7 +307,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("Error, number of signals is more than 256.\n ");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -316,7 +316,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("Reference beat subtraction used for compression which is not supported by this converter.\n ");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -325,7 +325,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("Leads are not simultaneously recorded which is not supported by this converter. (1)\n ");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -343,7 +343,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("A read-error occurred (30)\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -352,7 +352,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("A read-error occurred (31)\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -361,7 +361,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("A read-error occurred (32)\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
   }
@@ -380,7 +380,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
         textEdit1->append("Error, leads are not simultaneously recorded. (2)\n");
         fclose(inputfile);
         free(block);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
 
@@ -389,7 +389,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
         textEdit1->append("Error, leads are not simultaneously recorded. (3)\n");
         fclose(inputfile);
         free(block);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -402,7 +402,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("Error, start sample number in section 3 is less than 1.\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -411,7 +411,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("Error (56) (lp[i].end <= lp[i].start)\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -420,7 +420,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("Error (57) (lp[i].start != 1)\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -431,7 +431,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("Error, recording length is less than one second.\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -449,7 +449,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("A read-error occurred (41)\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -466,7 +466,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
         textEdit1->append("Error, lead samples is less than lead bytes.\n");
         fclose(inputfile);
         free(block);
-        pushButton1->setEnabled(TRUE);
+        pushButton1->setEnabled(true);
         return;
       }
     }
@@ -477,7 +477,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("Error, total databytes is more than section size.\n");
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -492,7 +492,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("A read-error occurred (50)\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -512,7 +512,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       textEdit1->append("Aborted, this converter does not support customized Huffmantables.\n");
       fclose(inputfile);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
   }
@@ -525,7 +525,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     fclose(inputfile);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -571,7 +571,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
   {
     textEdit1->append("Malloc error (buf)\n");
     fclose(inputfile);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -588,7 +588,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     textEdit1->append("Malloc error (block 3)\n");
     fclose(inputfile);
     free(buf);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -600,7 +600,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     fclose(inputfile);
     free(buf);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -625,7 +625,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
           fclose(inputfile);
           free(buf);
           free(block);
-          pushButton1->setEnabled(TRUE);
+          pushButton1->setEnabled(true);
           return;
         }
 
@@ -768,7 +768,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     fclose(inputfile);
     free(buf);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -781,7 +781,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -792,7 +792,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -803,7 +803,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -816,7 +816,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -827,7 +827,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -838,7 +838,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
 
@@ -849,7 +849,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
   }
@@ -866,7 +866,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
     edfclose_file(hdl);
     free(buf);
     free(block);
-    pushButton1->setEnabled(TRUE);
+    pushButton1->setEnabled(true);
     return;
   }
 
@@ -969,7 +969,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
       edfclose_file(hdl);
       free(buf);
       free(block);
-      pushButton1->setEnabled(TRUE);
+      pushButton1->setEnabled(true);
       return;
     }
   }
@@ -983,7 +983,7 @@ void UI_SCPECG2EDFwindow::SelectFileButton()
 
   textEdit1->append("Done.\n");
 
-  pushButton1->setEnabled(TRUE);
+  pushButton1->setEnabled(true);
 }
 
 

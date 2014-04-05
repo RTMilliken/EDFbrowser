@@ -54,17 +54,17 @@ UI_ViewMontagewindow::UI_ViewMontagewindow(QWidget *w_parent)
   ViewMontageDialog->setMinimumSize(QSize(500, 300));
   ViewMontageDialog->resize(500, 440);
   ViewMontageDialog->setWindowTitle("View montage");
-  ViewMontageDialog->setModal(TRUE);
-  ViewMontageDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  ViewMontageDialog->setModal(true);
+  ViewMontageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   t_model = new QStandardItemModel(this);
 
   tree = new QTreeView;
-  tree->setHeaderHidden(TRUE);
+  tree->setHeaderHidden(true);
   tree->setIndentation(30);
   tree->setSelectionMode(QAbstractItemView::NoSelection);
   tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
-  tree->setSortingEnabled(FALSE);
+  tree->setSortingEnabled(false);
   tree->setDragDropMode(QAbstractItemView::NoDragDrop);
   tree->setModel(t_model);
 

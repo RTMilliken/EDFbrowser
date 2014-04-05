@@ -91,8 +91,8 @@ UI_UNISENS2EDFwindow::UI_UNISENS2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(600, 480));
   myobjectDialog->setMaximumSize(QSize(600, 480));
   myobjectDialog->setWindowTitle("Unisens to EDF+ converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   pushButton1 = new QPushButton(myobjectDialog);
   pushButton1->setGeometry(QRect(20, 430, 100, 26));
@@ -105,7 +105,7 @@ UI_UNISENS2EDFwindow::UI_UNISENS2EDFwindow(char *recent_dir, char *save_dir)
   textEdit1 = new QTextEdit(myobjectDialog);
   textEdit1->setGeometry(QRect(20, 20, 560, 380));
   textEdit1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  textEdit1->setReadOnly(TRUE);
+  textEdit1->setReadOnly(true);
   textEdit1->setLineWrapMode(QTextEdit::NoWrap);
   sprintf(txt_string, "Unisens to EDF+ converter.\n");
   textEdit1->append(txt_string);
@@ -1209,7 +1209,7 @@ void UI_UNISENS2EDFwindow::SelectFileButton()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         break;
       }
@@ -1794,7 +1794,7 @@ int UI_UNISENS2EDFwindow::get_events_from_csv_files(int max_files, int edf_hdl, 
 
         qApp->processEvents();
 
-        if(progress.wasCanceled() == TRUE)
+        if(progress.wasCanceled() == true)
         {
           fclose(csvfile);
 

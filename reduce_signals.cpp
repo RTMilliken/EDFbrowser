@@ -61,8 +61,8 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   myobjectDialog->setMinimumSize(665, 526);
   myobjectDialog->setMaximumSize(665, 526);
   myobjectDialog->setWindowTitle("Reduce signals and/or duration");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   label1 = new QLabel(myobjectDialog);
   label1->setGeometry(20, 20, 635, 25);
@@ -70,47 +70,47 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   label2 = new QLabel(myobjectDialog);
   label2->setGeometry(435, 307, 100, 25);
   label2->setText("from datarecord");
-  label2->setEnabled(FALSE);
+  label2->setEnabled(false);
 
   label3 = new QLabel(myobjectDialog);
   label3->setGeometry(435, 372, 100, 25);
   label3->setText("to datarecord");
-  label3->setEnabled(FALSE);
+  label3->setEnabled(false);
 
   label4 = new QLabel(myobjectDialog);
   label4->setGeometry(555, 332, 100, 25);
-  label4->setEnabled(FALSE);
+  label4->setEnabled(false);
 
   label5 = new QLabel(myobjectDialog);
   label5->setGeometry(555, 397, 100, 25);
-  label5->setEnabled(FALSE);
+  label5->setEnabled(false);
 
   radioButton1 = new QRadioButton("whole duration", myobjectDialog);
   radioButton1->setGeometry(435, 247, 100, 25);
-  radioButton1->setChecked(TRUE);
-  radioButton1->setEnabled(FALSE);
+  radioButton1->setChecked(true);
+  radioButton1->setEnabled(false);
 
   radioButton2 = new QRadioButton("selection", myobjectDialog);
   radioButton2->setGeometry(435, 272, 100, 25);
-  radioButton2->setEnabled(FALSE);
+  radioButton2->setEnabled(false);
 
   spinBox1 = new QSpinBox(myobjectDialog);
   spinBox1->setGeometry(435, 332, 100, 25);
   spinBox1->setRange(1, 2147483647);
   spinBox1->setValue(1);
-  spinBox1->setEnabled(FALSE);
+  spinBox1->setEnabled(false);
 
   spinBox2 = new QSpinBox(myobjectDialog);
   spinBox2->setGeometry(435, 397, 100, 25);
   spinBox2->setRange(1, 2147483647);
   spinBox2->setValue(2147483647);
-  spinBox2->setEnabled(FALSE);
+  spinBox2->setEnabled(false);
 
   spinBox3 = new QSpinBox(myobjectDialog);
   spinBox3->setGeometry(545, 170, 100, 25);
   spinBox3->setRange(1, 100000);
   spinBox3->setValue(1);
-  spinBox3->setEnabled(FALSE);
+  spinBox3->setEnabled(false);
 
   SignalsTablewidget = new QTableWidget(myobjectDialog);
   SignalsTablewidget->setGeometry(20, 66, 355, 380);
@@ -135,22 +135,22 @@ UI_ReduceSignalsWindow::UI_ReduceSignalsWindow(QWidget *w_parent)
   pushButton3 = new QPushButton(myobjectDialog);
   pushButton3->setGeometry(200, 476, 100, 25);
   pushButton3->setText("Reduce");
-  pushButton3->setEnabled(FALSE);
+  pushButton3->setEnabled(false);
 
   pushButton4 = new QPushButton(myobjectDialog);
   pushButton4->setGeometry(395, 66, 140, 25);
   pushButton4->setText("Select all signals");
-  pushButton4->setEnabled(FALSE);
+  pushButton4->setEnabled(false);
 
   pushButton5 = new QPushButton(myobjectDialog);
   pushButton5->setGeometry(395, 118, 140, 25);
   pushButton5->setText("Deselect all signals");
-  pushButton5->setEnabled(FALSE);
+  pushButton5->setEnabled(false);
 
   pushButton6 = new QPushButton(myobjectDialog);
   pushButton6->setGeometry(395, 170, 140, 25);
   pushButton6->setText("Set samplerate divider:");
-  pushButton6->setEnabled(FALSE);
+  pushButton6->setEnabled(false);
 
   QObject::connect(pushButton1,    SIGNAL(clicked()),         this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2,    SIGNAL(clicked()),         myobjectDialog, SLOT(close()));
@@ -255,14 +255,14 @@ void UI_ReduceSignalsWindow::radioButton1Toggled(bool checked)
 
   char scratchpad[256];
 
-  if(checked == TRUE)
+  if(checked == true)
   {
-    spinBox1->setEnabled(FALSE);
-    spinBox2->setEnabled(FALSE);
-    label2->setEnabled(FALSE);
-    label3->setEnabled(FALSE);
-    label4->setEnabled(FALSE);
-    label5->setEnabled(FALSE);
+    spinBox1->setEnabled(false);
+    spinBox2->setEnabled(false);
+    label2->setEnabled(false);
+    label3->setEnabled(false);
+    label4->setEnabled(false);
+    label5->setEnabled(false);
 
     if(edfhdr == NULL)
     {
@@ -299,14 +299,14 @@ void UI_ReduceSignalsWindow::radioButton1Toggled(bool checked)
 
 void UI_ReduceSignalsWindow::radioButton2Toggled(bool checked)
 {
-  if(checked == TRUE)
+  if(checked == true)
   {
-    spinBox1->setEnabled(TRUE);
-    spinBox2->setEnabled(TRUE);
-    label2->setEnabled(TRUE);
-    label3->setEnabled(TRUE);
-    label4->setEnabled(TRUE);
-    label5->setEnabled(TRUE);
+    spinBox1->setEnabled(true);
+    spinBox2->setEnabled(true);
+    label2->setEnabled(true);
+    label3->setEnabled(true);
+    label4->setEnabled(true);
+    label5->setEnabled(true);
   }
 }
 
@@ -414,20 +414,20 @@ void UI_ReduceSignalsWindow::SelectFileButton()
 
   file_num = -1;
 
-  pushButton3->setEnabled(FALSE);
-  pushButton4->setEnabled(FALSE);
-  pushButton5->setEnabled(FALSE);
-  pushButton6->setEnabled(FALSE);
-  spinBox1->setEnabled(FALSE);
-  spinBox2->setEnabled(FALSE);
-  spinBox3->setEnabled(FALSE);
-  radioButton1->setChecked(TRUE);
-  radioButton1->setEnabled(FALSE);
-  radioButton2->setEnabled(FALSE);
-  label2->setEnabled(FALSE);
-  label3->setEnabled(FALSE);
-  label4->setEnabled(FALSE);
-  label5->setEnabled(FALSE);
+  pushButton3->setEnabled(false);
+  pushButton4->setEnabled(false);
+  pushButton5->setEnabled(false);
+  pushButton6->setEnabled(false);
+  spinBox1->setEnabled(false);
+  spinBox2->setEnabled(false);
+  spinBox3->setEnabled(false);
+  radioButton1->setChecked(true);
+  radioButton1->setEnabled(false);
+  radioButton2->setEnabled(false);
+  label2->setEnabled(false);
+  label3->setEnabled(false);
+  label4->setEnabled(false);
+  label5->setEnabled(false);
 
   UI_activeFileChooserWindow afchooser(&file_num, mainwindow);
 
@@ -484,18 +484,18 @@ void UI_ReduceSignalsWindow::SelectFileButton()
     SignalsTablewidget->setRowHeight(i, 20);
 
     SignalsTablewidget->setCellWidget(i, 0, new QCheckBox(edfhdr->edfparam[i].label));
-    ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setTristate(FALSE);
+    ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setTristate(false);
     ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setCheckState(Qt::Checked);
 
     if(edfhdr->edfparam[i].annotation)
     {
-      ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setEnabled(FALSE);
+      ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setEnabled(false);
     }
 
     if(!(edfhdr->edfparam[i].annotation))
     {
       SignalsTablewidget->setCellWidget(i, 1, new QComboBox);
-      ((QComboBox *)(SignalsTablewidget->cellWidget(i, 1)))->setEditable(FALSE);
+      ((QComboBox *)(SignalsTablewidget->cellWidget(i, 1)))->setEditable(false);
 
       for(j=1; j<=edfhdr->edfparam[i].smp_per_record; j++)
       {
@@ -510,19 +510,19 @@ void UI_ReduceSignalsWindow::SelectFileButton()
     }
   }
 
-  pushButton3->setEnabled(TRUE);
-  pushButton4->setEnabled(TRUE);
-  pushButton5->setEnabled(TRUE);
-  pushButton6->setEnabled(TRUE);
+  pushButton3->setEnabled(true);
+  pushButton4->setEnabled(true);
+  pushButton5->setEnabled(true);
+  pushButton6->setEnabled(true);
 
   spinBox1->setValue(1);
   spinBox2->setMaximum(edfhdr->datarecords);
   spinBox2->setValue(edfhdr->datarecords);
   spinBox1->setMaximum(edfhdr->datarecords);
-  spinBox3->setEnabled(TRUE);
+  spinBox3->setEnabled(true);
 
-  radioButton1->setEnabled(TRUE);
-  radioButton2->setEnabled(TRUE);
+  radioButton1->setEnabled(true);
+  radioButton2->setEnabled(true);
 
   label4->setText("0:00:00.000");
   days = (int)(((edfhdr->datarecords * edfhdr->long_data_record_duration) / TIME_DIMENSION) / 86400LL);
@@ -592,17 +592,17 @@ void UI_ReduceSignalsWindow::StartConversion()
   progress.setMinimumDuration(200);
 
 
-  pushButton3->setEnabled(FALSE);
-  pushButton4->setEnabled(FALSE);
-  pushButton5->setEnabled(FALSE);
-  pushButton6->setEnabled(FALSE);
-  spinBox1->setEnabled(FALSE);
-  spinBox2->setEnabled(FALSE);
-  spinBox3->setEnabled(FALSE);
-  radioButton1->setEnabled(FALSE);
-  radioButton2->setEnabled(FALSE);
-  label2->setEnabled(FALSE);
-  label3->setEnabled(FALSE);
+  pushButton3->setEnabled(false);
+  pushButton4->setEnabled(false);
+  pushButton5->setEnabled(false);
+  pushButton6->setEnabled(false);
+  spinBox1->setEnabled(false);
+  spinBox2->setEnabled(false);
+  spinBox3->setEnabled(false);
+  radioButton1->setEnabled(false);
+  radioButton2->setEnabled(false);
+  label2->setEnabled(false);
+  label3->setEnabled(false);
 
   if(edfhdr==NULL)
   {
@@ -1018,7 +1018,7 @@ void UI_ReduceSignalsWindow::StartConversion()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         goto END_3;
       }

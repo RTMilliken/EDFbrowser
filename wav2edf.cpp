@@ -60,8 +60,8 @@ UI_WAV2EDFwindow::UI_WAV2EDFwindow(char *recent_dir, char *save_dir)
   myobjectDialog->setMinimumSize(QSize(600, 300));
   myobjectDialog->setMaximumSize(QSize(600, 300));
   myobjectDialog->setWindowTitle("Wave to EDF converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   PatientnameLabel = new QLabel(myobjectDialog);
   PatientnameLabel->setGeometry(QRect(20, 20, 140, 16));
@@ -160,13 +160,13 @@ unsigned int fmt_chunk_offset,
         } var;
 
 
-  enable_widgets(FALSE);
+  enable_widgets(false);
 
   if(!(strlen(PatientnameLineEdit->text().toLatin1().data())))
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Please enter a subject name.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -174,7 +174,7 @@ unsigned int fmt_chunk_offset,
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Invalid input", "Please enter a recording description.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -182,7 +182,7 @@ unsigned int fmt_chunk_offset,
 
   if(!strcmp(path, ""))
   {
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -193,7 +193,7 @@ unsigned int fmt_chunk_offset,
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not open file for reading.");
     messagewindow.exec();
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -206,7 +206,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "An error occurred while reading from inputfile.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -215,7 +215,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "File is not a Wave file.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -230,7 +230,7 @@ unsigned int fmt_chunk_offset,
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find fmt chunk.");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -245,7 +245,7 @@ unsigned int fmt_chunk_offset,
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find fmt chunk.");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -262,7 +262,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "File contains compressed data.\nCan not convert compressed data.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -273,7 +273,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Channels < 1");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -282,7 +282,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Channels > MAXSIGNALS");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -293,7 +293,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency < 1");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -302,7 +302,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Samplefrequency > 500000");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -313,7 +313,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Resolution < 8 bit");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -322,7 +322,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Resolution > 24");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -331,7 +331,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Resolution (bitdepth) must be 8, 16 or 24 bit.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -360,7 +360,7 @@ unsigned int fmt_chunk_offset,
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find data chunk.");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -375,7 +375,7 @@ unsigned int fmt_chunk_offset,
       QMessageBox messagewindow(QMessageBox::Critical, "Error", "Can not find data chunk.");
       messagewindow.exec();
       fclose(inputfile);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -418,7 +418,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Not enough data in file.");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -430,7 +430,7 @@ unsigned int fmt_chunk_offset,
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "A memory allocation error occurred. (readbuf).");
     messagewindow.exec();
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -441,7 +441,7 @@ unsigned int fmt_chunk_offset,
     messagewindow.exec();
     free(readbuf);
     fclose(inputfile);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -479,7 +479,7 @@ unsigned int fmt_chunk_offset,
 
   if(!strcmp(path, ""))
   {
-    enable_widgets(TRUE);
+    enable_widgets(true);
     fclose(inputfile);
     return;
   }
@@ -502,7 +502,7 @@ unsigned int fmt_chunk_offset,
     fclose(inputfile);
     free(readbuf);
     free(writebuf);
-    enable_widgets(TRUE);
+    enable_widgets(true);
     return;
   }
 
@@ -607,13 +607,13 @@ unsigned int fmt_chunk_offset,
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         edfclose_file(edf_hdl);
         fclose(inputfile);
         free(readbuf);
         free(writebuf);
-        enable_widgets(TRUE);
+        enable_widgets(true);
         return;
       }
     }
@@ -627,7 +627,7 @@ unsigned int fmt_chunk_offset,
       fclose(inputfile);
       free(readbuf);
       free(writebuf);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
 
@@ -686,7 +686,7 @@ unsigned int fmt_chunk_offset,
       fclose(inputfile);
       free(readbuf);
       free(writebuf);
-      enable_widgets(TRUE);
+      enable_widgets(true);
       return;
     }
   }
@@ -706,7 +706,7 @@ unsigned int fmt_chunk_offset,
   free(readbuf);
   free(writebuf);
 
-  enable_widgets(TRUE);
+  enable_widgets(true);
 }
 
 

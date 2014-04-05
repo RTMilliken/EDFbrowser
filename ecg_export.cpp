@@ -59,8 +59,8 @@ UI_ECGExport::UI_ECGExport(QWidget *w_parent)
   myobjectDialog->setMinimumSize(QSize(400, 445));
   myobjectDialog->setMaximumSize(QSize(400, 445));
   myobjectDialog->setWindowTitle("Export RR-intervals");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   list = new QListWidget(myobjectDialog);
   list->setGeometry(20, 20, 130, 350);
@@ -74,17 +74,17 @@ UI_ECGExport::UI_ECGExport(QWidget *w_parent)
   radioButton1 = new QRadioButton("RR interval");
   radioButton2 = new QRadioButton("R Onset + RR interval");
   radioButton3 = new QRadioButton("R Onset");
-  radioButton2->setChecked(TRUE);
+  radioButton2->setChecked(true);
 
   checkBox1 = new QCheckBox("Whole recording", myobjectDialog);
   checkBox1->setGeometry(170, 160, 210, 25);
-  checkBox1->setTristate(FALSE);
+  checkBox1->setTristate(false);
 
   checkBox2 = new QCheckBox("Don't write to file,\n"
                             "import as annotations instead",
                             myobjectDialog);
   checkBox2->setGeometry(170, 200, 210, 40);
-  checkBox2->setTristate(FALSE);
+  checkBox2->setTristate(false);
 
   vbox1 = new QVBoxLayout;
   vbox1->addWidget(radioButton1);
@@ -224,7 +224,7 @@ void UI_ECGExport::Export_RR_intervals()
 
         qApp->processEvents();
 
-        if(progress.wasCanceled() == TRUE)
+        if(progress.wasCanceled() == true)
         {
           return;
         }
@@ -319,7 +319,7 @@ void UI_ECGExport::Export_RR_intervals()
 
       mainwindow->annotations_dock[filenum]->updateList();
 
-      mainwindow->save_act->setEnabled(TRUE);
+      mainwindow->save_act->setEnabled(true);
     }
   }
   else
@@ -352,17 +352,17 @@ void UI_ECGExport::Export_RR_intervals()
       return;
     }
 
-    if(radioButton1->isChecked() == TRUE)
+    if(radioButton1->isChecked() == true)
     {
       type = 1;
     }
 
-    if(radioButton2->isChecked() == TRUE)
+    if(radioButton2->isChecked() == true)
     {
       type = 2;
     }
 
-    if(radioButton3->isChecked() == TRUE)
+    if(radioButton3->isChecked() == true)
     {
       type = 3;
     }

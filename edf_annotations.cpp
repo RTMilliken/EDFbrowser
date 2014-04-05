@@ -276,7 +276,7 @@ int EDF_annotations::get_annotations(int file_num, struct edfhdrblock *edf_hdr, 
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         edf_hdr->annots_not_read = 1;
 

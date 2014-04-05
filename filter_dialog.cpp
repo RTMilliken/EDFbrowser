@@ -82,8 +82,8 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   filterdialog->setMinimumSize(QSize(620, 365));
   filterdialog->setMaximumSize(QSize(620, 365));
   filterdialog->setWindowTitle("Add a filter");
-  filterdialog->setModal(TRUE);
-  filterdialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  filterdialog->setModal(true);
+  filterdialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   typeboxlabel = new QLabel(filterdialog);
   typeboxlabel->setGeometry(QRect(20, 20, 120, 20));
@@ -96,7 +96,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   freqbox2label = new QLabel(filterdialog);
   freqbox2label->setGeometry(QRect(300, 20, 120, 20));
   freqbox2label->setText("Frequency 2");
-  freqbox2label->setVisible(FALSE);
+  freqbox2label->setVisible(false);
 
   orderboxlabel = new QLabel(filterdialog);
   orderboxlabel->setGeometry(QRect(160, 80, 120, 20));
@@ -137,7 +137,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   freq2box->setMinimum(0.0001);
   freq2box->setMaximum(100000.0);
   freq2box->setValue(2.0);
-  freq2box->setVisible(FALSE);
+  freq2box->setVisible(false);
 
   orderbox = new QSpinBox(filterdialog);
   orderbox->setGeometry(QRect(160, 105, 120, 20));
@@ -160,7 +160,7 @@ UI_FilterDialog::UI_FilterDialog(QWidget *w_parent)
   ripplebox->setMinimum(0.1);
   ripplebox->setMaximum(6.0);
   ripplebox->setValue(1.0);
-  ripplebox->setVisible(FALSE);
+  ripplebox->setVisible(false);
 
   listlabel = new QLabel(filterdialog);
   listlabel->setGeometry(QRect(440, 20, 100, 20));
@@ -393,7 +393,7 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
   last_model = model;
 
   freqboxlabel->setText("Frequency");
-  freqbox->setVisible(TRUE);
+  freqbox->setVisible(true);
 
   if(type != 2)
   {
@@ -412,8 +412,8 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
 
     if(model == 0)
     {
-      ripplebox->setVisible(FALSE);
-      ordervaluelabel->setVisible(TRUE);
+      ripplebox->setVisible(false);
+      ordervaluelabel->setVisible(true);
       orderlabel->setText("Slope roll-off:");
       ordervaluelabel->setText(QString::number(6 * orderbox->value(), 'f', 0).append(" dB / octave"));
     }
@@ -421,14 +421,14 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
     if(model == 1)
     {
       orderlabel->setText("passband ripple");
-      ordervaluelabel->setVisible(FALSE);
-      ripplebox->setVisible(TRUE);
+      ordervaluelabel->setVisible(false);
+      ripplebox->setVisible(true);
     }
 
     if(model == 2)
     {
-      ripplebox->setVisible(FALSE);
-      ordervaluelabel->setVisible(TRUE);
+      ripplebox->setVisible(false);
+      ordervaluelabel->setVisible(true);
       orderlabel->setText("");
       ordervaluelabel->setText("");
     }
@@ -439,9 +439,9 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
       ordervaluelabel->setText("");
       freqboxlabel->setText("");
       freqbox2label->setText("");
-      freqbox->setVisible(FALSE);
-      ripplebox->setVisible(FALSE);
-      ordervaluelabel->setVisible(FALSE);
+      freqbox->setVisible(false);
+      ripplebox->setVisible(false);
+      ordervaluelabel->setVisible(false);
       orderlabel->setText("");
       ordervaluelabel->setText("");
       orderboxlabel->setText("Samples");
@@ -537,8 +537,8 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
 
   if(type == 2)
   {
-    ripplebox->setVisible(FALSE);
-    ordervaluelabel->setVisible(TRUE);
+    ripplebox->setVisible(false);
+    ordervaluelabel->setVisible(true);
     orderboxlabel->setText("Notch Q-factor");
     orderbox->setMaximum(100);
     orderbox->setSingleStep(1);
@@ -573,8 +573,8 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
     {
       if(type < 2)
       {
-        ripplebox->setVisible(FALSE);
-        ordervaluelabel->setVisible(FALSE);
+        ripplebox->setVisible(false);
+        ordervaluelabel->setVisible(false);
         orderlabel->setText("");
         ordervaluelabel->setText("");
         orderboxlabel->setText("Samples");
@@ -591,24 +591,24 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
 
     if(last_model == 0)
     {
-      ripplebox->setVisible(FALSE);
-      ordervaluelabel->setVisible(TRUE);
+      ripplebox->setVisible(false);
+      ordervaluelabel->setVisible(true);
       orderlabel->setText("Slope roll-off:");
       ordervaluelabel->setText(QString::number(6 * last_order, 'f', 0).append(" dB / octave"));
     }
 
     if(last_model == 1)
     {
-      ordervaluelabel->setVisible(FALSE);
-      ripplebox->setVisible(TRUE);
+      ordervaluelabel->setVisible(false);
+      ripplebox->setVisible(true);
       orderlabel->setText("passband ripple");
       ordervaluelabel->setText("1 dB");
     }
 
     if(last_model == 2)
     {
-      ripplebox->setVisible(FALSE);
-      ordervaluelabel->setVisible(TRUE);
+      ripplebox->setVisible(false);
+      ordervaluelabel->setVisible(true);
       orderlabel->setText("");
       ordervaluelabel->setText("");
     }
@@ -628,13 +628,13 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
   {
     freqboxlabel->setText("Frequency 1");
     freqbox2label->setText("Frequency 2");
-    freqbox2label->setVisible(TRUE);
-    freq2box->setVisible(TRUE);
+    freqbox2label->setVisible(true);
+    freq2box->setVisible(true);
   }
   else
   {
-    freqbox2label->setVisible(FALSE);
-    freq2box->setVisible(FALSE);
+    freqbox2label->setVisible(false);
+    freq2box->setVisible(false);
 
     if(last_model == 3)
     {

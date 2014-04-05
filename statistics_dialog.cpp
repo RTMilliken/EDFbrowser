@@ -56,15 +56,15 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
 
   StatDialog = new QDialog;
   StatDialog->setWindowTitle("Statistics");
-  StatDialog->setModal(TRUE);
-  StatDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  StatDialog->setModal(true);
+  StatDialog->setAttribute(Qt::WA_DeleteOnClose, true);
   StatDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   StatDialog->setWindowIcon(QIcon(":/images/edf.png"));
 
   if(signalcomp->ecg_filter != NULL)
   {
     StatDialog->setMinimumSize(600, 400);
-    StatDialog->setSizeGripEnabled(TRUE);
+    StatDialog->setSizeGripEnabled(true);
 
     startSlider = new QSlider;
     startSlider->setOrientation(Qt::Horizontal);
@@ -85,9 +85,9 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
     curve1->setTraceWidth(0);
     curve1->setH_label(signalcomp->physdimension);
     curve1->setLowerLabel("HR (beats/min)");
-    curve1->setDashBoardEnabled(FALSE);
+    curve1->setDashBoardEnabled(false);
     curve1->setUpperLabel1("Distribution");
-    curve1->setFillSurfaceEnabled(TRUE);
+    curve1->setFillSurfaceEnabled(true);
 
     vlayout2_1 = new QVBoxLayout;
     vlayout2_1->setSpacing(20);
@@ -351,8 +351,8 @@ UI_StatisticWindow::UI_StatisticWindow(struct signalcompblock *signalcomp, long 
 
 void UI_StatisticWindow::startSliderMoved(int)
 {
-  startSlider->blockSignals(TRUE);
-  stopSlider->blockSignals(TRUE);
+  startSlider->blockSignals(true);
+  stopSlider->blockSignals(true);
 
   start_ruler = startSlider->value();
   end_ruler = stopSlider->value();
@@ -368,15 +368,15 @@ void UI_StatisticWindow::startSliderMoved(int)
 
   curve1->drawCurve(bpm_distribution + start_ruler, end_ruler - start_ruler, (int)(max_val * 1.1) + 1, 0.0);
 
-  startSlider->blockSignals(FALSE);
-  stopSlider->blockSignals(FALSE);
+  startSlider->blockSignals(false);
+  stopSlider->blockSignals(false);
 }
 
 
 void UI_StatisticWindow::stopSliderMoved(int)
 {
-  startSlider->blockSignals(TRUE);
-  stopSlider->blockSignals(TRUE);
+  startSlider->blockSignals(true);
+  stopSlider->blockSignals(true);
 
   start_ruler = startSlider->value();
   end_ruler = stopSlider->value();
@@ -392,8 +392,8 @@ void UI_StatisticWindow::stopSliderMoved(int)
 
   curve1->drawCurve(bpm_distribution + start_ruler, end_ruler - start_ruler, (int)(max_val * 1.1) + 1, 0.0);
 
-  startSlider->blockSignals(FALSE);
-  stopSlider->blockSignals(FALSE);
+  startSlider->blockSignals(false);
+  stopSlider->blockSignals(false);
 }
 
 

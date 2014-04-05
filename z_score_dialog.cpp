@@ -76,10 +76,10 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
   zscore_dialog = new QDialog();
   zscore_dialog->setMinimumSize(600, 550);
   zscore_dialog->setWindowTitle("Z-EEG");
-  zscore_dialog->setModal(FALSE);
-  zscore_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  zscore_dialog->setModal(false);
+  zscore_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
   zscore_dialog->setWindowIcon(QIcon(":/images/edf.png"));
-  zscore_dialog->setSizeGripEnabled(TRUE);
+  zscore_dialog->setSizeGripEnabled(true);
   zscore_dialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
 
   crossoverbinLabel = new QLabel;
@@ -160,8 +160,8 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
   curve1->setRasterColor(Qt::gray);
   curve1->setCrosshairColor(Qt::red);
   curve1->setTraceWidth(0);
-  curve1->setDashBoardEnabled(FALSE);
-  curve1->setUpsidedownEnabled(TRUE);
+  curve1->setDashBoardEnabled(false);
+  curve1->setUpsidedownEnabled(true);
 
   StartButton = new QPushButton;
   StartButton->setMinimumSize(100, 25);
@@ -214,7 +214,7 @@ UI_ZScoreWindow::UI_ZScoreWindow(QWidget *w_parent, UI_ZScoreWindow **w_zscoredi
   wakesleepRadioButton->setMaximumSize(100, 25);
   wakesleepRadioButton->setText("Sleep/Wake");
 
-  pageRadioButton->setChecked(TRUE);
+  pageRadioButton->setChecked(true);
 
   plot_type = 1;
 
@@ -719,7 +719,7 @@ void UI_ZScoreWindow::startButtonClicked()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         break;
       }
@@ -1007,7 +1007,7 @@ void UI_ZScoreWindow::startButtonClicked()
 
   progress.reset();
 
-  RadioButtonsClicked(TRUE);
+  RadioButtonsClicked(true);
 
   free(fft_inputbuf);
   free(fft_outputbuf);
@@ -1103,7 +1103,7 @@ void UI_ZScoreWindow::get_annotationsButtonClicked()
 
     mainwindow->annotations_dock[filenum]->updateList();
 
-    mainwindow->save_act->setEnabled(TRUE);
+    mainwindow->save_act->setEnabled(true);
   }
 
    mainwindow->maincurve->update();
@@ -1130,7 +1130,7 @@ void UI_ZScoreWindow::RadioButtonsClicked(bool)
   char str[1024];
 
 
-  if(epochRadioButton->isChecked() == TRUE)
+  if(epochRadioButton->isChecked() == true)
   {
     plot_type = 0;
 
@@ -1189,13 +1189,13 @@ void UI_ZScoreWindow::RadioButtonsClicked(bool)
     curve1->setV_label("Z ratio");
     curve1->setUpperLabel1(str);
     curve1->drawLine(marker_start, b0 + b1, marker_end, b0 + (b1 * regression_samples), Qt::yellow);
-    curve1->setMarker1Enabled(TRUE);
-    curve1->setMarker1MovableEnabled(TRUE);
-    curve1->setMarker2Enabled(TRUE);
-    curve1->setMarker2MovableEnabled(TRUE);
+    curve1->setMarker1Enabled(true);
+    curve1->setMarker1MovableEnabled(true);
+    curve1->setMarker2Enabled(true);
+    curve1->setMarker2MovableEnabled(true);
   }
 
-  if(pageRadioButton->isChecked() == TRUE)
+  if(pageRadioButton->isChecked() == true)
   {
     plot_type = 1;
 
@@ -1254,13 +1254,13 @@ void UI_ZScoreWindow::RadioButtonsClicked(bool)
     curve1->setV_label("Z ratio");
     curve1->setUpperLabel1(str);
     curve1->drawLine(marker_start, b0 + b1, marker_end, b0 + (b1 * regression_samples), Qt::yellow);
-    curve1->setMarker1Enabled(TRUE);
-    curve1->setMarker1MovableEnabled(TRUE);
-    curve1->setMarker2Enabled(TRUE);
-    curve1->setMarker2MovableEnabled(TRUE);
+    curve1->setMarker1Enabled(true);
+    curve1->setMarker1MovableEnabled(true);
+    curve1->setMarker2Enabled(true);
+    curve1->setMarker2MovableEnabled(true);
   }
 
-  if(wakesleepRadioButton->isChecked() == TRUE)
+  if(wakesleepRadioButton->isChecked() == true)
   {
     plot_type = 2;
 
@@ -1306,18 +1306,18 @@ void UI_ZScoreWindow::RadioButtonsClicked(bool)
     curve1->setLowerLabel("Pages");
     curve1->setV_label("Sleep/Wake");
     curve1->setUpperLabel1(str);
-    curve1->setLineEnabled(FALSE);
-    curve1->setMarker1Enabled(TRUE);
-    curve1->setMarker1MovableEnabled(TRUE);
-    curve1->setMarker2Enabled(TRUE);
-    curve1->setMarker2MovableEnabled(TRUE);
+    curve1->setLineEnabled(false);
+    curve1->setMarker1Enabled(true);
+    curve1->setMarker1MovableEnabled(true);
+    curve1->setMarker2Enabled(true);
+    curve1->setMarker2MovableEnabled(true);
   }
 }
 
 
 void UI_ZScoreWindow::markersMoved()
 {
-  RadioButtonsClicked(TRUE);
+  RadioButtonsClicked(true);
 }
 
 
@@ -1334,7 +1334,7 @@ void UI_ZScoreWindow::jumpButtonClicked()
     return;
   }
 
-  if(curve1->isCursorActive() == FALSE)
+  if(curve1->isCursorActive() == false)
   {
     return;
   }
@@ -1398,7 +1398,7 @@ void UI_ZScoreWindow::shift_page_right()
     return;
   }
 
-  if(curve1->isCursorActive() == FALSE)
+  if(curve1->isCursorActive() == false)
   {
     return;
   }
@@ -1414,7 +1414,7 @@ void UI_ZScoreWindow::shift_page_left()
     return;
   }
 
-  if(curve1->isCursorActive() == FALSE)
+  if(curve1->isCursorActive() == false)
   {
     return;
   }

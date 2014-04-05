@@ -74,8 +74,8 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
   ImportAnnotsDialog->setMinimumSize(490, 500);
   ImportAnnotsDialog->setMaximumSize(490, 500);
   ImportAnnotsDialog->setWindowTitle("Import annotations/events");
-  ImportAnnotsDialog->setModal(TRUE);
-  ImportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  ImportAnnotsDialog->setModal(true);
+  ImportAnnotsDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   tabholder = new QTabWidget;
 
@@ -112,7 +112,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   DescriptionLineEdit = new QLineEdit(ImportAnnotsDialog);
   DescriptionLineEdit->setMaxLength(20);
-  DescriptionLineEdit->setEnabled(FALSE);
+  DescriptionLineEdit->setEnabled(false);
   DescriptionLineEdit->setMinimumSize(80, 25);
 
   OnsetColumnSpinBox = new QSpinBox(ImportAnnotsDialog);
@@ -145,12 +145,12 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   DescriptionColumnRadioButton = new QRadioButton("Description column");
   DescriptionColumnRadioButton->setMinimumSize(198, 25);
-  DescriptionColumnRadioButton->setChecked(TRUE);
+  DescriptionColumnRadioButton->setChecked(true);
   UseManualDescriptionRadioButton = new QRadioButton("Manual description");
   UseManualDescriptionRadioButton->setMinimumSize(198, 25);
 
   DurationCheckBox = new QCheckBox(" Duration column", ImportAnnotsDialog);
-  DurationCheckBox->setTristate(FALSE);
+  DurationCheckBox->setTristate(false);
   DurationCheckBox->setCheckState(Qt::Unchecked);
   DurationCheckBox->setMinimumSize(198, 25);
 
@@ -268,7 +268,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   IgnoreConsecutiveCheckBox = new QCheckBox(" Ignore consecutive events with the\n same description");
   IgnoreConsecutiveCheckBox->setMinimumSize(300, 40);
-  IgnoreConsecutiveCheckBox->setTristate(FALSE);
+  IgnoreConsecutiveCheckBox->setTristate(false);
   IgnoreConsecutiveCheckBox->setCheckState(Qt::Unchecked);
 
   ImportButton = new QPushButton(ImportAnnotsDialog);
@@ -307,30 +307,30 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   if(mainwindow->import_annotations_var->manualdescription == 0)
   {
-    DescriptionColumnRadioButton->setChecked(TRUE);
-    DescriptionColumnSpinBox->setEnabled(TRUE);
-    DescriptionLineEdit->setEnabled(FALSE);
+    DescriptionColumnRadioButton->setChecked(true);
+    DescriptionColumnSpinBox->setEnabled(true);
+    DescriptionLineEdit->setEnabled(false);
   }
   else
   {
-    UseManualDescriptionRadioButton->setChecked(TRUE);
-    DescriptionColumnSpinBox->setEnabled(FALSE);
-    DescriptionLineEdit->setEnabled(TRUE);
+    UseManualDescriptionRadioButton->setChecked(true);
+    DescriptionColumnSpinBox->setEnabled(false);
+    DescriptionLineEdit->setEnabled(true);
     if(mainwindow->import_annotations_var->format == ASCIICSV_FORMAT)
     {
-      IgnoreConsecutiveCheckBox->setEnabled(FALSE);
+      IgnoreConsecutiveCheckBox->setEnabled(false);
     }
   }
 
   if(mainwindow->import_annotations_var->useduration == 1)
   {
     DurationCheckBox->setCheckState(Qt::Checked);
-    DurationColumnSpinBox->setEnabled(TRUE);
+    DurationColumnSpinBox->setEnabled(true);
   }
   else
   {
     DurationCheckBox->setCheckState(Qt::Unchecked);
-    DurationColumnSpinBox->setEnabled(FALSE);
+    DurationColumnSpinBox->setEnabled(false);
   }
 
   if(mainwindow->import_annotations_var->ignoreconsecutive == 1)
@@ -344,7 +344,7 @@ UI_ImportAnnotationswindow::UI_ImportAnnotationswindow(QWidget *w_parent)
 
   if(mainwindow->import_annotations_var->format == EDFPLUS_FORMAT)
   {
-    IgnoreConsecutiveCheckBox->setEnabled(FALSE);
+    IgnoreConsecutiveCheckBox->setEnabled(false);
   }
 
   tabholder->setCurrentIndex(tab_index_array[mainwindow->import_annotations_var->format]);
@@ -365,29 +365,29 @@ void UI_ImportAnnotationswindow::DurationCheckBoxChanged(int state)
 {
   if(state == Qt::Unchecked)
   {
-    DurationColumnSpinBox->setEnabled(FALSE);
+    DurationColumnSpinBox->setEnabled(false);
   }
   else
   {
-    DurationColumnSpinBox->setEnabled(TRUE);
+    DurationColumnSpinBox->setEnabled(true);
   }
 }
 
 
 void UI_ImportAnnotationswindow::descriptionRadioButtonClicked(bool)
 {
-  if(DescriptionColumnRadioButton->isChecked() == TRUE)
+  if(DescriptionColumnRadioButton->isChecked() == true)
   {
-    DescriptionColumnSpinBox->setEnabled(TRUE);
-    DescriptionLineEdit->setEnabled(FALSE);
-    IgnoreConsecutiveCheckBox->setEnabled(TRUE);
+    DescriptionColumnSpinBox->setEnabled(true);
+    DescriptionLineEdit->setEnabled(false);
+    IgnoreConsecutiveCheckBox->setEnabled(true);
   }
 
-  if(UseManualDescriptionRadioButton->isChecked() == TRUE)
+  if(UseManualDescriptionRadioButton->isChecked() == true)
   {
-    DescriptionColumnSpinBox->setEnabled(FALSE);
-    DescriptionLineEdit->setEnabled(TRUE);
-    IgnoreConsecutiveCheckBox->setEnabled(FALSE);
+    DescriptionColumnSpinBox->setEnabled(false);
+    DescriptionLineEdit->setEnabled(true);
+    IgnoreConsecutiveCheckBox->setEnabled(false);
   }
 }
 
@@ -396,23 +396,23 @@ void UI_ImportAnnotationswindow::TabChanged(int index)
 {
   if((index == tab_index_array[XML_FORMAT]) || (index == tab_index_array[DCEVENT_FORMAT]))
   {
-    IgnoreConsecutiveCheckBox->setEnabled(TRUE);
+    IgnoreConsecutiveCheckBox->setEnabled(true);
   }
 
   if(index == tab_index_array[EDFPLUS_FORMAT])
   {
-    IgnoreConsecutiveCheckBox->setEnabled(FALSE);
+    IgnoreConsecutiveCheckBox->setEnabled(false);
   }
 
   if(index == tab_index_array[ASCIICSV_FORMAT])
   {
-    if(UseManualDescriptionRadioButton->isChecked() == TRUE)
+    if(UseManualDescriptionRadioButton->isChecked() == true)
     {
-      IgnoreConsecutiveCheckBox->setEnabled(FALSE);
+      IgnoreConsecutiveCheckBox->setEnabled(false);
     }
     else
     {
-      IgnoreConsecutiveCheckBox->setEnabled(TRUE);
+      IgnoreConsecutiveCheckBox->setEnabled(true);
     }
   }
 }
@@ -444,7 +444,7 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
       error=0;
 
 
-  ImportAnnotsDialog->setEnabled(FALSE);
+  ImportAnnotsDialog->setEnabled(false);
 
   i = tabholder->currentIndex();
 
@@ -460,7 +460,7 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
   {
     QMessageBox messagewindow(QMessageBox::Critical, "Error", "Internal error (input_format >= TAB_CNT).");
     messagewindow.exec();
-    ImportAnnotsDialog->setEnabled(TRUE);
+    ImportAnnotsDialog->setEnabled(true);
     return;
   }
 
@@ -506,7 +506,7 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
 
     mainwindow->annotations_dock[0]->updateList();
 
-    mainwindow->save_act->setEnabled(TRUE);
+    mainwindow->save_act->setEnabled(true);
   }
 
   mainwindow->maincurve->update();
@@ -518,7 +518,7 @@ void UI_ImportAnnotationswindow::ImportButtonClicked()
     messagewindow.exec();
   }
 
-  ImportAnnotsDialog->setEnabled(TRUE);
+  ImportAnnotsDialog->setEnabled(true);
 
   if(!error)
   {
@@ -800,7 +800,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
 
   last_description[0] = 0;
 
-  if(UseManualDescriptionRadioButton->isChecked() == TRUE)
+  if(UseManualDescriptionRadioButton->isChecked() == true)
   {
     manualdescription = 1;
 
@@ -898,7 +898,7 @@ int UI_ImportAnnotationswindow::import_from_ascii(void)
   mainwindow->import_annotations_var->durationcolumn = duration_column + 1;
   mainwindow->import_annotations_var->useduration = use_duration;
   mainwindow->import_annotations_var->datastartline = startline;
-  if(UseManualDescriptionRadioButton->isChecked() == TRUE)
+  if(UseManualDescriptionRadioButton->isChecked() == true)
   {
     mainwindow->import_annotations_var->manualdescription = 1;
   }
@@ -1890,7 +1890,7 @@ int UI_ImportAnnotationswindow::import_from_dcevent(void)
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         break;
       }

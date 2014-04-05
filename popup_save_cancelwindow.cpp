@@ -75,8 +75,8 @@ UI_CancelSavewindow::UI_CancelSavewindow(const char *title, const char *str,
   MessageDialog->setMinimumSize(QSize(labelwidth + 40, labelheight + 85));
   MessageDialog->setMaximumSize(QSize(labelwidth + 40, labelheight + 85));
   MessageDialog->setWindowTitle(title);
-  MessageDialog->setModal(TRUE);
-  MessageDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  MessageDialog->setModal(true);
+  MessageDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   Label1 = new QLabel(MessageDialog);
   Label1->setGeometry(20, 20, labelwidth, labelheight);

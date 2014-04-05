@@ -58,8 +58,8 @@ UI_SignalChooser::UI_SignalChooser(QWidget *w_parent, int job, int *sgnl_nr)
     signalchooser_dialog->setMaximumSize(QSize(200, 400));
     signalchooser_dialog->setWindowTitle("Signals");
   }
-  signalchooser_dialog->setModal(TRUE);
-  signalchooser_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  signalchooser_dialog->setModal(true);
+  signalchooser_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   list = new QListWidget(signalchooser_dialog);
   list->setGeometry(5, 5, 130, 365);
@@ -224,7 +224,7 @@ void UI_SignalChooser::signalUp()
 
   for(i=0; i<n; i++)
   {
-    list->item(selected_signals[i] - 1)->setSelected(TRUE);
+    list->item(selected_signals[i] - 1)->setSelected(true);
   }
 
   mainwindow->setup_viewbuf();
@@ -281,7 +281,7 @@ void UI_SignalChooser::signalDown()
 
   for(i=0; i<n; i++)
   {
-    list->item(selected_signals[i] + 1)->setSelected(TRUE);
+    list->item(selected_signals[i] + 1)->setSelected(true);
   }
 
   mainwindow->setup_viewbuf();
@@ -458,7 +458,7 @@ void UI_SignalChooser::signalInvert()
 
   for(i=0; i<n; i++)
   {
-    list->item(selected_signals[i])->setSelected(TRUE);
+    list->item(selected_signals[i])->setSelected(true);
   }
 
   mainwindow->setup_viewbuf();

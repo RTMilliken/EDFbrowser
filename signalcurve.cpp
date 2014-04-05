@@ -86,16 +86,16 @@ SignalCurve::SignalCurve(QWidget *w_parent) : QWidget(w_parent)
   marker_2_moving = 0;
   fillsurface = 0;
 
-  cursorEnabled = TRUE;
-  printEnabled = TRUE;
-  dashBoardEnabled = TRUE;
-  updates_enabled = TRUE;
-  Marker1Enabled = FALSE;
-  Marker1MovableEnabled = FALSE;
-  Marker2Enabled = FALSE;
-  Marker2MovableEnabled = FALSE;
-  curveUpSideDown = FALSE;
-  line1Enabled = FALSE;
+  cursorEnabled = true;
+  printEnabled = true;
+  dashBoardEnabled = true;
+  updates_enabled = true;
+  Marker1Enabled = false;
+  Marker1MovableEnabled = false;
+  Marker2Enabled = false;
+  Marker2MovableEnabled = false;
+  curveUpSideDown = false;
+  line1Enabled = false;
 
   spectrum_color = NULL;
 
@@ -119,11 +119,11 @@ void SignalCurve::clear()
   crosshair_1_x_position = 0;
   marker_1_position = 0.25;
   marker_2_position = 0.75;
-  Marker1Enabled = FALSE;
-  Marker1MovableEnabled = FALSE;
-  Marker2Enabled = FALSE;
-  Marker2MovableEnabled = FALSE;
-  line1Enabled = FALSE;
+  Marker1Enabled = false;
+  Marker1MovableEnabled = false;
+  Marker2Enabled = false;
+  Marker2MovableEnabled = false;
+  line1Enabled = false;
 
   update();
 }
@@ -152,7 +152,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
 
   if(press_event->button()==Qt::LeftButton)
   {
-    if(printEnabled == TRUE)
+    if(printEnabled == true)
     {
       if((m_y<21)&&(m_y>3)&&(m_x>((w - (bordersize * 2)) - 43))&&(m_x<((w - (bordersize * 2)) - 3)))
       {
@@ -162,7 +162,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
       }
     }
 
-    if(dashBoardEnabled == TRUE)
+    if(dashBoardEnabled == true)
     {
       if((m_y<61)&&(m_y>43)&&(m_x>((w - (bordersize * 2)) - 43))&&(m_x<((w - (bordersize * 2)) - 3)))
       {
@@ -172,7 +172,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
       }
     }
 
-    if(cursorEnabled == TRUE)
+    if(cursorEnabled == true)
     {
       if((m_y<41)&&(m_y>23)&&(m_x>((w - (bordersize * 2)) - 43))&&(m_x<((w - (bordersize * 2)) - 3)))
       {
@@ -181,7 +181,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
           crosshair_1_active = 0;
           crosshair_1_moving = 0;
           use_move_events = 0;
-          setMouseTracking(FALSE);
+          setMouseTracking(false);
         }
         else
         {
@@ -208,7 +208,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
       {
         crosshair_1_moving = 1;
         use_move_events = 1;
-        setMouseTracking(TRUE);
+        setMouseTracking(true);
         mouse_old_x = m_x;
         mouse_old_y = m_y;
       }
@@ -217,13 +217,13 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
       {
         crosshair_1_moving = 1;
         use_move_events = 1;
-        setMouseTracking(TRUE);
+        setMouseTracking(true);
         mouse_old_x = m_x;
         mouse_old_y = m_y;
       }
     }
 
-    if((Marker1MovableEnabled == TRUE) && (Marker1Enabled == TRUE))
+    if((Marker1MovableEnabled == true) && (Marker1Enabled == true))
     {
       marker_1_x_position = (w - (bordersize * 2)) * marker_1_position;
 
@@ -231,13 +231,13 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
       {
         marker_1_moving = 1;
         use_move_events = 1;
-        setMouseTracking(TRUE);
+        setMouseTracking(true);
         mouse_old_x = m_x;
         mouse_old_y = m_y;
       }
     }
 
-    if((Marker2MovableEnabled == TRUE) && (Marker2Enabled == TRUE))
+    if((Marker2MovableEnabled == true) && (Marker2Enabled == true))
     {
       marker_2_x_position = (w - (bordersize * 2)) * marker_2_position;
 
@@ -245,7 +245,7 @@ void SignalCurve::mousePressEvent(QMouseEvent *press_event)
       {
         marker_2_moving = 1;
         use_move_events = 1;
-        setMouseTracking(TRUE);
+        setMouseTracking(true);
         mouse_old_x = m_x;
         mouse_old_y = m_y;
       }
@@ -260,7 +260,7 @@ void SignalCurve::mouseReleaseEvent(QMouseEvent *)
   marker_1_moving = 0;
   marker_2_moving = 0;
   use_move_events = 0;
-  setMouseTracking(FALSE);
+  setMouseTracking(false);
 }
 
 
@@ -481,16 +481,18 @@ void SignalCurve::exec_sidemenu()
     sidemenu->setMaximumSize(QSize(120, 160));
   }
   sidemenu->setWindowTitle("Print");
-  sidemenu->setModal(TRUE);
-  sidemenu->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  sidemenu->setModal(true);
+  sidemenu->setAttribute(Qt::WA_DeleteOnClose, true);
 
   sidemenuButton1 = new QPushButton(sidemenu);
   sidemenuButton1->setGeometry(10, 10, 100, 20);
   sidemenuButton1->setText("to printer");
 
+#if QT_VERSION < 0x050000
   sidemenuButton2 = new QPushButton(sidemenu);
   sidemenuButton2->setGeometry(10, 40, 100, 20);
   sidemenuButton2->setText("to Postscript");
+#endif
 
   sidemenuButton3 = new QPushButton(sidemenu);
   sidemenuButton3->setGeometry(10, 70, 100, 20);
@@ -512,7 +514,9 @@ void SignalCurve::exec_sidemenu()
   }
 
   QObject::connect(sidemenuButton1, SIGNAL(clicked()), this, SLOT(print_to_printer()));
+#if QT_VERSION < 0x050000
   QObject::connect(sidemenuButton2, SIGNAL(clicked()), this, SLOT(print_to_postscript()));
+#endif
   QObject::connect(sidemenuButton3, SIGNAL(clicked()), this, SLOT(print_to_pdf()));
   QObject::connect(sidemenuButton4, SIGNAL(clicked()), this, SLOT(print_to_image()));
   QObject::connect(sidemenuButton5, SIGNAL(clicked()), this, SLOT(print_to_ascii()));
@@ -634,6 +638,7 @@ void SignalCurve::print_to_ascii()
 }
 
 
+#if QT_VERSION < 0x050000
 void SignalCurve::print_to_postscript()
 {
   char path[SC_MAX_PATH_LEN];
@@ -674,6 +679,7 @@ void SignalCurve::print_to_postscript()
 
   sidemenu->close();
 }
+#endif
 
 
 void SignalCurve::print_to_pdf()
@@ -1029,7 +1035,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
       p2_tmp = (double)(i - p2_ruler_startvalue) * p2_pixels_per_unit;
 
-      if(curveUpSideDown == FALSE)
+      if(curveUpSideDown == false)
       {
         painter->drawText((3 * p_factor), curve_h - bordersize - p2_tmp - (8 * p_factor), (40 * p_factor), (16 * p_factor), Qt::AlignRight | Qt::AlignVCenter | Qt::TextSingleLine, q_str);
 
@@ -1076,7 +1082,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
   curve_h -= (bordersize * 2);
 
-  painter->setClipping(TRUE);
+  painter->setClipping(true);
   painter->setClipRegion(QRegion(0, 0, curve_w, curve_h), Qt::ReplaceClip);
 
 /////////////////////////////////// draw the rasters ///////////////////////////////////////////
@@ -1104,7 +1110,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
     p2_tmp = (double)(i - p2_ruler_startvalue) * p2_pixels_per_unit;
 
-    if(curveUpSideDown == FALSE)
+    if(curveUpSideDown == false)
     {
       painter->drawLine(0, curve_h - p2_tmp, curve_w, curve_h - p2_tmp);
     }
@@ -1122,7 +1128,7 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
   if(bufsize < 2)  return;
 
-  if(curveUpSideDown == TRUE)
+  if(curveUpSideDown == true)
   {
     offset = (-(min_value));
 
@@ -1295,19 +1301,19 @@ void SignalCurve::drawWidget_to_printer(QPainter *painter, int curve_w, int curv
 
 /////////////////////////////////// draw the line ///////////////////////////////////////////
 
-  if(line1Enabled == TRUE)
+  if(line1Enabled == true)
   {
     painter->drawLine(line1_start_x * h_step, (line1_start_y + offset) * v_sens, line1_end_x * h_step, (line1_end_y + offset) * v_sens);
   }
 
 /////////////////////////////////// draw the markers ///////////////////////////////////////////
 
-  if(Marker1Enabled == TRUE)
+  if(Marker1Enabled == true)
   {
     painter->drawLine(curve_w * marker_1_position, 0, curve_w * marker_1_position, curve_h);
   }
 
-  if(Marker2Enabled == TRUE)
+  if(Marker2Enabled == true)
   {
     painter->drawLine(curve_w * marker_2_position, 0, curve_w * marker_2_position, curve_h);
   }
@@ -1341,7 +1347,7 @@ void SignalCurve::setUpdatesEnabled(bool enabled)
 
 void SignalCurve::paintEvent(QPaintEvent *)
 {
-  if(updates_enabled == TRUE)
+  if(updates_enabled == true)
   {
     QPainter paint(this);
 
@@ -1606,7 +1612,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
       p2_tmp = (double)(i - p2_ruler_startvalue) * p2_pixels_per_unit;
 
-      if(curveUpSideDown == FALSE)
+      if(curveUpSideDown == false)
       {
         painter->drawText(3, curve_h - bordersize - p2_tmp - 8, 40, 16, Qt::AlignRight | Qt::AlignVCenter | Qt::TextSingleLine, q_str);
 
@@ -1651,7 +1657,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
   painter->fillRect(0, 0, curve_w, curve_h, BackgroundColor);
 
-  painter->setClipping(TRUE);
+  painter->setClipping(true);
   painter->setClipRegion(QRegion(0, 0, curve_w, curve_h), Qt::ReplaceClip);
 
 /////////////////////////////////// draw the colorbars /////////////////////////////////////////
@@ -1710,7 +1716,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
     if(bufsize < 2)  return;
 
-    if(curveUpSideDown == TRUE)
+    if(curveUpSideDown == true)
     {
       offset = (-(min_value));
 
@@ -1911,7 +1917,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
     p2_tmp = (double)(i - p2_ruler_startvalue) * p2_pixels_per_unit;
 
-    if(curveUpSideDown == FALSE)
+    if(curveUpSideDown == false)
     {
       painter->drawLine(0, curve_h - p2_tmp, curve_w, curve_h - p2_tmp);
     }
@@ -1931,7 +1937,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
     if(bufsize < 2)  return;
 
-    if(curveUpSideDown == TRUE)
+    if(curveUpSideDown == true)
     {
       offset = (-(min_value));
 
@@ -2105,7 +2111,7 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
 /////////////////////////////////// draw the line ///////////////////////////////////////////
 
-  if(line1Enabled == TRUE)
+  if(line1Enabled == true)
   {
     painter->setPen(QPen(QBrush(line1Color, Qt::SolidPattern), tracewidth, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin));
 
@@ -2114,14 +2120,14 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
 /////////////////////////////////// draw the markers ///////////////////////////////////////////
 
-  if(Marker1Enabled == TRUE)
+  if(Marker1Enabled == true)
   {
     painter->setPen(Marker1Pen);
 
     painter->drawLine(curve_w * marker_1_position, 0, curve_w * marker_1_position, curve_h);
   }
 
-  if(Marker2Enabled == TRUE)
+  if(Marker2Enabled == true)
   {
     painter->setPen(Marker2Pen);
 
@@ -2154,17 +2160,17 @@ void SignalCurve::drawWidget(QPainter *painter, int curve_w, int curve_h)
 
   painter->setPen(Qt::black);
   painter->setFont(QFont("Arial", 8));
-  if(printEnabled == TRUE)
+  if(printEnabled == true)
   {
     painter->fillRect(curve_w - 43, 3, 40, 18, Qt::gray);
     painter->drawText(curve_w - 38, 16, "print");
   }
-  if(cursorEnabled == TRUE)
+  if(cursorEnabled == true)
   {
     painter->fillRect(curve_w - 43, 23, 40, 18, Qt::gray);
     painter->drawText(curve_w - 38, 36, "cursor");
   }
-  if(dashBoardEnabled == TRUE)
+  if(dashBoardEnabled == true)
   {
     painter->fillRect(curve_w - 43, 43, 40, 18, Qt::gray);
     painter->drawText(curve_w - 38, 56, "ctls");
@@ -2200,7 +2206,7 @@ void SignalCurve::drawLine(int start_x, double start_y, int end_x, double end_y,
 
   line1_end_y = end_y;
 
-  line1Enabled = TRUE;
+  line1Enabled = true;
 
   update();
 }
@@ -2270,7 +2276,7 @@ void SignalCurve::drawCurve(float *samplebuf, int bsize, double max_val, double 
 
 void SignalCurve::setFillSurfaceEnabled(bool enabled)
 {
-  if(enabled == TRUE)
+  if(enabled == true)
   {
     fillsurface = 1;
   }
@@ -2514,7 +2520,7 @@ void SignalCurve::disableSpectrumColors()
 
 void SignalCurve::setV_rulerEnabled(bool value)
 {
-  if(value == TRUE)
+  if(value == true)
   {
     drawVruler = 1;
   }

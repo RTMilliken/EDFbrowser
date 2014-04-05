@@ -62,8 +62,8 @@ UI_BDF2EDFwindow::UI_BDF2EDFwindow(QWidget *w_parent)
   myobjectDialog->setMinimumSize(QSize(600, 526));
   myobjectDialog->setMaximumSize(QSize(600, 526));
   myobjectDialog->setWindowTitle("BDF+ to EDF+ converter");
-  myobjectDialog->setModal(TRUE);
-  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  myobjectDialog->setModal(true);
+  myobjectDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   label1 = new QLabel(myobjectDialog);
   label1->setGeometry(20, 20, 560, 26);
@@ -114,17 +114,17 @@ UI_BDF2EDFwindow::UI_BDF2EDFwindow(QWidget *w_parent)
   pushButton3 = new QPushButton(myobjectDialog);
   pushButton3->setGeometry(QRect(200, 476, 100, 26));
   pushButton3->setText("Convert");
-  pushButton3->setEnabled(FALSE);
+  pushButton3->setEnabled(false);
 
   pushButton4 = new QPushButton(myobjectDialog);
   pushButton4->setGeometry(QRect(440, 66, 140, 26));
   pushButton4->setText("Select all signals");
-  pushButton4->setEnabled(FALSE);
+  pushButton4->setEnabled(false);
 
   pushButton5 = new QPushButton(myobjectDialog);
   pushButton5->setGeometry(QRect(440, 118, 140, 26));
   pushButton5->setText("Deselect all signals");
-  pushButton5->setEnabled(FALSE);
+  pushButton5->setEnabled(false);
 
   QObject::connect(pushButton1,    SIGNAL(clicked()),            this,           SLOT(SelectFileButton()));
   QObject::connect(pushButton2,    SIGNAL(clicked()),            myobjectDialog, SLOT(close()));
@@ -255,9 +255,9 @@ void UI_BDF2EDFwindow::SelectFileButton()
 
     inputpath[0] = 0;
 
-    pushButton3->setEnabled(FALSE);
-    pushButton4->setEnabled(FALSE);
-    pushButton5->setEnabled(FALSE);
+    pushButton3->setEnabled(false);
+    pushButton4->setEnabled(false);
+    pushButton5->setEnabled(false);
   }
 
   strcpy(inputpath, QFileDialog::getOpenFileName(0, "Select inputfile", QString::fromLocal8Bit(recent_opendir), "BDF files (*.bdf *.BDF)").toLocal8Bit().data());
@@ -311,7 +311,7 @@ void UI_BDF2EDFwindow::SelectFileButton()
     SignalsTablewidget->setRowHeight(i, 20);
 
     SignalsTablewidget->setCellWidget(i, 0, new QCheckBox(edfhdr->edfparam[i].label));
-    ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setTristate(FALSE);
+    ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setTristate(false);
     ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setCheckState(Qt::Checked);
 
     if(!edfhdr->edfparam[i].annotation)
@@ -329,13 +329,13 @@ void UI_BDF2EDFwindow::SelectFileButton()
     }
     else
     {
-      ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setEnabled(FALSE);
+      ((QCheckBox *)(SignalsTablewidget->cellWidget(i, 0)))->setEnabled(false);
     }
   }
 
-  pushButton3->setEnabled(TRUE);
-  pushButton4->setEnabled(TRUE);
-  pushButton5->setEnabled(TRUE);
+  pushButton3->setEnabled(true);
+  pushButton4->setEnabled(true);
+  pushButton5->setEnabled(true);
 }
 
 
@@ -367,9 +367,9 @@ void UI_BDF2EDFwindow::StartConversion()
 
 
 
-  pushButton3->setEnabled(FALSE);
-  pushButton4->setEnabled(FALSE);
-  pushButton5->setEnabled(FALSE);
+  pushButton3->setEnabled(false);
+  pushButton4->setEnabled(false);
+  pushButton5->setEnabled(false);
 
   if(edfhdr==NULL)
   {
@@ -692,7 +692,7 @@ void UI_BDF2EDFwindow::StartConversion()
 
       qApp->processEvents();
 
-      if(progress.wasCanceled() == TRUE)
+      if(progress.wasCanceled() == true)
       {
         goto END_3;
       }

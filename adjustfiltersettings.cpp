@@ -84,8 +84,8 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
     strcat(txtbuf, signalcomp->signallabel);
   }
   filtersettings_dialog->setWindowTitle(txtbuf);
-  filtersettings_dialog->setModal(TRUE);
-  filtersettings_dialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  filtersettings_dialog->setModal(true);
+  filtersettings_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 
   for(i=0; i<5; i++)
   {
@@ -96,7 +96,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   label[1]->setText("Order");
   label[2]->setText("Frequency");
   label[3]->setText("Frequency 2");
-  label[3]->setVisible(FALSE);
+  label[3]->setVisible(false);
   label[4]->setText("Stepsize");
 
   filterbox = new QComboBox(filtersettings_dialog);
@@ -126,7 +126,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   freq2box->setMinimum(0.0001);
   freq2box->setMaximum(100000.0);
   freq2box->setValue(2.0);
-  freq2box->setVisible(FALSE);
+  freq2box->setVisible(false);
   freq2box->setSingleStep(1.0);
 
   stepsizebox = new QComboBox(filtersettings_dialog);
@@ -355,7 +355,7 @@ void AdjustFilterSettings::filterboxchanged(int i)
 
     label[1]->setText("Order");
     label[2]->setText("Frequency");
-    freq1box->setVisible(TRUE);
+    freq1box->setVisible(true);
     stepsizebox->clear();
     stepsizebox->addItem("0.01Hz");
     stepsizebox->addItem("0.1Hz");
@@ -367,8 +367,8 @@ void AdjustFilterSettings::filterboxchanged(int i)
     if((type == 3) || (type == 4))
     {
       freq2box->setValue(frequency2);
-      label[3]->setVisible(TRUE);
-      freq2box->setVisible(TRUE);
+      label[3]->setVisible(true);
+      freq2box->setVisible(true);
       orderbox->setMinimum(2);
       orderbox->setSingleStep(2);
       orderbox->setMaximum(16);
@@ -376,8 +376,8 @@ void AdjustFilterSettings::filterboxchanged(int i)
     else
     {
       freq2box->setValue(0.0);
-      label[3]->setVisible(FALSE);
-      freq2box->setVisible(FALSE);
+      label[3]->setVisible(false);
+      freq2box->setVisible(false);
       orderbox->setMinimum(1);
       orderbox->setSingleStep(1);
       orderbox->setMaximum(8);
@@ -416,9 +416,9 @@ void AdjustFilterSettings::filterboxchanged(int i)
 
     label[1]->setText("Size");
     label[2]->setText("");
-    freq1box->setVisible(FALSE);
-    label[3]->setVisible(FALSE);
-    freq2box->setVisible(FALSE);
+    freq1box->setVisible(false);
+    label[3]->setVisible(false);
+    freq2box->setVisible(false);
     orderbox->setMinimum(2);
     orderbox->setSingleStep(1);
     orderbox->setMaximum(10000);

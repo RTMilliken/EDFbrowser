@@ -131,10 +131,10 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   strcpy(physdimension, signalcomp->physdimension);
 
   SpectrumDialog = new QDialog();
-  SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, TRUE);
+  SpectrumDialog->setAttribute(Qt::WA_DeleteOnClose, true);
   SpectrumDialog->setMinimumSize(QSize(650, 480));
-  SpectrumDialog->setSizeGripEnabled(TRUE);
-  SpectrumDialog->setModal(FALSE);
+  SpectrumDialog->setSizeGripEnabled(true);
+  SpectrumDialog->setModal(false);
   SpectrumDialog->setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
   if(mainwindow->spectrum_sqrt)
   {
@@ -181,7 +181,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
     curve1->setV_label(str);
   }
   curve1->create_button("to Text");
-  curve1->setDashBoardEnabled(FALSE);
+  curve1->setDashBoardEnabled(false);
 
   flywheel1 = new UI_Flywheel;
   flywheel1->setMinimumSize(20, 85);
@@ -191,7 +191,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   amplitudeSlider->setMinimum(1);
   amplitudeSlider->setMaximum(2000);
   amplitudeSlider->setValue(1000);
-  amplitudeSlider->setInvertedAppearance(TRUE);
+  amplitudeSlider->setInvertedAppearance(true);
   amplitudeSlider->setMinimumSize(15, 280);
 
   amplitudeLabel = new QLabel;
@@ -201,7 +201,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   sqrtCheckBox = new QCheckBox("Amplitude");
   sqrtCheckBox->setMinimumSize(70, 25);
-  sqrtCheckBox->setTristate(FALSE);
+  sqrtCheckBox->setTristate(false);
   if(mainwindow->spectrum_sqrt)
   {
     sqrtCheckBox->setCheckState(Qt::Checked);
@@ -213,7 +213,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   VlogCheckBox = new QCheckBox("Log");
   VlogCheckBox->setMinimumSize(70, 25);
-  VlogCheckBox->setTristate(FALSE);
+  VlogCheckBox->setTristate(false);
   if(mainwindow->spectrum_vlog)
   {
     VlogCheckBox->setCheckState(Qt::Checked);
@@ -225,7 +225,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   BWCheckBox = new QCheckBox("B/W");
   BWCheckBox->setMinimumSize(70, 25);
-  BWCheckBox->setTristate(FALSE);
+  BWCheckBox->setTristate(false);
   if(mainwindow->spectrum_bw == 1)
   {
     BWCheckBox->setCheckState(Qt::Checked);
@@ -305,7 +305,7 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
   SpectrumDialog->setLayout(vlayout1);
 
   t1 = new QTimer(this);
-  t1->setSingleShot(TRUE);
+  t1->setSingleShot(true);
   t1->start(100);
 
   QObject::connect(t1,                SIGNAL(timeout()),              this, SLOT(update_curve()));
@@ -466,7 +466,7 @@ void UI_FreqSpectrumWindow::sliderMoved(int)
     curve1->setV_label(str);
   }
 
-  if(BWCheckBox->isChecked() == TRUE)
+  if(BWCheckBox->isChecked() == true)
   {
     curve1->setSignalColor(Qt::black);
     curve1->setBackgroundColor(Qt::white);
@@ -592,7 +592,7 @@ void UI_FreqSpectrumWindow::update_curve()
 
   busy = 1;
 
-  curve1->setUpdatesEnabled(FALSE);
+  curve1->setUpdatesEnabled(false);
 
   samples = signalcomp->samples_on_screen;
 
@@ -605,7 +605,7 @@ void UI_FreqSpectrumWindow::update_curve()
 
   if((samples < 10) || (viewbuf == NULL))
   {
-    curve1->setUpdatesEnabled(TRUE);
+    curve1->setUpdatesEnabled(true);
 
     busy = 0;
 
@@ -1011,7 +1011,7 @@ void UI_FreqSpectrumWindow::update_curve()
 
   sliderMoved(0);
 
-  curve1->setUpdatesEnabled(TRUE);
+  curve1->setUpdatesEnabled(true);
 
   busy = 0;
 }

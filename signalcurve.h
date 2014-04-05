@@ -40,7 +40,11 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPushButton>
+#if QT_VERSION < 0x050000
 #include <QPrinter>
+#else
+#include <QtPrintSupport>
+#endif
 #include <QPrintDialog>
 #include <QFileDialog>
 #include <QPixmap>
@@ -135,7 +139,9 @@ signals:
 
 private slots:
   void exec_sidemenu();
+#if QT_VERSION < 0x050000
   void print_to_postscript();
+#endif
   void print_to_pdf();
   void print_to_image();
   void print_to_printer();
@@ -146,7 +152,9 @@ private:
   QDialog     *sidemenu;
 
   QPushButton *sidemenuButton1,
+#if QT_VERSION < 0x050000
               *sidemenuButton2,
+#endif
               *sidemenuButton3,
               *sidemenuButton4,
               *sidemenuButton5,

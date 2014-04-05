@@ -62,7 +62,7 @@ UI_Flywheel::UI_Flywheel(QWidget *w_parent) : QWidget(w_parent)
 
   t1 = new QTimer(this);
   t2 = new QTimer(this);
-  t2->setSingleShot(TRUE);
+  t2->setSingleShot(true);
 
   connect(t1, SIGNAL(timeout()), this, SLOT(wheel_rotate()));
   connect(t2, SIGNAL(timeout()), this, SLOT(t2_time_out()));
@@ -301,7 +301,7 @@ void UI_Flywheel::mousePressEvent(QMouseEvent *press_event)
 
     cursor_above_object = 1;
 
-    setMouseTracking(TRUE);
+    setMouseTracking(true);
 
     t2->start(100);
   }
@@ -324,7 +324,7 @@ void UI_Flywheel::mouseReleaseEvent(QMouseEvent *release_event)
       }
     }
 
-    setMouseTracking(FALSE);
+    setMouseTracking(false);
 
     use_move_events = 0;
 
