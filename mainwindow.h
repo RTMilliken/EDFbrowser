@@ -42,9 +42,11 @@
 #include <QSlider>
 #include <QStyle>
 #if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#include <QGtkStyle>
-#include <QWindowsStyle>
+  #include <QPlastiqueStyle>
+  #include <QGtkStyle>
+  #include <QWindowsStyle>
+#else
+  #include <QStyleFactory>
 #endif
 #include <QtGlobal>
 #include <QCloseEvent>
@@ -55,7 +57,11 @@
 #endif
 
 #ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
   #include <QMacStyle>
+#else
+  #include <QStyleFactory>
+#endif
   #include <sys/types.h>
   #include <sys/stat.h>
 #endif
