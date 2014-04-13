@@ -51,6 +51,17 @@ model:
 
 */
 
+#define FILTERTYPE_HIGHPASS  0
+#define FILTERTYPE_LOWPASS   1
+#define FILTERTYPE_NOTCH     2
+#define FILTERTYPE_BANDPASS  3
+#define FILTERTYPE_BANDSTOP  4
+
+#define FILTERMODEL_BUTTERWORTH    0
+#define FILTERMODEL_CHEBYSHEV      1
+#define FILTERMODEL_BESSEL         2
+#define FILTERMODEL_MOVINGAVERAGE  3
+
 
 #include "filter_dialog.h"
 
@@ -240,7 +251,7 @@ void UI_FilterDialog::updatecurve(void)
 
   model = modelbox->currentIndex();
 
-  if(model == 3)
+  if(model == FILTERMODEL_MOVINGAVERAGE)
   {
     for(i=0; i<arraysize; i++)
     {
@@ -254,85 +265,85 @@ void UI_FilterDialog::updatecurve(void)
 
   ripple = -(ripplebox->value());
 
-  if((type == 3) || (type == 4))
+  if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
   {
     frequency = frequency2 * (freqbox->value() / freq2box->value());
   }
 
   spec_str_1[0] = 0;
 
-  if(type == 0)
+  if(type == FILTERTYPE_HIGHPASS)
   {
-    if(model == 0)
+    if(model == FILTERMODEL_BUTTERWORTH)
     {
       sprintf(spec_str_1, "HpBu%i/%f", order, frequency);
     }
 
-    if(model == 1)
+    if(model == FILTERMODEL_CHEBYSHEV)
     {
       sprintf(spec_str_1, "HpCh%i/%f/%f", order, ripple, frequency);
     }
 
-    if(model == 2)
+    if(model == FILTERMODEL_BESSEL)
     {
       sprintf(spec_str_1, "HpBe%i/%f", order, frequency);
     }
   }
 
-  if(type == 1)
+  if(type == FILTERTYPE_LOWPASS)
   {
-    if(model == 0)
+    if(model == FILTERMODEL_BUTTERWORTH)
     {
       sprintf(spec_str_1, "LpBu%i/%f", order, frequency);
     }
 
-    if(model == 1)
+    if(model == FILTERMODEL_CHEBYSHEV)
     {
       sprintf(spec_str_1, "LpCh%i/%f/%f", order, ripple, frequency);
     }
 
-    if(model == 2)
+    if(model == FILTERMODEL_BESSEL)
     {
       sprintf(spec_str_1, "LpBe%i/%f", order, frequency);
     }
   }
 
-  if(type == 2)
+  if(type == FILTERTYPE_NOTCH)
   {
     sprintf(spec_str_1, "BsRe/%i/%f", order, frequency);
   }
 
-  if(type == 3)
+  if(type == FILTERTYPE_BANDPASS)
   {
-    if(model == 0)
+    if(model == FILTERMODEL_BUTTERWORTH)
     {
       sprintf(spec_str_1, "BpBu%i/%f-%f", order, frequency, frequency2);
     }
 
-    if(model == 1)
+    if(model == FILTERMODEL_CHEBYSHEV)
     {
       sprintf(spec_str_1, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
     }
 
-    if(model == 2)
+    if(model == FILTERMODEL_BESSEL)
     {
       sprintf(spec_str_1, "BpBe%i/%f-%f", order, frequency, frequency2);
     }
   }
 
-  if(type == 4)
+  if(type == FILTERTYPE_BANDSTOP)
   {
-    if(model == 0)
+    if(model == FILTERMODEL_BUTTERWORTH)
     {
       sprintf(spec_str_1, "BsBu%i/%f-%f", order, frequency, frequency2);
     }
 
-    if(model == 1)
+    if(model == FILTERMODEL_CHEBYSHEV)
     {
       sprintf(spec_str_1, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
     }
 
-    if(model == 2)
+    if(model == FILTERMODEL_BESSEL)
     {
       sprintf(spec_str_1, "BsBe%i/%f-%f", order, frequency, frequency2);
     }
@@ -357,7 +368,7 @@ void UI_FilterDialog::updatecurve(void)
     array[i] = fid_response_pha(ff, (double)i / (double)rate, array_pha + i);
   }
 
-  if((type == 3) || (type == 4))
+  if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
   {
     curve1->drawCurve(array, arraysize, 1.4, 0.0, array_pha, arraysize, 0.0, 1.0, frequency, frequency2);
   }
@@ -395,10 +406,12 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
   freqboxlabel->setText("Frequency");
   freqbox->setVisible(true);
 
-  if(type != 2)
+  if(type != FILTERTYPE_NOTCH)
   {
     orderboxlabel->setText("Order");
-    if((type == 3) || (type == 4))
+    orderboxlabel->setVisible(true);
+
+    if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
     {
       orderbox->setMaximum(16);
     }
@@ -409,47 +422,46 @@ void UI_FilterDialog::filtermodelboxvaluechanged(int model)
     orderbox->setSingleStep(1);
     orderbox->setMinimum(1);
     orderbox->setValue(last_order);
+    orderbox->setVisible(true);
+  }
 
-    if(model == 0)
-    {
-      ripplebox->setVisible(false);
-      ordervaluelabel->setVisible(true);
-      orderlabel->setText("Slope roll-off:");
-      ordervaluelabel->setText(QString::number(6 * orderbox->value(), 'f', 0).append(" dB / octave"));
-    }
+  if(model == FILTERMODEL_BUTTERWORTH)
+  {
+    ripplebox->setVisible(false);
+    orderlabel->setText("Slope roll-off:");
+    orderlabel->setVisible(true);
+    ordervaluelabel->setText(QString::number(6 * orderbox->value(), 'f', 0).append(" dB / octave"));
+    ordervaluelabel->setVisible(true);
+  }
 
-    if(model == 1)
-    {
-      orderlabel->setText("passband ripple");
-      ordervaluelabel->setVisible(false);
-      ripplebox->setVisible(true);
-    }
+  if(model == FILTERMODEL_CHEBYSHEV)
+  {
+    orderlabel->setText("passband ripple");
+    orderlabel->setVisible(true);
+    ordervaluelabel->setVisible(false);
+    ripplebox->setVisible(true);
+  }
 
-    if(model == 2)
-    {
-      ripplebox->setVisible(false);
-      ordervaluelabel->setVisible(true);
-      orderlabel->setText("");
-      ordervaluelabel->setText("");
-    }
+  if(model == FILTERMODEL_BESSEL)
+  {
+    ripplebox->setVisible(false);
+    ordervaluelabel->setVisible(false);
+    orderlabel->setVisible(false);
+  }
 
-    if(model == 3)
-    {
-      orderlabel->setText("");
-      ordervaluelabel->setText("");
-      freqboxlabel->setText("");
-      freqbox2label->setText("");
-      freqbox->setVisible(false);
-      ripplebox->setVisible(false);
-      ordervaluelabel->setVisible(false);
-      orderlabel->setText("");
-      ordervaluelabel->setText("");
-      orderboxlabel->setText("Samples");
-      orderbox->setMaximum(10000);
-      orderbox->setSingleStep(1);
-      orderbox->setMinimum(2);
-      orderbox->setValue(last_samples);
-    }
+  if(model == FILTERMODEL_MOVINGAVERAGE)
+  {
+    orderlabel->setVisible(false);
+    ordervaluelabel->setVisible(false);
+    freqboxlabel->setVisible(false);
+    freqbox2label->setVisible(false);
+    freqbox->setVisible(false);
+    ripplebox->setVisible(false);
+    orderboxlabel->setText("Samples");
+    orderbox->setMaximum(10000);
+    orderbox->setSingleStep(1);
+    orderbox->setMinimum(2);
+    orderbox->setValue(last_samples);
   }
 
   updatecurve();
@@ -472,23 +484,24 @@ void UI_FilterDialog::orderboxvaluechanged(int order)
 
   model = modelbox->currentIndex();
 
-  if(type == 2)
+  if(type == FILTERTYPE_NOTCH)
   {
     sprintf(str,"%f Hz", freqbox->value() / orderbox->value());
     remove_trailing_zeros(str);
     ordervaluelabel->setText(str);
+    ordervaluelabel->setVisible(true);
 
     last_qfactor = order;
   }
   else
   {
-    if((type == 3) || (type == 4))
+    if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
     {
       last_order = order / 2;
     }
     else
     {
-      if(model == 3)
+      if(model == FILTERMODEL_MOVINGAVERAGE)
       {
         last_samples = order;
       }
@@ -498,28 +511,33 @@ void UI_FilterDialog::orderboxvaluechanged(int order)
       }
     }
 
-    if(model == 0)
+    if(model == FILTERMODEL_BUTTERWORTH)
     {
       orderlabel->setText("Slope roll-off:");
+      orderlabel->setVisible(true);
       ordervaluelabel->setText(QString::number(6 * last_order, 'f', 0).append(" dB / octave"));
+      ordervaluelabel->setVisible(true);
     }
 
-    if(model == 1)
+    if(model == FILTERMODEL_CHEBYSHEV)
     {
       orderlabel->setText("passband ripple");
-      ordervaluelabel->setText("1 dB");
+      orderlabel->setVisible(true);
+      ordervaluelabel->setVisible(false);
     }
 
-    if(model == 2)
+    if(model == FILTERMODEL_BESSEL)
     {
-      orderlabel->setText("");
-      ordervaluelabel->setText("");
+      ripplebox->setVisible(false);
+      orderlabel->setVisible(false);
+      ordervaluelabel->setVisible(false);
     }
 
-    if(model == 3)
+    if(model == FILTERMODEL_MOVINGAVERAGE)
     {
-      orderlabel->setText("");
-      ordervaluelabel->setText("");
+      orderlabel->setVisible(false);
+      ordervaluelabel->setVisible(false);
+      freqboxlabel->setVisible(false);
     }
   }
 
@@ -535,31 +553,36 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
   QObject::disconnect(orderbox, SIGNAL(valueChanged(int)),        this, SLOT(orderboxvaluechanged(int)));
   QObject::disconnect(modelbox, SIGNAL(currentIndexChanged(int)), this, SLOT(filtermodelboxvaluechanged(int)));
 
-  if(type == 2)
+  if(type == FILTERTYPE_NOTCH)
   {
     ripplebox->setVisible(false);
-    ordervaluelabel->setVisible(true);
     orderboxlabel->setText("Notch Q-factor");
+    orderboxlabel->setVisible(true);
     orderbox->setMaximum(100);
     orderbox->setSingleStep(1);
     orderbox->setMinimum(3);
     orderbox->setValue(last_qfactor);
+    orderbox->setVisible(true);
     orderlabel->setText("-3 dB bandwidth:");
     sprintf(str,"%f Hz", freqbox->value() / orderbox->value());
     remove_trailing_zeros(str);
     ordervaluelabel->setText(str);
+    ordervaluelabel->setVisible(true);
     modelbox->clear();
     modelbox->addItem("Resonator");
+    modelbox->setVisible(true);
   }
   else
   {
     orderboxlabel->setText("Order");
-    if((type == 3) || (type == 4))
+    orderboxlabel->setVisible(true);
+    if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
     {
       orderbox->setMaximum(16);
       orderbox->setSingleStep(2);
       orderbox->setMinimum(2);
       orderbox->setValue(last_order * 2);
+      orderbox->setVisible(true);
     }
     else
     {
@@ -567,68 +590,73 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
       orderbox->setSingleStep(1);
       orderbox->setMinimum(1);
       orderbox->setValue(last_order);
+      orderbox->setVisible(true);
     }
 
-    if(last_model == 3)
+    if(last_model == FILTERMODEL_MOVINGAVERAGE)
     {
-      if(type < 2)
+      if((type == FILTERTYPE_HIGHPASS) || (type == FILTERTYPE_LOWPASS))
       {
         ripplebox->setVisible(false);
         ordervaluelabel->setVisible(false);
-        orderlabel->setText("");
-        ordervaluelabel->setText("");
+        orderlabel->setVisible(false);
+        ordervaluelabel->setVisible(false);
         orderboxlabel->setText("Samples");
+        orderboxlabel->setVisible(true);
         orderbox->setMaximum(10000);
         orderbox->setSingleStep(1);
         orderbox->setMinimum(2);
         orderbox->setValue(last_samples);
+        orderbox->setVisible(true);
       }
       else
       {
-        last_model = 0;
+        last_model = FILTERMODEL_BUTTERWORTH;
       }
     }
 
-    if(last_model == 0)
+    if(last_model == FILTERMODEL_BUTTERWORTH)
     {
       ripplebox->setVisible(false);
-      ordervaluelabel->setVisible(true);
       orderlabel->setText("Slope roll-off:");
+      orderlabel->setVisible(true);
       ordervaluelabel->setText(QString::number(6 * last_order, 'f', 0).append(" dB / octave"));
+      ordervaluelabel->setVisible(true);
     }
 
-    if(last_model == 1)
+    if(last_model == FILTERMODEL_CHEBYSHEV)
     {
       ordervaluelabel->setVisible(false);
       ripplebox->setVisible(true);
       orderlabel->setText("passband ripple");
-      ordervaluelabel->setText("1 dB");
+      orderlabel->setVisible(true);
     }
 
-    if(last_model == 2)
+    if(last_model == FILTERMODEL_BESSEL)
     {
       ripplebox->setVisible(false);
-      ordervaluelabel->setVisible(true);
-      orderlabel->setText("");
-      ordervaluelabel->setText("");
+      orderlabel->setVisible(false);
+      ordervaluelabel->setVisible(false);
     }
 
     modelbox->clear();
     modelbox->addItem("Butterworth");
     modelbox->addItem("Chebyshev");
     modelbox->addItem("Bessel");
-    if(type < 2)
+    if((type == FILTERTYPE_HIGHPASS) || (type == FILTERTYPE_LOWPASS))
     {
       modelbox->addItem("Moving Average");
     }
     modelbox->setCurrentIndex(last_model);
   }
 
-  if((type == 3) || (type == 4))
+  if((type == FILTERTYPE_BANDPASS) || (type == FILTERTYPE_BANDSTOP))
   {
     freqboxlabel->setText("Frequency 1");
+    freqboxlabel->setVisible(true);
     freqbox2label->setText("Frequency 2");
     freqbox2label->setVisible(true);
+    freqbox->setVisible(true);
     freq2box->setVisible(true);
   }
   else
@@ -636,17 +664,16 @@ void UI_FilterDialog::filtertypeboxvaluechanged(int type)
     freqbox2label->setVisible(false);
     freq2box->setVisible(false);
 
-    if(last_model == 3)
+    if(last_model == FILTERMODEL_MOVINGAVERAGE)
     {
-      orderlabel->setText("");
-      ordervaluelabel->setText("");
-      freqboxlabel->setText("");
-      freqbox2label->setText("");
+      orderlabel->setVisible(false);
+      ordervaluelabel->setVisible(false);
+      freqboxlabel->setVisible(false);
     }
     else
     {
       freqboxlabel->setText("Frequency");
-      freqbox2label->setText("");
+      freqboxlabel->setVisible(true);
     }
   }
 
@@ -667,7 +694,7 @@ void UI_FilterDialog::frequencyboxvaluechanged(double value)
     freq2box->setValue(value * 1.12);
   }
 
-  if(typebox->currentIndex() == 2)
+  if(typebox->currentIndex() == FILTERTYPE_NOTCH)
   {
     sprintf(str,"%f Hz", freqbox->value() / orderbox->value());
     remove_trailing_zeros(str);
@@ -748,14 +775,14 @@ void UI_FilterDialog::ApplyButtonClicked()
     }
   }
 
-  if(model < 3)
+  if((model == FILTERMODEL_BUTTERWORTH) || (model == FILTERMODEL_CHEBYSHEV) || (model == FILTERMODEL_BESSEL))
   {
     for(i=0; i<n; i++)
     {
       item = selectedlist.at(i);
       s = list->row(item);
 
-      if(type < 3)
+      if((type == FILTERTYPE_HIGHPASS) || (type == FILTERTYPE_LOWPASS) || (type == FILTERTYPE_NOTCH))
       {
         if(frequency >= ((mainwindow->signalcomp[s]->edfhdr->edfparam[mainwindow->signalcomp[s]->edfsignal[0]].smp_per_record
                         / mainwindow->signalcomp[s]->edfhdr->data_record_duration)
@@ -780,78 +807,78 @@ void UI_FilterDialog::ApplyButtonClicked()
 
     spec_str_1[0] = 0;
 
-    if(type == 0)
+    if(type == FILTERTYPE_HIGHPASS)
     {
-      if(model == 0)
+      if(model == FILTERMODEL_BUTTERWORTH)
       {
         sprintf(spec_str_1, "HpBu%i/%f", order, frequency);
       }
 
-      if(model == 1)
+      if(model == FILTERMODEL_CHEBYSHEV)
       {
         sprintf(spec_str_1, "HpCh%i/%f/%f", order, ripple, frequency);
       }
 
-      if(model == 2)
+      if(model == FILTERMODEL_BESSEL)
       {
         sprintf(spec_str_1, "HpBe%i/%f", order, frequency);
       }
     }
 
-    if(type == 1)
+    if(type == FILTERTYPE_LOWPASS)
     {
-      if(model == 0)
+      if(model == FILTERMODEL_BUTTERWORTH)
       {
         sprintf(spec_str_1, "LpBu%i/%f", order, frequency);
       }
 
-      if(model == 1)
+      if(model == FILTERMODEL_CHEBYSHEV)
       {
         sprintf(spec_str_1, "LpCh%i/%f/%f", order, ripple, frequency);
       }
 
-      if(model == 2)
+      if(model == FILTERMODEL_BESSEL)
       {
         sprintf(spec_str_1, "LpBe%i/%f", order, frequency);
       }
     }
 
-    if(type == 2)
+    if(type == FILTERTYPE_NOTCH)
     {
       sprintf(spec_str_1, "BsRe/%i/%f", order, frequency);
     }
 
-    if(type == 3)
+    if(type == FILTERTYPE_BANDPASS)
     {
-      if(model == 0)
+      if(model == FILTERMODEL_BUTTERWORTH)
       {
         sprintf(spec_str_1, "BpBu%i/%f-%f", order, frequency, frequency2);
       }
 
-      if(model == 1)
+      if(model == FILTERMODEL_CHEBYSHEV)
       {
         sprintf(spec_str_1, "BpCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
       }
 
-      if(model == 2)
+      if(model == FILTERMODEL_BESSEL)
       {
         sprintf(spec_str_1, "BpBe%i/%f-%f", order, frequency, frequency2);
       }
     }
 
-    if(type == 4)
+    if(type == FILTERTYPE_BANDSTOP)
     {
-      if(model == 0)
+      if(model == FILTERMODEL_BUTTERWORTH)
       {
         sprintf(spec_str_1, "BsBu%i/%f-%f", order, frequency, frequency2);
       }
 
-      if(model == 1)
+      if(model == FILTERMODEL_CHEBYSHEV)
       {
         sprintf(spec_str_1, "BsCh%i/%f/%f-%f", order, ripple, frequency, frequency2);
       }
 
-      if(model == 2)
+      if(model == FILTERMODEL_BESSEL)
       {
         sprintf(spec_str_1, "BsBe%i/%f-%f", order, frequency, frequency2);
       }
@@ -903,7 +930,7 @@ void UI_FilterDialog::ApplyButtonClicked()
     }
   }
 
-  if(model == 3)
+  if(model == FILTERMODEL_MOVINGAVERAGE)
   {
     for(i=0; i<n; i++)
     {
