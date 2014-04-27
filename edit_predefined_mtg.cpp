@@ -94,7 +94,7 @@ void UI_edit_predefined_mtg_window::rowClicked(QListWidgetItem *item)
 
   button1 = new QPushButton(dialog);
   button1->setGeometry(20, 20, 100, 25);
-  button1->setText("Change");
+  button1->setText("Edit");
 
   button2 = new QPushButton(dialog);
   button2->setGeometry(20, 55, 100, 25);

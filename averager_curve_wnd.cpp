@@ -52,6 +52,8 @@ UI_AverageCurveWindow::UI_AverageCurveWindow(struct signalcompblock *signal_comp
 
   averager_curve_dialog_is_destroyed = 0;
 
+  class_is_deleted = 0;
+
   mainwindow = (UI_Mainwindow *)w_parent;
 
   signalcomp = signal_comp;
@@ -605,13 +607,18 @@ void UI_AverageCurveWindow::averager_curve_dialogDestroyed(QObject *)
 
   mainwindow->averagecurvedialog[averagecurvedialognumber] = NULL;
 
-  delete this;
+  if(!class_is_deleted)
+  {
+    delete this;
+  }
 }
 
 
 UI_AverageCurveWindow::~UI_AverageCurveWindow()
 {
   int i;
+
+  class_is_deleted = 1;
 
   if(!averager_curve_dialog_is_destroyed)
   {

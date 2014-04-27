@@ -56,7 +56,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "signalcurve.h"
-#include "fourier.h"
 #include "popup_messagewindow.h"
 #include "utils.h"
 #include "filter.h"
@@ -121,6 +120,7 @@ private:
   int samples,
       steps,
       spectrumdialog_is_destroyed,
+      class_is_deleted,
       spectrumdialognumber,
       flywheel_value;
 

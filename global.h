@@ -57,12 +57,6 @@
 #define ANNOT_ID_NK_TRIGGER   0
 #define ANNOT_ID_BS_TRIGGER   1
 
-// #define BK_MRS_project
-// This define activates temporary code for private use in a certain project.
-// Do not use this code, it will be removed in future.
-// When this code is activated, on pressing the 'p'-key, some values will be written
-// to a file.
-
 #include <stdio.h>
 
 #include "filter.h"

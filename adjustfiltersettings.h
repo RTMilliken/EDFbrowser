@@ -51,6 +51,7 @@
 #include "viewcurve.h"
 #include "popup_messagewindow.h"
 #include "ravg_filter.h"
+#include "utils.h"
 
 #include "third_party/fidlib/fidlib.h"
 

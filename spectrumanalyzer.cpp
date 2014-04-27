@@ -58,6 +58,8 @@ UI_FreqSpectrumWindow::UI_FreqSpectrumWindow(struct signalcompblock *signal_comp
 
   spectrumdialog_is_destroyed = 0;
 
+  class_is_deleted = 0;
+
   flywheel_value = 1050;
 
   spectrumdialog = spectrdialog;
@@ -1023,12 +1025,19 @@ void UI_FreqSpectrumWindow::SpectrumDialogDestroyed(QObject *)
 
   spectrumdialog[spectrumdialognumber] = NULL;
 
-  delete this;
+  if(!class_is_deleted)
+  {
+    delete this;
+  }
 }
 
 
 UI_FreqSpectrumWindow::~UI_FreqSpectrumWindow()
 {
+  int i;
+
+  class_is_deleted = 1;
+
   if(!spectrumdialog_is_destroyed)
   {
     SpectrumDialog->close();
@@ -1055,6 +1064,16 @@ UI_FreqSpectrumWindow::~UI_FreqSpectrumWindow()
   }
 
   spectrumdialog[spectrumdialognumber] = NULL;
+
+  for(i=0; i<MAXSPECTRUMDIALOGS; i++)
+  {
+    if(signalcomp->spectr_dialog[i] == spectrumdialognumber + 1)
+    {
+      signalcomp->spectr_dialog[i] = 0;
+
+      break;
+    }
+  }
 }
 
 

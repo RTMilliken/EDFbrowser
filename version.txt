@@ -7,9 +7,9 @@
 
  - The spectrumanalyzer now can plot a logarithmic vertical scale.
 
- - Removed compile-errors when using Qt5 (due to bugs, it's not advised to use Qt5 yet).
+ - Fixed a bug in the filter dialog that could cause some widgets not being shown.
 
- - Fixed a bug in the filter dialog that caused some widgets not being shown.
+ - Removed compile-errors when using Qt5 (due to bugs, it's not advised to use Qt5 yet).
 
 
 

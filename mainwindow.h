@@ -326,16 +326,6 @@ private:
        montagepath[MAX_PATH_LENGTH],
        recent_file_path[MAX_RECENTFILES][MAX_PATH_LENGTH];
 
-#ifdef BK_MRS_project
-// temporary code for private use in a certain project
-// do not use this code, it will be removed in future
-
-  QAction  *keyboard_bk_mrs_project_act;
-
-  FILE     *bk_mrs_project_file;
-
-#endif
-
   QAction  *former_page_Act,
            *shift_page_left_Act,
            *shift_page_right_Act,
@@ -524,14 +514,6 @@ private slots:
   void convert_manscan_to_edf();
   void convert_scpecg_to_edf();
 //  void search_pattern();
-
-#ifdef BK_MRS_project
-// temporary code for private use in a certain project
-// do not use this code, it will be removed in future
-
-  void keyboard_bk_mrs_project_func();
-
-#endif
 
 protected:
   void closeEvent(QCloseEvent *);

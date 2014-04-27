@@ -57,7 +57,6 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "signalcurve.h"
-#include "fourier.h"
 #include "popup_messagewindow.h"
 #include "utils.h"
 #include "filter.h"

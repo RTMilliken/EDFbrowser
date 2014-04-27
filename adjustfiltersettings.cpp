@@ -72,8 +72,8 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   filtersettings_dialog = new QDialog(w_parent);
 
-  filtersettings_dialog->setMinimumSize(360, 255);
-  filtersettings_dialog->setMaximumSize(360, 255);
+  filtersettings_dialog->setMinimumSize(460, 255);
+  filtersettings_dialog->setMaximumSize(460, 255);
   strcpy(txtbuf, "Filter settings ");
   if(signalcomp->alias[0] != 0)
   {
@@ -100,7 +100,7 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
   label[4]->setText("Stepsize");
 
   filterbox = new QComboBox(filtersettings_dialog);
-  filterbox->setGeometry(120, 10, 230, 25);
+  filterbox->setGeometry(120, 10, 330, 25);
 
   orderbox = new QSpinBox(filtersettings_dialog);
   orderbox->setGeometry(120, 45, 100, 25);
@@ -144,10 +144,10 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
   filter_cnt = 0;
 
+  txtbuf[0] = 0;
+
   for(i=0; i<signalcomp->fidfilter_cnt; i++)
   {
-    txtbuf[0] = 0;
-
     type = signalcomp->fidfilter_type[i];
 
     model = signalcomp->fidfilter_model[i];
@@ -155,6 +155,8 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
     order = signalcomp->fidfilter_order[i];
 
     ripple = signalcomp->fidfilter_ripple[i];
+
+    frequency1 = signalcomp->fidfilter_freq[i];
 
     if(type == 0)
     {
@@ -233,6 +235,12 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
       }
     }
 
+    sprintf(txtbuf + strlen(txtbuf), " %f", frequency1);
+
+    remove_trailing_zeros(txtbuf);
+
+    strcat(txtbuf, " Hz");
+
     filterbox->addItem(txtbuf);
 
     brand[filter_cnt++] = 0;
@@ -246,13 +254,15 @@ AdjustFilterSettings::AdjustFilterSettings(struct signalcompblock *signal_comp, 
 
     if(type == 0)
     {
-      filterbox->addItem("Highpass Moving Average");
+      sprintf(txtbuf, "Highpass Moving Average %i samples", size);
     }
 
     if(type == 1)
     {
-      filterbox->addItem("Lowpass Moving Average");
+      sprintf(txtbuf, "Lowpass Moving Average %i samples", size);
     }
+
+    filterbox->addItem(txtbuf);
 
     brand[filter_cnt++] = 1;
   }
