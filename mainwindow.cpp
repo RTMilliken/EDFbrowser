@@ -6194,7 +6194,7 @@ void UI_Mainwindow::write_settings()
   strcpy(cfg_path, specialFolder(CSIDL_APPDATA).toLocal8Bit().data());
   strcat(cfg_path, "\\");
   strcat(cfg_path, PROGRAM_NAME);
-  _mkdir(cfg_path);
+  mkdir(cfg_path);
   strcat(cfg_path, "\\settings.xml");
 #endif
 
@@ -6307,7 +6307,7 @@ void UI_Mainwindow::write_settings()
                     use_threads);
 
 #ifdef Q_OS_WIN32
-    fprintf(cfgfile, "      <maxfilesize_to_readin_annotations>%I64d</maxfilesize_to_readin_annotations>\n",
+    __mingw_fprintf(cfgfile, "      <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",
                     maxfilesize_to_readin_annotations);
 #else
     fprintf(cfgfile, "      <maxfilesize_to_readin_annotations>%lli</maxfilesize_to_readin_annotations>\n",

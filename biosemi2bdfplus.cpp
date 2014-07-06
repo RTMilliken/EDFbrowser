@@ -797,7 +797,7 @@ void UI_BIOSEMI2BDFPLUSwindow::SelectFileButton()
   progress.reset();
 
 #ifdef Q_OS_WIN32
-  snprintf(str, 2048, "Done. Converted %I64d input trigger events to BDF+ annotations.\n"
+  __mingw_snprintf(str, 2048, "Done. Converted %lli input trigger events to BDF+ annotations.\n"
                       "\nBDF+ file is located at %s", trigger_cnt, outputpath);
 #else
   snprintf(str, 2048, "Done. Converted %lli input trigger events to BDF+ annotations.\n"

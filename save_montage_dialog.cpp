@@ -266,7 +266,7 @@ void UI_SaveMontagewindow::SaveButtonClicked()
   }
 
 #ifdef Q_OS_WIN32
-  fprintf(mtgfile, "  <pagetime>%I64d</pagetime>\n", mainwindow->pagetime);
+  __mingw_fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
 #else
   fprintf(mtgfile, "  <pagetime>%lli</pagetime>\n", mainwindow->pagetime);
 #endif

@@ -347,7 +347,7 @@ int get_tal_timestamp_digit_cnt(struct edfhdrblock *hdr)
   time = (hdr->datarecords * hdr->long_data_record_duration) / TIME_DIMENSION;
 
 #ifdef _WIN32
-  timestamp_digits = snprintf(scratchpad, 256, "%I64d", time);
+  timestamp_digits = __mingw_snprintf(scratchpad, 256, "%lli", time);
 #else
   timestamp_digits = snprintf(scratchpad, 256, "%lli", time);
 #endif
@@ -427,7 +427,7 @@ int get_max_annotation_strlen(struct annotationblock **list)
   while(annot!=NULL)
   {
 #ifdef _WIN32
-    len = snprintf(scratchpad, 256, "%I64d", annot->onset / TIME_DIMENSION);
+    len = __mingw_snprintf(scratchpad, 256, "%lli", annot->onset / TIME_DIMENSION);
 #else
     len = snprintf(scratchpad, 256, "%lli", annot->onset / TIME_DIMENSION);
 #endif

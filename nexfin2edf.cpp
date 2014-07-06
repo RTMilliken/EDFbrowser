@@ -919,7 +919,7 @@ void UI_NEXFIN2EDFwindow::SelectFileButton()
   fseeko(outputfile, 236LL, SEEK_SET);
 
 #ifdef Q_OS_WIN32
-  fprintf(outputfile, "%-8I64d", datarecords);
+  __mingw_fprintf(outputfile, "%-8lli", datarecords);
 #else
   fprintf(outputfile, "%-8lli", datarecords);
 #endif

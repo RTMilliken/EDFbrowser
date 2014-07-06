@@ -9,7 +9,9 @@
 
  - Fixed a bug in the filter dialog that could cause some widgets not being shown.
 
- - Removed compile-errors when using Qt5 (due to bugs, it's not advised to use Qt5 yet).
+ - Removed compile-errors when using Qt5 (due to bugs in Qt5, it's not advised to use Qt5 yet).
+
+ - From now on, the MinGW-w64 compiler needs to be used for Windows. (see README.txt)
 
 
 
